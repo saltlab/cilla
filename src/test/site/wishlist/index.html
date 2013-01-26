@@ -1,0 +1,116 @@
+<?php
+session_start();
+$_SESSION['changed']=1;
+?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>An Ajax Test Site</title>
+<link href="style.css" rel="stylesheet" type="text/css" />
+ <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/jquery.treeview.js"></script>
+  <script type="text/javascript" src="js/jquery.listen.js"></script>
+  <script type="text/javascript" src="js/jquery.history_remote.js"></script>
+
+ <script type="text/javascript" src="js/tocview-noframes.js"></script>
+
+<link rel="stylesheet" href="jquery.treeview.css" type="text/css" media="screen" />
+
+ <style type="text/css">
+    li.currentURL { border: 1px solid gray; }
+  </style>
+  
+</head>
+
+<body>
+
+
+<div id="topPan">
+
+<ul>
+	<li><a class="remotetop" href="content/home.html" id="home" title="Home"><b>Home</b></a></li>
+	<li><a class="remotetop" href="content/gifts.html" id="gifts" title="Gifts"
+		><b>Gifts</b></a></li>
+	<li><a class="remotetop" href="content/friends.html" id="friends" title="Friends"><b>Friends</b></a></li>
+	<li><a class="remotetop" href="content/contact.html" id="contact" title="Contact"><b>Contact</b></a></li>
+</ul>
+
+</div>
+
+<div>&nbsp;</div>
+
+<div></div>
+
+<div id="bodyPan">
+<div id="leftPan">
+<div id="leftmemberPan">
+<center>
+<h3>Wish Lists</h3>
+    		<ul id="theTopUL" class="treeview" align="left">
+			<li id="IDADhtml" class="expandable ">
+			<div class="hitarea expandable-hitarea "></div>
+			<a class="remoteleft" href="content/A.html">Wish List Bob</a>
+			<ul style="display: none;">
+				<li id="IDA1Dhtml" class="expandable lastExpandable">
+				<div class="hitarea expandable-hitarea lastExpandable-hitarea">
+				</div>
+				<a class="remoteleft" href="content/A1.html">Food</a>
+				<ul style="display: none;">
+					<li id="IDA11Dhtml" class=""><a href="content/A11.html"
+						class="remoteleft">Ice Cream</a></li>
+					<li id="IDcandyDhtml" class="last"><a href="content/candy.html"
+						class="remoteleft">Candy</a></li>	
+				</ul>
+				</li>
+			</ul>
+			</li>
+			<li id="IDBDhtml" class="expandable lastExpandable">
+			<div class="hitarea expandable-hitarea lastExpandable-hitarea">
+			</div>
+			<a class="remoteleft" href="content/B.html">Wish List John</a>
+			<ul style="display: none;">
+				<li id="IDB1Dhtml" class="last">
+				<div class="dummy"></div>
+				<a class="remoteleft" href="content/B1.html">Music</a></li>
+
+			</ul>
+			</li>
+		</ul>
+    </td>   
+</div>
+
+
+<!-- here-->
+<div>&nbsp;</div>
+
+<div class="roundedcornr_box_677282">
+<div class="roundedcornr_top_677282">
+<div></div>
+</div>
+<div class="roundedcornr_content_677282">
+
+<center><b>Site built with jQuery Ajax library.</b>
+</center>
+</div>
+<div class="roundedcornr_bottom_677282">
+<div></div>
+</div>
+</div>
+
+</div>
+<div id="rightPan">
+<div id="rightbodyPan">
+
+<div id="content"></div>
+</div>
+</div>
+</div>
+
+<div id="footer">
+<center>Ajax Test Site - 2009<br />
+</div>
+
+</body>
+</html>

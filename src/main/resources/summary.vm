@@ -1,0 +1,86 @@
+<html>
+<script src="http://yui.yahooapis.com/3.4.1/build/yui/yui-min.js"></script>
+<link rel="stylesheet" href="visualizer.css">
+<head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <title>CILLA Visualizer</title>
+    </meta>
+</head>
+
+<body class=yui3-skin-sam>
+
+#if( $XHTML )
+  #set( $br = "<br />" )
+#else
+  #set( $br = "<br>" )
+#end
+
+
+<div id = "banner">
+    <h1> CILLA Visualizer </h1>
+</div>
+
+<div id="wrapper">
+<div id="menu" class="yui3-menu yui3-menu-horizontal yui3menubuttonnav"><!-- Bounding box -->
+    <div class="yui3-menu-content"><!-- Content box -->
+        <ul>
+            <!-- Menu items -->
+            <li><a class="yui3-menu-label" href="summary.html"><em>Summary</em></a>
+            </li>
+
+            <li><a class="yui3-menu-label" href="css-analysis.html"><em>CSS Analysis</em></a>
+            </li>
+
+            <li><a class="yui3-menu-label" href="html-analysis.html"><em>HTML Analysis</em></a>
+            </li>
+        </ul>
+    </div>
+</div>
+</div>
+
+<div id="content">
+    <h2> Summary </h2>
+    <p> Generated: $date <br> Crawled: $url </p>
+</div>
+<div id="wrapper">
+    <p id="summary"> 
+        <br> 
+        $summary
+
+        <!--#include virtual="summary.html" -->
+        <!--#include file="summary.txt" -->
+        <!-- <?php
+            $file = "summary.txt";
+            $f = fopen($file, "r");
+            while ( $line = fgets($f,1000) ) {
+                print $line;
+            }
+        ?> -->
+    </p>
+</div>
+
+<script>
+//  Call the "use" method, passing in "node-menunav".  This will load the
+//  script and CSS for the MenuNav Node Plugin and all of the required
+//  dependencies.
+YUI().use('node-menunav', function(Y) {
+    //  Retrieve the Node instance representing the root menu
+    //  (<div id="productsandservices">) and call the "plug" method
+    //  passing in a reference to the MenuNav Node Plugin.
+    var menu = Y.one("#menu");
+    menu.plug(Y.Plugin.NodeMenuNav);
+
+});
+</script>
+<script>
+
+window.onload=function() {
+var summary=getElementById('summary');
+var txtNode=document.createTextNode("<html src="include/summary.shtml"></html>");
+summary.appendChild(txtNode);
+}
+
+</script>
+</body>
+</html>
+

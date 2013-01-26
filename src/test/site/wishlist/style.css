@@ -1,0 +1,146 @@
+#footer{
+	 background:#B0AD93; color:#fff; }
+
+#leftPan ul li a.left { 
+font-weight: none; text-decoration:underline;
+ background-color: #FFFFFA;
+}
+
+#topPan ul li a.top{
+	width:104px; height:35px; display:block; 
+	background:url(images/menu-devider1.gif) 100% 0 no-repeat #FCFAE6; 
+	color:#2E4E00; text-decoration:underline; padding:61px 0 0 0; line-height:14px;}
+
+.roundedcornr_box_677282 {
+   background: #ebe9d7;
+   
+}
+.roundedcornr_top_677282 div {
+   background: url(images/roundedcornr_677282_tl.png) no-repeat top left;
+}
+.roundedcornr_top_677282 {
+   background: url(images/roundedcornr_677282_tr.png) no-repeat top right;
+}
+.roundedcornr_bottom_677282 div {
+   background: url(images/roundedcornr_677282_bl.png) no-repeat bottom left;
+}
+.roundedcornr_bottom_677282 {
+   background: url(images/roundedcornr_677282_br.png) no-repeat bottom right;
+}
+
+.roundedcornr_top_677282 div, .roundedcornr_top_677282, 
+.roundedcornr_bottom_677282 div, .roundedcornr_bottom_677282 {
+   width: 100%;
+   height: 50px;
+   font-size: 1px;
+}
+.roundedcornr_content_677282 { margin: 0 50px; }
+
+/* CSS Document */
+body{padding:0; margin:0; background:url(images/main-bg.gif) 0 0 repeat-x #FCFAE6; font:14px/20px Arial, Helvetica, sans-serif; color:#3D3C2C; font-weight:normal;}
+div, p, h1, h2, h3, ul, img{padding:0px; margin:0px;}
+ul{list-style-type:none;}
+
+/* TOP PANEL */
+#topPan{width:778px; height:96px; position:relative; margin:0 auto; padding:0;}
+#topPan img{display:block; padding:15px 0 0 6px;}
+/* Menu Panel */
+#topPan ul{width:520px; height:96px; display:block; position:absolute; top:0px; right:9px; margin:0; padding:0;}
+#topPan ul li{float:left; width:104px; display:block; text-align:center;}
+#topPan ul li a{width:104px; height:35px; display:block; font:14px/14px "Trebuchet MS",Arial, Helvetica, sans-serif; color:#2E4E00; background:url(images/menu-bg.gif) 0 0 repeat-x #F4F1DD; text-decoration:none; margin:0; padding:61px 0 0 0; }
+#topPan ul li a:hover{ width:104px; height:96px; display:block; background:#FCFAE6; color:#2E4E00; text-decoration:none;}
+#topPan ul li span{width:104px; height:35px; display:block; background:url(images/menu-devider1.gif) 100% 0 no-repeat #FCFAE6; color:#2E4E00; text-decoration:none; padding:61px 0 0 0; line-height:14px;}
+
+/* /TOP PANEL */
+
+/* HEADER PANEL */
+#headerPan{width:778px; height:307px; position:relative; margin:0 auto; padding:0;}
+#headerPan h1{width:526px; height:236px; position:absolute; top:35px; right:0px; background:url(images/header-img.jpg) 0 0 no-repeat #FCFAE6; color:#fff; font-size:36px; line-height:18px; text-transform:uppercase; text-indent:-2000px;}
+#headerPanleft{ width:237px; height:214px; position:absolute; top:48px; left:9px;}
+#headerPan #ourblog{ float:left; width:237px; height:62px; position:relative; margin:0 auto; background:url(images/icon1-nor.gif) 0 0 no-repeat;}
+#headerPan #ourblog h2{width:90px; height:10px; background:#fff; display:block; position:absolute; left:0px; top:0px; margin:14px 0 5px 81px; font:16px/14px Georgia, "Times New Roman", Times, serif; color:#CC0000; z-index:1; text-transform:uppercase;}
+#headerPan #ourblog p{width:103px; height:10px; display:block; position:absolute; font:12px/14px "Trebuchet MS",Arial, Helvetica, sans-serif; color:#2E5000; background:#fff; margin:34px 0 0 81px; z-index:1; }
+#headerPan #ourblog a{text-decoration:none; display:block; width:237px; height:62px;}
+#headerPan #ourblog a:hover{text-decoration:none; background:url(images/icon1-hover.gif) no-repeat 0 0;}
+
+#headerPan #possib{ float:left; width:237px; height:62px; position:relative; margin:13px 0 0 0; background:url(images/icon2-nor.gif) 0 0 no-repeat;}
+#headerPan #possib h2{width:90px; height:10px; background:#fff; display:block; position:absolute; left:0px; top:0px; margin:14px 0 5px 81px; font:16px/14px Georgia, "Times New Roman", Times, serif; color:#CC0000; z-index:1; text-transform:uppercase;}
+#headerPan #possib p{width:103px; height:10px; display:block; position:absolute; font:12px/14px "Trebuchet MS",Arial, Helvetica, sans-serif; color:#2E5000; background:#fff; margin:34px 0 0 81px; z-index:1; }
+#headerPan #possib a{text-decoration:none; display:block; width:237px; height:62px;}
+#headerPan #possib a:hover{text-decoration:none; background:url(images/icon2-hover.gif) no-repeat 0 0;}
+
+#headerPan #solution{ float:left; width:237px; height:62px; position:relative; margin:13px 0 0 0; background:url(images/icon3-nor.gif) 0 0 no-repeat;}
+#headerPan #solution h2{width:90px; height:10px; background:#fff; display:block; position:absolute; left:0px; top:0px; margin:14px 0 5px 81px; font:16px/14px Georgia, "Times New Roman", Times, serif; color:#CC0000; z-index:1; text-transform:uppercase;}
+#headerPan #solution p{width:103px; height:10px; display:block; position:absolute; font:12px/14px "Trebuchet MS",Arial, Helvetica, sans-serif; color:#2E5000; background:#fff; margin:34px 0 0 81px; z-index:1; }
+#headerPan #solution a{text-decoration:none; display:block; width:237px; height:62px;}
+#headerPan #solution a:hover{text-decoration:none; background:url(images/icon3-hover.gif) no-repeat 0 0;}
+
+/* BODY PANEL */
+#bodyPan{width:778px; height:687px; position:relative; margin:0 auto; padding:0;}
+/*Left Panel */
+#leftPan{width:239px; height:611px; position:absolute; top:0px; left:8px; margin:0; padding:0px;}
+#leftmemberPan{width:237px; height:396px; position:relative; margin:0 auto; padding:0; border:1px solid #DCDAC2; background:#fff; color:#000;}
+#leftmemberPan h2{height:48px; background:url(images/symbol4.gif) 0 0 no-repeat #fff; display:block; position:relative; padding:0 0 0 57px; margin:12px 0 20px 13px; font:16px/48px  Georgia,"Times New Roman", Times, serif; color:#5EA000; text-transform:uppercase;}
+#leftmemberPan h2 span{background:#fff; color:#3D3C2C;}
+#leftPan form{width:220px; height:108px; background:#EBE9D7; padding:0; margin:0 0 0 8px; color:#333227;}
+#leftPan form label{width:72px; display:block; float:left; padding:14px 15px 0 16px; }
+#leftPan form label.emailpadding{padding:2px 15px 0 16px;}
+#leftPan form input{ float:left; display:block; width:101px; height:16px; margin:14px 0 9px 0}
+#leftPan form input.fieldpadding{margin:2px 0 9px 0}
+#leftPan h3{height:48px; display:block; float:center; padding:0 0 0 0px; margin:12px 0 22px 13px; font:28px/48px Georgia, "Times New Roman", Times, serif; color:#3D3C2C;}
+padding:0px 20px 0 0; text-align:right;} 
+#leftPan ul li a{text-decoration:none; color:#3D3C2C; background:#FCFAE6;}
+#leftPan ul li a:hover{text-decoration:underline;}
+
+#leftPango{width:220px; height:25px; position:absolute; top:160px; left:8px; border-top:1px solid #fff; background:#B0AD93; display:block; padding:0; margin:0; font-size:12px; color:#FFFFFA; line-height:23px; font-weight:bold;}
+#leftPango p.textposition a{float:left; padding:0 0 0 20px; margin:0; text-decoration:none; color:#FFFFFA; background:#B0AD93;}
+#leftPango p.textposition a:hover{text-decoration:underline; background:none;}
+#leftPan form input.gobutton{float:right; background:url(images/arrow4.gif) no-repeat 30px 0 #63614F; border:none; width:45px; height:21px; display:block; margin:2px 0 0 0; padding:0 0 0 5px; text-decoration:none; color:#fff; font:14px/21px "Trebuchet MS",Arial, Helvetica, sans-serif; text-transform:uppercase; text-align:left;}
+#leftPango a:hover{background:url(images/arrow4.gif) no-repeat 30px 1px #333229; text-decoration:none; color:#fff;}
+
+/*/Left Panel */
+/*Right Panel */
+#rightPan{width:504px; height:90%; position:absolute; top:0px; right:10px; border:1px solid #DCDAC2; background:#fff; color:#3D3C2C;}
+#rightbodyPan{width:484px; height:98%; position:absolute; top:5px; left:10px; background:#FCFAE6; color:#3D3C2C;}
+#rightbodyPan h2{width:466px; height:31px; display:block; position: relative;  100% 0 no-repeat #FCFAE6; padding:24px 0 0 0; font:28px/28px Georgia, "Times New Roman", Times, serif; color:#3D3C2C; margin:20px 0 20px 80px ;}
+#rightbodyPan p{padding:0 10px 30px;}
+#rightbodyPan p.redtext{background:#FCFAE6; color:#CC0000; font-size:18px; line-height:20px; padding:0 80px 26px;}
+#rightbodyPan p span{background:#FFFFFA; color:#3D3C2C;}
+#rightbodymore{width:306px; height:25px; border:1px solid #fff; background:#B0AD93; display:block; padding:2px; margin:0 60px 0 80px; font-size:12px; color:#FFFFFA; line-height:25px; font-weight:bold;}
+#rightbodymore p.textposition{float:left; padding:0 0 0 20px; margin:0;}
+#rightbodymore a{float:right; background:url(images/arrow4.gif) no-repeat 58px 1px #63614F; width:66px; display:block; position:relative; margin:1px 0 0 0; padding:0 0 0 10px; height:23px; text-decoration:none; color:#fff; font:14px/23px "Trebuchet MS",Arial, Helvetica, sans-serif; text-transform:uppercase;}
+#rightbodymore a:hover{background:url(images/arrow4.gif) no-repeat 58px 1px #333229; text-decoration:none; color:#fff;}
+#rightbodyPan h3{width:268px; height:31px; display:block; position: relative; background:url(images/symbol6.gif) 100% 0 no-repeat #FCFAE6; padding:24px 0 0 0; font:28px/28px Georgia, "Times New Roman", Times, serif; color:#3D3C2C; margin:27px 0 20px 80px ;}
+#rightbodyPan ul{width:428px; height:92px; position:relative; top:0px; left:50px; margin:0 0 30px 0;}
+#rightbodyPan li{width:400px; background:url(images/arrow2.gif) 0 7px no-repeat; font:14px/24px Arial, Helvetica, sans-serif; padding:0 0 0 20px;}
+#rightbodyPan li a{width:435px; height:60px; background:#FCFAE6; color:#CC0000; text-decoration:underline; line-height:24px;}
+#rightbodyPan ul li a:hover{width:235px; height:60px;  text-decoration:none; line-height:24px;}
+
+#rightbodymorenext{width:306px; height:25px; border:1px solid #fff; background:#B0AD93; display:block; padding:2px; margin:0 60px 0 80px; font-size:12px; color:#FFFFFA; line-height:25px; font-weight:bold;}
+#rightbodymorenext p.textposition{float:left; padding:0 0 0 20px; margin:0;}
+#rightbodymorenext a{float:right; background:url(images/arrow4.gif) no-repeat 58px 1px #63614F; width:66px; display:block; position:relative; margin:1px 0 0 0; padding:0 0 0 10px; height:23px; text-decoration:none; color:#fff; font:14px/23px "Trebuchet MS",Arial, Helvetica, sans-serif; text-transform:uppercase;}
+#rightbodymorenext a:hover{background:url(images/arrow4.gif) no-repeat 58px 1px #333229; text-decoration:none; color:#fff;}
+
+/* /BODY PANEL */
+
+/* FOOTER PANEL */
+#footerPan{width:778px; height:231px; position:relative; margin:0 auto; padding:0;}
+#footernextPan{width:506px; height:50px; position:absolute; top:0px; right:10px; background:#B0AD93; color:#fff; margin:0;}
+#footerPan ul{width:380px; display:block; position:absolute; right:40px; top:33px; }
+#footerPan li{float:left; font:12px/15px "Trebuchet MS",Arial, Helvetica, sans-serif; font-weight:normal;}
+#footerPan ul li a{padding:0 10px; color:#FFFFFA; background:#B0AD93; text-decoration:none;}
+#footerPan ul li a:hover{text-decoration:underline;}
+#footerPan ul li a.padl{padding:0 0 0 14px;}
+
+#footerPan ul.templateworld{width:190px; background:#B0AD93; color:#fff; display:block; position:absolute; top:110px; right:49px;}
+#footerPan ul.templateworld li a{background:#B0AD93; display:block; color:#fff; text-decoration:none;}
+#footerPan ul.templateworld li a:hover{text-decoration:underline;}
+
+#footerPan p{ background:#B0AD93; margin:54px 45px 0 0; display:block; position:absolute; top:0px; right:40px; color:#FCFAE6; font:12px/15px "Trebuchet MS",Arial, Helvetica, sans-serif;}
+#footerPanhtml{width:64px; height:19px; display:block; position:absolute; top:78px; right:170px;}
+#footerPanhtml a{width:59px; height:19px; background:url(images/arrow5.gif) no-repeat 45px 0px #D0CEB8; display:block; position:absolute; top:0px; left:0px; margin:0; padding:0 0 0 5px; border:1px solid #FFFFFA; color:#353427; text-transform:uppercase; text-decoration:none;}
+#footerPanhtml a:hover{background:url(images/arrow5.gif) no-repeat 45px 0px #B0AD93; color:#353427; text-decoration:none;}
+
+#footerPancss{width:64px; height:19px; display:block; position:absolute; top:78px; right:89px;}
+#footerPancss a{width:59px; height:19px; background:url(images/arrow5.gif) no-repeat 45px 0px #D0CEB8; display:block; position:absolute; top:0px; left:0px; margin:0; padding:0 0 0 5px; border:1px solid #FFFFFA; color:#353427; text-transform:uppercase; text-decoration:none;}
+#footerPancss a:hover{background:url(images/arrow5.gif) no-repeat 45px 0px #B0AD93; color:#353427; text-decoration:none;}

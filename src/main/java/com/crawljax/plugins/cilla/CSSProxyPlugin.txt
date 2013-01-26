@@ -1,0 +1,258 @@
+package browser;
+
+import java.io.IOException;
+import java.io.StringReader;
+import java.net.URLEncoder;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.apache.log4j.Logger;
+import org.owasp.webscarab.httpclient.HTTPClient;
+import org.owasp.webscarab.model.Request;
+import org.owasp.webscarab.model.Response;
+import org.owasp.webscarab.plugin.proxy.ProxyPlugin;
+import org.w3c.css.sac.InputSource;
+import org.w3c.css.sac.Locator;
+import org.w3c.dom.css.CSSRule;
+import org.w3c.dom.css.CSSRuleList;
+import org.w3c.dom.css.CSSStyleDeclaration;
+import org.w3c.dom.css.CSSStyleRule;
+import org.w3c.dom.css.CSSStyleSheet;
+
+import com.steadystate.css.dom.CSSStyleRuleImpl;
+import com.steadystate.css.parser.CSSOMParser;
+import com.steadystate.css.userdata.UserDataConstants;
+
+public class CSSProxyPlugin extends ProxyPlugin {
+
+	private static final Logger LOGGER = Logger.getLogger(CSSProxyPlugin.class.getName());
+	public static final String CSS_TRACE_CALL = "?cssAnalysisTraceCall";
+
+	public static final Set<String> cssTraceSet = new HashSet<String>();
+
+	private static String XBlHeader =
+	        "<?xml version='1.0'?><bindings xmlns='http://www.mozilla.org/xbl' xmlns:html='http://www.w3.org/1999/xhtml'>";
+	private static String XBLFooter = "</bindings>";
+
+	private static StringBuffer XBLBody = new StringBuffer();
+
+	private List<String> cssTraceFiles;
+
+	public CSSProxyPlugin(List<String> cssTraceFiles) {
+
+		this.cssTraceFiles = cssTraceFiles;
+
+	}
+
+	@Override
+	public String getPluginName() {
+
+		return CSSProxyPlugin.class.getName();
+	}
+
+	@Override
+	public HTTPClient getProxyPlugin(HTTPClient in) {
+		return new HTTPPlugin(in);
+	}
+
+	/**
+	 * This method modifies the response to a request.
+	 * 
+	 * @param response
+	 *            The response.
+	 * @param request
+	 *            The request.
+	 * @return The modified response.
+	 */
+	private Response createResponse(Response response, Request request) {
+		String type = response.getHeader("Content-Type");
+		String url = request.getURL().toString();
+
+		// XBL
+		if (request.getURL().toString().contains("xbl-script.xml")) {
+			LOGGER.info("XBL request " + request.getURL().toString());
+
+			String res = XBlHeader + XBLBody.toString() + XBLFooter;
+			LOGGER.info("XBL respnose: " + res);
+			response.setHeader("Content-type", "text/xm");
+			response.setContent(res.getBytes());
+			// make XBL response
+			return response;
+		}
+
+		// tracing
+		if (request.getURL().toString().contains(CSS_TRACE_CALL)) {
+			LOGGER.info("Execution trace request " + request.getURL().toString());
+
+			String trace = new String(request.getContent());
+			LOGGER.info("Request content: " + trace);
+
+			cssTraceSet.add(trace);
+
+			return response;
+		}
+
+		// instrumenting
+		if (type != null && type.contains("css")) {
+
+			LOGGER.info("Request for CSS file: " + request.getURL().toString());
+
+			if (checkCSSUrl(request.getURL().toString().trim())) {
+				LOGGER.info("Instrumenting CSS file: " + request.getURL().toString());
+				response.setContent(instumentCss(url, new String(response.getContent()))
+				        .getBytes());
+
+				return response;
+			}
+
+		} else if (type != null && type.contains("html")) {
+			// TODO
+		}
+
+		/* return the response to the webbrowser */
+		return response;
+	}
+
+	private boolean checkCSSUrl(String request) {
+		if (cssTraceFiles == null || cssTraceFiles.contains(request)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	private synchronized String instumentCss(String url, String content) {
+
+		InputSource source = new InputSource(new StringReader(content));
+		CSSOMParser cssomParser = new CSSOMParser();
+		StringBuffer cssbuffer = new StringBuffer();
+
+		try {
+			CSSStyleSheet css = cssomParser.parseStyleSheet(source, null, url);
+			// css.deleteRule(arg0)
+			CSSRuleList rules = css.getCssRules();
+
+			for (int i = 0; i < rules.getLength(); i++) {
+				CSSRule rule = rules.item(i);
+
+				if (rule instanceof CSSStyleRule) {
+
+					Locator locator =
+					        (Locator) ((CSSStyleRuleImpl) rule)
+					                .getUserData(UserDataConstants.KEY_LOCATOR);
+
+					CSSStyleRule styleRule = (CSSStyleRule) rule;
+
+					CSSStyleDeclaration styleDeclaration = styleRule.getStyle();
+
+					// xbl-script.xml#http://www.ece.ubc.ca:80/~amesbah/exp/default.css[2-6]{div+.c1}
+
+					String selector = styleRule.getSelectorText();
+
+					String[] selectorGroup = selector.split(",");
+
+					if (selectorGroup.length > 1) {
+						// we should generate a new rule for each selector
+
+						LOGGER.info("Selector is group: " + selector);
+						for (String s : selectorGroup) {
+
+							String binding = url + "[" + locator.getLineNumber() + "]";
+							binding += "{" + s + "}";
+
+							String bindingEncoded = URLEncoder.encode(binding, "UTF-8");
+
+							styleDeclaration.setProperty("-moz-binding", "url(xbl-script.xml#"
+							        + bindingEncoded + ")", null);
+
+							String cssText = s + " { " + styleDeclaration.getCssText() + " ;} \n";
+
+							LOGGER.info("cssText: " + cssText);
+
+							cssbuffer.append(cssText);
+
+							addXBLBody(bindingEncoded);
+
+						}
+						css.deleteRule(i);
+					} else {
+						// selector = selector.trim().replaceAll(" ", "_");
+
+						String binding = url + "[" + locator.getLineNumber() + "]";
+						binding += "{" + selector + "}";
+
+						String bindingEncoded = URLEncoder.encode(binding, "UTF-8");
+
+						styleDeclaration.setProperty("-moz-binding", "url(xbl-script.xml#"
+						        + bindingEncoded + ")", null);
+
+						String cssText =
+						        selector + " { " + styleDeclaration.getCssText() + " ;} \n";
+
+						cssbuffer.append(cssText);
+
+						addXBLBody(bindingEncoded);
+					}
+				}
+			}
+
+			// LOGGER.info("Instrumented CSS: " + url + " \n" + css.toString());
+			// return css.toString();
+			LOGGER.info("Instrumented CSS: " + url + " \n" + cssbuffer.toString());
+			return cssbuffer.toString();
+		} catch (IOException e) {
+			LOGGER.error(e.getMessage(), e);
+		}
+
+		return content;
+	}
+
+	private void addXBLBody(String binding) {
+		XBLBody.append("<binding id='" + binding + "'>\n");
+		XBLBody.append("<implementation>\n");
+		XBLBody.append("<constructor>\n");
+
+		/*
+		 * XBLBody.append("var xhr = new XMLHttpRequest();\n");
+		 * XBLBody.append("xhr.open('POST', document.location.href + '" + CSS_TRACE_CALL +
+		 * "', false);\n"); XBLBody.append("xhr.send('" + binding + "');\n");
+		 */
+
+		XBLBody.append("localStorage.setItem('cssrules:" + binding + "', '" + binding + "');");
+
+		// this.setAttribute('cssAnalysis',
+		// 'http://www.ece.ubc.ca:80/~amesbah/exp/default.css?blaaha:7-10');
+		// XBLBody.append("this.setAttribute('" + CSS_ATTR_BINDING + "', '" + binding + "');\n");
+		XBLBody.append("</constructor>\n");
+		XBLBody.append("</implementation>\n");
+		XBLBody.append("</binding>\n\n");
+	}
+
+	/**
+	 * WebScarab plugin that adds instrumentation code.
+	 * 
+	 */
+	private class HTTPPlugin implements HTTPClient {
+
+		private HTTPClient client = null;
+
+		/**
+		 * Constructor for this plugin.
+		 * 
+		 * @param in
+		 *            The HTTPClient connection.
+		 */
+		public HTTPPlugin(HTTPClient in) {
+			client = in;
+		}
+
+		@Override
+		public Response fetchResponse(Request request) throws IOException {
+			Response response = client.fetchResponse(request);
+
+			return createResponse(response, request);
+		}
+	}
+
+}

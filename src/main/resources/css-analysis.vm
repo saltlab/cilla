@@ -1,0 +1,169 @@
+<html>
+<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/combo?3.4.1/build/cssfonts/fonts-min.css&3.4.1/build/cssreset/reset-min.css&3.4.1/build/cssbase/base-min.css">
+<link type="text/css" rel="stylesheet" href="http://yui.yahooapis.com/gallery-2010.05.21-18-16/build/gallery-node-accordion/assets/skins/sam/gallery-node-accordion.css" />
+<script src="http://yui.yahooapis.com/3.4.1/build/yui/yui-min.js"></script>
+<link rel="stylesheet" href="visualizer.css">
+<head>
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<title>CILLA Visualizer</title>
+</meta>
+</head>
+
+<body class=yui3-skin-sam>
+
+#if( $XHTML )
+  #set( $br = "<br />" )
+#else
+  #set( $br = "<br>" )
+#end
+
+<div id = "banner">
+    <h1> CILLA Visualizer </h1>
+</div>
+<div id="wrapper">
+<div id="menu" class="yui3-menu yui3-menu-horizontal yui3menubuttonnav">
+<!-- Bounding box --> 
+    <div class="yui3-menu-content">
+    <!-- Content box --> 
+        <ul>
+            <!-- Menu items --> 
+            <li><a class="yui3-menu-label" href="summary.html"><em>Summary</em></a>
+            </li>
+
+            <li><a class="yui3-menu-label" href="css-analysis.html"><em>CSS Analysis</em></a>
+            </li>
+
+            <li><a class="yui3-menu-label" href="html-analysis.html"><em>HTML Analysis</em></a>
+            </li>
+        </ul>
+    </div>
+</div>
+</div>
+<div id = "content"><h3>Generated: $date <br>Crawled: $url</h3></div>
+<div id = "wrapper">
+<div id="tabs" style="resize: vertical">
+    <ul>
+        <li><a href="#sorted">Sorted</a></li>
+        <li><a href="#unsorted">Unsorted</a></li>
+    </ul>
+    <div>
+        <div id="sorted">
+        <p> Click on the file name to collapse each section </p>
+        <div id="accordion1" class="yui3-accordion">
+
+    #foreach ($entry in $filemap.entrySet()) 
+            <div id="$entry.key" class="yui3-module yui3-accordion-item yui3-accordion-item-active">
+            <div class="yui3-hd yui3-accordion-item-hd"> 
+                <a href="#${entry.key}-content" class="yui3-accordion-item-trigger yui3-accordion-item-label">
+                    &nbsp;$entry.key
+                </a>            </div> 
+            <div class="yui3-bd yui3-accordion-item-bd">
+                <div id="${entry.key}-content" class="scroll" style="position: relative;">
+                <div id="${entry.key}-table">
+                <table align="center">
+                <tr>
+        #set( $rules = $entry.value )
+        #foreach ($rule in $rules.entrySet())
+                <th><a href="#${entry.key}-${rule.key}-content">$rule.key</a></th>
+        #end
+                </tr>
+                </table>
+                </div>
+        #foreach ($pair2 in $rules.entrySet())
+                <div id="${entry.key}-${pair2.key}-content">
+                    <h2> $pair2.key </h2>
+                    <a href="#${entry.key}-table"><p text-align="right">Back to file top</p></a>
+                    <p> $pair2.value </p>
+                </div>
+        #end
+               </div>
+            </div>
+            </div>
+    #end
+
+        </div>
+        </div>
+        <div id="unsorted">
+        <div>
+        <table align="left" style="background-color: #fff" style="margin-top: 0.025em">
+        <tr>
+            <td><p> Legend: </p></td>
+            <td style="background-color: $unmatchedColor"><p> Unmatched </p></td>
+            <td style="background-color: $ineffectiveColor"><p> Matched & Ineffective </p></td>
+            <td style="background-color: $effectiveColor"><p> Matched & Effective </p></td>
+        </tr>
+        </table>
+        <br>
+        </div>
+        <br>
+        <br>
+        <br>
+        <br>        
+        <p> Click on the file name to collapse each section </p>
+        <div id="accordion2" class="yui3-accordion">
+    #foreach ($file in $filemap2.entrySet()) 
+            <div id="$file.key" class="yui3-module yui3-accordion-item yui3-accordion-item-active">
+            <div class="yui3-hd yui3-accordion-item-hd"> 
+                <a href="#${file.key}-content" class="yui3-accordion-item-trigger yui3-accordion-item-label">
+                    &nbsp;$file.key
+                </a>
+            </div> 
+            <div class="yui3-bd yui3-accordion-item-bd">
+                <div id="${file.key}-content" class="scroll" style="position: relative;">
+
+            #foreach ($rule in $file.value)
+                    <p> $rule </p>
+            #end
+
+                </div>  
+            </div>
+            </div> 
+    #end        
+        </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<script type="text/javascript">
+//  Call the "use" method, passing in "node-menunav".  This will load the
+//  script and CSS for the MenuNav Node Plugin and all of the required
+//  dependencies.
+YUI().use('node-menunav', function(Y) {
+    //  Retrieve the Node instance representing the root menu
+    //  (<div id="productsandservices">) and call the "plug" method
+    //  passing in a reference to the MenuNav Node Plugin.
+    var menu = Y.one("#menu");
+    menu.plug(Y.Plugin.NodeMenuNav);
+
+});
+
+YUI().use('tabview', function(Y) {
+    var tabview = new Y.TabView({srcNode:'#tabs'});
+    tabview.render();
+});
+
+YUI({
+    gallery: 'gallery-2010.05.21-18-16'
+}).use('anim', 'gallery-node-accordion', function(Y) {
+    Y.one("#accordion1").plug(Y.Plugin.NodeAccordion, {
+    anim: Y.Easing.backIn
+    });
+});
+
+YUI({
+    gallery: 'gallery-2010.05.21-18-16'
+}).use('anim', 'gallery-node-accordion', function(Y) {
+    Y.one("#accordion2").plug(Y.Plugin.NodeAccordion, {
+    anim: Y.Easing.backIn
+    });
+});
+
+YUI().use('node', function(Y) {
+    var acc = Y.one('#accordion1');
+});
+
+</script>
+</body>
+</html>
+

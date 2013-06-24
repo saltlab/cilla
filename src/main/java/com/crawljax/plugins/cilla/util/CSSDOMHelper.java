@@ -18,9 +18,8 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-
 import com.crawljax.plugins.cilla.analysis.ElementWithClass;
-import com.crawljax.util.Helper;
+import com.crawljax.util.UrlUtils;
 import com.crawljax.util.XPathHelper;
 
 public class CSSDOMHelper {
@@ -119,7 +118,7 @@ public class CSSDOMHelper {
 
 		// Example: /default.css
 		if (relUrl.startsWith("/")) {
-			return Helper.getBaseUrl(location) + relUrl;
+			return UrlUtils.getBaseUrl(location) + relUrl;
 		}
 
 		// it is relative, example: ../../default.css
@@ -181,8 +180,8 @@ public class CSSDOMHelper {
 			Element node = (Element) nodes.item(i);
 			String classvalue = node.getAttributeNode("class").getValue();
 
-			results.add(new ElementWithClass(stateName, node, Arrays.asList(classvalue
-			        .split(" "))));
+			results.add(new ElementWithClass(stateName, node,
+			        Arrays.asList(classvalue.split(" "))));
 
 		}
 

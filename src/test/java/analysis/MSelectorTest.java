@@ -10,7 +10,6 @@ import org.junit.Test;
 import com.crawljax.plugins.cilla.analysis.MSelector;
 import com.crawljax.plugins.cilla.util.specificity.Specificity;
 
-
 public class MSelectorTest {
 
 	@Test
@@ -99,7 +98,7 @@ public class MSelectorTest {
 		MSelector.orderSpecificity(list);
 
 		Assert.assertEquals("span div#aha #cal", list.get(0).getCssSelector());
-		Assert.assertEquals("a", list.get(list.size() - 1).getCssSelector());
+		Assert.assertEquals("A", list.get(list.size() - 1).getCssSelector());
 
 		for (MSelector s : list) {
 			System.out.println("Selector: " + s.getCssSelector());

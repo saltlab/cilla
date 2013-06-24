@@ -1,8 +1,12 @@
 package com.crawljax.plugins.cilla.visualizer;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,7 +36,6 @@ import org.apache.velocity.tools.view.VelocityViewServlet;
 import com.crawljax.plugins.cilla.analysis.ElementWithClass;
 import com.crawljax.plugins.cilla.analysis.MCssRule;
 import com.crawljax.plugins.cilla.analysis.MSelector;
-import com.crawljax.util.Helper;
 import com.google.common.base.Charsets;
 import com.google.common.collect.SetMultimap;
 import com.google.common.io.Files;
@@ -156,7 +159,7 @@ public class VisualizerServlet extends VelocityViewServlet {
 		VelocityContext context = new VelocityContext();
 		String template;
 		try {
-			template = Helper.getTemplateAsString(summaryTemplate.getName());
+			template = getTemplateAsString(summaryTemplate.getName());
 
 			summary = summary.replace("\n", "$br");
 			summary =
@@ -321,7 +324,7 @@ public class VisualizerServlet extends VelocityViewServlet {
 
 		String template;
 		try {
-			template = Helper.getTemplateAsString(cssAnalysisTemplate.getName());
+			template = getTemplateAsString(cssAnalysisTemplate.getName());
 			FileWriter writer = new FileWriter(cssAnalysisHTML);
 			ve.evaluate(context, writer, "CSS-Analysis", template);
 			writer.flush();
@@ -437,6 +440,59 @@ public class VisualizerServlet extends VelocityViewServlet {
 
 	public File getWelcomePage() {
 		return summaryHTML.getAbsoluteFile();
+	}
+
+	/**
+	 * Retrieves the content of the filename. Also reads from JAR Searches for the resource in the
+	 * root folder in the jar
+	 * 
+	 * @param fname
+	 *            Filename.
+	 * @return The contents of the file.
+	 * @throws IOException
+	 *             On error.
+	 */
+	private static String getTemplateAsString(String fname) throws IOException {
+		// in .jar file
+		String fnameJar = getFileNameInPath(fname);
+		InputStream inStream = VisualizerServlet.class.getResourceAsStream("/" + fnameJar);
+		if (inStream == null) {
+			// try to find file normally
+			File f = new File(fname);
+			if (f.exists()) {
+				inStream = new FileInputStream(f);
+			} else {
+				throw new IOException("Cannot find " + fname + " or " + fnameJar);
+			}
+		}
+
+		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inStream));
+		String line;
+		StringBuilder stringBuilder = new StringBuilder();
+
+		while ((line = bufferedReader.readLine()) != null) {
+			stringBuilder.append(line + "\n");
+		}
+
+		bufferedReader.close();
+		return stringBuilder.toString();
+	}
+
+	/**
+	 * Returns the filename in a path. For example with path = "foo/bar/crawljax.txt" returns
+	 * "crawljax.txt"
+	 * 
+	 * @param path
+	 * @return the filename from the path
+	 */
+	private static String getFileNameInPath(String path) {
+		String fname;
+		if (path.indexOf("/") != -1) {
+			fname = path.substring(path.lastIndexOf("/") + 1);
+		} else {
+			fname = path;
+		}
+		return fname;
 	}
 
 }

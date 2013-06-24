@@ -19,11 +19,13 @@ import javax.xml.xpath.XPathExpressionException;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 import com.crawljax.core.CrawlSession;
+import com.crawljax.core.CrawlerContext;
+import com.crawljax.core.ExitNotifier.ExitStatus;
 import com.crawljax.core.plugin.OnNewStatePlugin;
 import com.crawljax.core.plugin.PostCrawlingPlugin;
+import com.crawljax.core.state.StateVertex;
 import com.crawljax.plugins.cilla.analysis.CssAnalyzer;
 import com.crawljax.plugins.cilla.analysis.ElementWithClass;
 import com.crawljax.plugins.cilla.analysis.MCssRule;
@@ -56,26 +58,23 @@ public class CillaPlugin implements OnNewStatePlugin, PostCrawlingPlugin {
 	private int ineffectivePropsSize;
 	private int totalCssRulesSize;
 
-	@Override
-	public void onNewState(CrawlSession session) {
-
+	public void onNewState(CrawlerContext context, StateVertex newState) {
 		// if the external CSS files are not parsed yet, do so
-		parseCssRules(session);
+		parseCssRules(context, newState);
+
 		// now we have all the CSS rules neatly parsed in "rules"
+		checkCssOnDom(newState);
 
-		checkCssOnDom(session);
-
-		checkClassDefinitions(session);
+		checkClassDefinitions(newState);
 
 	}
 
-	private void checkClassDefinitions(CrawlSession session) {
+	private void checkClassDefinitions(StateVertex state) {
 		LOGGER.info("Checking CSS class definitions...");
 		try {
 
 			List<ElementWithClass> elementsWithClass =
-			        CSSDOMHelper.getElementWithClass(session.getCurrentState().getName(), session
-			                .getCurrentState().getDocument());
+			        CSSDOMHelper.getElementWithClass(state.getName(), state.getDocument());
 
 			for (ElementWithClass element : elementsWithClass) {
 
@@ -104,8 +103,6 @@ public class CillaPlugin implements OnNewStatePlugin, PostCrawlingPlugin {
 				}
 			}
 
-		} catch (SAXException e) {
-			LOGGER.error(e.getMessage(), e);
 		} catch (IOException e) {
 			LOGGER.error(e.getMessage(), e);
 		} catch (XPathExpressionException e) {
@@ -114,18 +111,16 @@ public class CillaPlugin implements OnNewStatePlugin, PostCrawlingPlugin {
 
 	}
 
-	private void checkCssOnDom(CrawlSession session) {
+	private void checkCssOnDom(StateVertex state) {
 		LOGGER.info("Checking CSS on DOM...");
 		// check the rules on the current DOM state.
 		try {
 			for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()) {
 
-				CssAnalyzer.checkCssRulesOnDom(session.getCurrentState().getName(), session
-				        .getCurrentState().getDocument(), entry.getValue());
+				CssAnalyzer.checkCssRulesOnDom(state.getName(), state.getDocument(),
+				        entry.getValue());
 			}
 
-		} catch (SAXException e) {
-			LOGGER.error(e.getMessage(), e);
 		} catch (IOException e) {
 			LOGGER.error(e.getMessage(), e);
 		}
@@ -151,10 +146,11 @@ public class CillaPlugin implements OnNewStatePlugin, PostCrawlingPlugin {
 		return count;
 	}
 
-	private void parseCssRules(CrawlSession session) {
-		String url = session.getBrowser().getCurrentUrl();
+	private void parseCssRules(CrawlerContext context, StateVertex state) {
+		String url = context.getBrowser().getCurrentUrl();
+
 		try {
-			final Document dom = session.getCurrentState().getDocument();
+			final Document dom = state.getDocument();
 
 			for (String relPath : CSSDOMHelper.extractCssFilenames(dom)) {
 				String cssUrl = CSSDOMHelper.getAbsPath(url, relPath);
@@ -181,8 +177,6 @@ public class CillaPlugin implements OnNewStatePlugin, PostCrawlingPlugin {
 				}
 			}
 
-		} catch (SAXException e) {
-			LOGGER.error(e.getMessage(), e);
 		} catch (IOException e) {
 			LOGGER.error(e.getMessage(), e);
 		}
@@ -190,7 +184,7 @@ public class CillaPlugin implements OnNewStatePlugin, PostCrawlingPlugin {
 	}
 
 	@Override
-	public void postCrawling(CrawlSession session) {
+	public void postCrawling(CrawlSession session, ExitStatus exitReason) {
 
 		int totalCssRules = 0;
 		int totalCssSelectors = 0;
@@ -217,9 +211,8 @@ public class CillaPlugin implements OnNewStatePlugin, PostCrawlingPlugin {
 		StringBuffer ineffectiveBuffer = new StringBuffer();
 		int ineffectiveInt = getIneffectiveSelectorsBasedOnProps(ineffectiveBuffer);
 
-		output.append("Analyzed "
-		        + session.getCrawljaxConfiguration().getCrawlSpecificationReader().getSiteUrl()
-		        + " on " + new SimpleDateFormat("dd/MM/yy-hh:mm:ss").format(new Date()) + "\n");
+		output.append("Analyzed " + session.getConfig().getUrl() + " on "
+		        + new SimpleDateFormat("dd/MM/yy-hh:mm:ss").format(new Date()) + "\n");
 
 		output.append("-> Files with CSS code: " + cssRules.keySet().size() + "\n");
 		for (String address : cssRules.keySet()) {
@@ -254,8 +247,7 @@ public class CillaPlugin implements OnNewStatePlugin, PostCrawlingPlugin {
 		 */
 		String tmpStr = new String();
 		tmpStr = output.toString().replace("\n", "<br>");
-		String url =
-		        session.getCrawljaxConfiguration().getCrawlSpecificationReader().getSiteUrl();
+		String url = session.getConfig().getUrl().toString();
 
 		/* This is where the Visualizer plug-in is invoked */
 		CillaVisualizer cv = new CillaVisualizer();

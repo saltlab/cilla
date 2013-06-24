@@ -2,7 +2,7 @@ package com.crawljax.plugins.cilla.analysis;
 
 import org.w3c.dom.Element;
 
-import com.crawljax.util.Helper;
+import com.crawljax.util.DomUtils;
 
 public class ElementWrapper {
 
@@ -40,8 +40,8 @@ public class ElementWrapper {
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("Statename: " + stateName + "\n");
-		buffer.append("<" + element.getNodeName() + " " + Helper.getAllElementAttributes(element)
-		        + ">");
+		buffer.append("<" + element.getNodeName() + " "
+		        + DomUtils.getAllElementAttributes(element) + ">");
 		if (element.getNodeValue() != null) {
 			buffer.append(element.getNodeValue());
 		}

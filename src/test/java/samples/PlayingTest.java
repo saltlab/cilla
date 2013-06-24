@@ -26,14 +26,12 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-
 import com.crawljax.plugins.cilla.analysis.CssAnalyzer;
 import com.crawljax.plugins.cilla.analysis.MCssRule;
 import com.crawljax.plugins.cilla.util.CssParser;
 import com.crawljax.plugins.cilla.util.CssToXpathConverter;
-import com.crawljax.util.Helper;
+import com.crawljax.util.DomUtils;
 import com.crawljax.util.XPathHelper;
-
 
 public class PlayingTest {
 
@@ -126,7 +124,7 @@ public class PlayingTest {
 		                + "<p id='24'>this is just a test</p></div>"
 		                + "<span id='span1' class='news'/><p>bla</p></span></body></html>";
 
-		Document dom = Helper.getDocument(html);
+		Document dom = DomUtils.asDocument(html);
 
 		List<MCssRule> mRules =
 		        CssParser.getMCSSRules("div.newsx { color: red;} div, a, span { font: black}");
@@ -134,7 +132,7 @@ public class PlayingTest {
 		List<MCssRule> rules = CssAnalyzer.checkCssRulesOnDom("state1", dom, mRules);
 
 		html = "<html><body><div id='div22'><a href='google.com'>Google</a></div></body></html>";
-		dom = Helper.getDocument(html);
+		dom = DomUtils.asDocument(html);
 		rules = CssAnalyzer.checkCssRulesOnDom("state2", dom, mRules);
 	}
 
@@ -146,7 +144,7 @@ public class PlayingTest {
 		                + "<p id='24'>this is just a test</p></div>"
 		                + "<span id='span1' class='news'/><p>bla</p></span></body></html>";
 
-		Document dom = Helper.getDocument(html);
+		Document dom = DomUtils.asDocument(html);
 
 		// CssToXpathConverter converter = new CssToXpathConverter();
 
@@ -165,7 +163,7 @@ public class PlayingTest {
 				for (int i = 0; i < nodeList.getLength(); i++) {
 					Element e = (Element) nodeList.item(i);
 					System.out.println("Matched Element: " + e.toString() + " with attributes: "
-					        + Helper.getAllElementAttributes(e));
+					        + DomUtils.getAllElementAttributes(e));
 				}
 			} catch (XPathExpressionException e) {
 				fail(e.getMessage());
@@ -190,14 +188,14 @@ public class PlayingTest {
 		String xpath = converter.convert(cssSelector);
 		System.out.println("Xpath: " + xpath);
 
-		Document dom = Helper.getDocument(html);
+		Document dom = DomUtils.asDocument(html);
 		try {
 			NodeList nodeList = XPathHelper.evaluateXpathExpression(dom, xpath);
 
 			for (int i = 0; i < nodeList.getLength(); i++) {
 				Element e = (Element) nodeList.item(i);
 				System.out.println("Matched Element: " + e.toString() + " with attributes: "
-				        + Helper.getAllElementAttributes(e));
+				        + DomUtils.getAllElementAttributes(e));
 			}
 		} catch (XPathExpressionException e) {
 			fail(e.getMessage());

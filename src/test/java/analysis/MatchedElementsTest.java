@@ -8,12 +8,11 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
 
 import com.crawljax.plugins.cilla.analysis.ElementWrapper;
 import com.crawljax.plugins.cilla.analysis.MSelector;
 import com.crawljax.plugins.cilla.analysis.MatchedElements;
-import com.crawljax.util.Helper;
+import com.crawljax.util.DomUtils;
 
 public class MatchedElementsTest {
 
@@ -32,7 +31,7 @@ public class MatchedElementsTest {
 		                + "<span id='span1' class='news'/><p>bla</p></span></body></html>";
 
 		try {
-			Document dom = Helper.getDocument(html);
+			Document dom = DomUtils.asDocument(html);
 			MSelector selector = new MSelector("#div1", null);
 			Element e = dom.getElementById("div1");
 
@@ -50,8 +49,6 @@ public class MatchedElementsTest {
 				}
 			}
 
-		} catch (SAXException e) {
-			Assert.fail(e.getMessage());
 		} catch (IOException e) {
 			Assert.fail(e.getMessage());
 		}

@@ -11,12 +11,10 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
-
 
 import com.crawljax.plugins.cilla.analysis.ElementWithClass;
 import com.crawljax.plugins.cilla.util.CSSDOMHelper;
-import com.crawljax.util.Helper;
+import com.crawljax.util.DomUtils;
 
 public class CSSDOMHelperTest {
 
@@ -34,7 +32,7 @@ public class CSSDOMHelperTest {
 		                + "<span id='span1' class='news'/><p>bla</p></span></body></html>";
 
 		try {
-			Document dom = Helper.getDocument(html);
+			Document dom = DomUtils.asDocument(html);
 			List<String> names = CSSDOMHelper.extractCssFilenames(dom);
 
 			Assert.assertEquals(2, names.size());
@@ -42,8 +40,6 @@ public class CSSDOMHelperTest {
 
 			Assert.assertEquals("default.css", names.get(1));
 
-		} catch (SAXException e) {
-			Assert.fail(e.getMessage());
 		} catch (IOException e) {
 			Assert.fail(e.getMessage());
 		}
@@ -87,7 +83,7 @@ public class CSSDOMHelperTest {
 		                + "<span id='span1' class='news'/><p>bla</p></span></body></html>";
 
 		try {
-			Document dom = Helper.getDocument(html);
+			Document dom = DomUtils.asDocument(html);
 
 			String result = CSSDOMHelper.getEmbeddedStyles(dom);
 
@@ -95,8 +91,6 @@ public class CSSDOMHelperTest {
 
 			Assert.assertEquals(true, result.contains(".newsletter"));
 			Assert.assertEquals(true, result.contains(".nrc"));
-		} catch (SAXException e) {
-			fail(e.getMessage());
 		} catch (IOException e) {
 			fail(e.getMessage());
 		}
@@ -116,14 +110,12 @@ public class CSSDOMHelperTest {
 		                + "<span id='span1' class='news'/><p>bla</p></span></body></html>";
 
 		try {
-			Document dom = Helper.getDocument(html);
+			Document dom = DomUtils.asDocument(html);
 			List<ElementWithClass> elements = CSSDOMHelper.getElementWithClass("state1", dom);
 			Assert.assertEquals(2, elements.size());
 
 			Assert.assertEquals(5, elements.get(0).getClassValues().size());
 
-		} catch (SAXException e) {
-			fail(e.getMessage());
 		} catch (IOException e) {
 			fail(e.getMessage());
 		} catch (XPathExpressionException e) {

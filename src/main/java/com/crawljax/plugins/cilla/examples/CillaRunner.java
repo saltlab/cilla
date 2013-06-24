@@ -9,14 +9,15 @@ import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.plugins.cilla.CillaPlugin;
 
-public class Beckers {
+public class CillaRunner {
 
 	private static final int waitAfterEvent = 400;
 	private static final int waitAfterReload = 400;
 
-	private static final String INDEX = "http://www.beckerelectric.com";
+	private static final String INDEX = "http://www.ece.ubc.ca/~amesbah/exp";
 
 	public static void main(String[] args) {
+
 		CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(INDEX);
 		builder.crawlRules().insertRandomDataInInputForms(false);
 
@@ -28,7 +29,7 @@ public class Beckers {
 
 		builder.crawlRules().click("a");
 
-		builder.setMaximumStates(2);
+		builder.setMaximumRunTime(600, TimeUnit.SECONDS);
 
 		builder.setBrowserConfig(new BrowserConfiguration(BrowserType.firefox, 1));
 

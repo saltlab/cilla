@@ -4,8 +4,8 @@
 
 	<parent>
 		<groupId>com.crawljax.plugins</groupId>
-		<artifactId>plugin</artifactId>
-		<version>2.2</version>
+		<artifactId>crawljax-plugins-parent</artifactId>
+		<version>3.1</version>
 	</parent>
 
 	<artifactId>cilla</artifactId>
@@ -17,17 +17,13 @@
 	</description>
 	<inceptionYear>2011</inceptionYear>
 
-	<properties>
-		<crawljax.version>2.2</crawljax.version>
-	</properties>
-
 
 	<dependencies>
 
 		<dependency>
 			<groupId>net.sourceforge.nekohtml</groupId>
 			<artifactId>nekohtml</artifactId>
-			<version>1.9.17</version>
+			<version>1.9.18</version>
 		</dependency>
 
 		<dependency>
@@ -79,10 +75,16 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.apache.velocity.tools</groupId>
+			<groupId>org.apache.velocity</groupId>
 			<artifactId>velocity-tools</artifactId>
-			<version>2.0-alpha1</version>
+			<version>2.0</version>
 		</dependency>
+
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+		</dependency>
+
 
 
 		<!-- <dependency> <groupId>org.w3c.css</groupId> <artifactId>css-validator</artifactId> 

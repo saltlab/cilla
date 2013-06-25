@@ -11,7 +11,6 @@ import com.crawljax.plugins.cilla.util.CssToXpathConverter;
 import com.crawljax.plugins.cilla.util.specificity.Specificity;
 import com.crawljax.plugins.cilla.util.specificity.SpecificityCalculator;
 
-
 /**
  * POJO class for a CSS selector.
  * 
@@ -135,7 +134,8 @@ public class MSelector {
 				int value1 = o1.getSpecificity().getValue();
 				int value2 = o2.getSpecificity().getValue();
 
-				// if two selectors have the same com.crawljax.plugins.cilla.util.specificity, the one closest to element is
+				// if two selectors have the same com.crawljax.plugins.cilla.util.specificity, the
+				// one closest to element is
 				// effective
 				if (value1 == value2) {
 					return -1;

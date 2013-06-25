@@ -12,11 +12,46 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import se.fishtank.css.selectors.NodeSelector;
+import se.fishtank.css.selectors.NodeSelectorException;
+import se.fishtank.css.selectors.dom.DOMNodeSelector;
+
 import com.crawljax.util.XPathHelper;
 
 public class CssAnalyzer {
 
 	private static final Logger LOGGER = Logger.getLogger(CssAnalyzer.class.getName());
+
+	public static List<MCssRule> checkCssSelectorRulesOnDom(String stateName, Document dom,
+	        List<MCssRule> mRules) throws NodeSelectorException {
+
+		for (MCssRule mRule : mRules) {
+			List<MSelector> selectors = mRule.getSelectors();
+			for (MSelector selec : selectors) {
+
+				String cssSelector = selec.getCssSelector();
+
+				NodeSelector selector = new DOMNodeSelector(dom);
+				Set<Node> result = selector.querySelectorAll(cssSelector);
+
+				for (Node node : result) {
+
+					if (node instanceof Document) {
+						LOGGER.debug("CSS rule returns the whole document!!!");
+						selec.setMatched(true);
+					} else {
+						ElementWrapper ew = new ElementWrapper(stateName, (Element) node);
+						selec.addMatchedElement(ew);
+						MatchedElements.setMatchedElement(ew, selec);
+					}
+				}
+
+			}
+
+		}
+
+		return mRules;
+	}
 
 	public static List<MCssRule> checkCssRulesOnDom(String stateName, Document dom,
 	        List<MCssRule> mRules) {

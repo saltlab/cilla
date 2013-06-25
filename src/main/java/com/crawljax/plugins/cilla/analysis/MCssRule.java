@@ -21,12 +21,15 @@ public class MCssRule {
 	private List<MSelector> selectors;
 	private String ruleSelector;
 
-	private static Set<String> ignoreSelectors = new HashSet<String>(Arrays.asList(":link",
+	private static Set<String> ignorePseudoClasses = new HashSet<String>(Arrays.asList(":link",
 	        ":visited", ":hover", ":focus", ":active", ":target", ":lang", ":enabled",
-	        ":disabled", ":checked", ":indeterminate", ":root", ":nth-child", ":nth-last-child",
-	        ":nth-of-type", ":nth-last-of-type", ":first-child", ":last-child", ":first-of-type",
-	        ":last-of-type", ":only-child", ":only-of-type", ":empty", ":contains", ":not",
-	        ":before", ":after", ":first-line", ":first-letter", ":selection"));
+	        ":disabled", ":checked", ":indeterminate"));
+
+	/*
+	 * ":nth-child", ":nth-last-child", ":nth-of-type", ":nth-last-of-type", ":first-child",
+	 * ":last-child", ":first-of-type", ":last-of-type", ":only-child", ":only-of-type", ":empty",
+	 * ":contains", ":not", ":before", ":after", ":first-line", ":first-letter", ":selection")
+	 */
 
 	/**
 	 * Constructor.
@@ -65,7 +68,7 @@ public class MCssRule {
 	}
 
 	private boolean shouldIgnore(String sel) {
-		for (String ignore : ignoreSelectors) {
+		for (String ignore : ignorePseudoClasses) {
 			if (sel.contains(ignore)) {
 				return true;
 			}

@@ -20,6 +20,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 
+import se.fishtank.css.selectors.NodeSelectorException;
+
 import com.crawljax.core.CrawlSession;
 import com.crawljax.core.CrawlerContext;
 import com.crawljax.core.ExitNotifier.ExitStatus;
@@ -116,12 +118,12 @@ public class CillaPlugin implements OnNewStatePlugin, PostCrawlingPlugin {
 		// check the rules on the current DOM state.
 		try {
 			for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()) {
-
-				CssAnalyzer.checkCssRulesOnDom(state.getName(), state.getDocument(),
+				CssAnalyzer.checkCssSelectorRulesOnDom(state.getName(), state.getDocument(),
 				        entry.getValue());
 			}
-
 		} catch (IOException e) {
+			LOGGER.error(e.getMessage(), e);
+		} catch (NodeSelectorException e) {
 			LOGGER.error(e.getMessage(), e);
 		}
 	}

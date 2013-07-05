@@ -1,0 +1,81 @@
+<html>
+<script src="http://yui.yahooapis.com/3.4.1/build/yui/yui-min.js"></script>
+<link rel="stylesheet" href="visualizer.css">
+<head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <title>CILLA Visualizer</title>
+    </meta>
+</head>
+
+<body class=yui3-skin-sam>
+
+
+
+<div id = "banner">
+    <h1> CILLA Visualizer </h1>
+</div>
+
+<div id="wrapper">
+<div id="menu" class="yui3-menu yui3-menu-horizontal yui3menubuttonnav"><!-- Bounding box -->
+    <div class="yui3-menu-content"><!-- Content box -->
+        <ul>
+            <!-- Menu items -->
+            <li><a class="yui3-menu-label" href="summary.html"><em>Summary</em></a>
+            </li>
+
+            <li><a class="yui3-menu-label" href="css-analysis.html"><em>CSS Analysis</em></a>
+            </li>
+
+            <li><a class="yui3-menu-label" href="html-analysis.html"><em>HTML Analysis</em></a>
+            </li>
+        </ul>
+    </div>
+</div>
+</div>
+
+<div id="content">
+    <h2> Summary </h2>
+    <p> Generated: Thu, 4 Jul 2013 16:24:37 -0700 <br> Crawled: http://www.yahoo.com </p>
+</div>
+<div id="wrapper">
+    <p id="summary"> 
+        <br> 
+        Analyzed http://www.yahoo.com on 04/07/13-04:24:37<br>&nbsp; Files with CSS code: 3<br>    Address: http://l.yimg.com/zz/combo?nn/lib/metro/g/apppromo/apppromo_0.0.23.css&nn/lib/metro2/g/pacontainer/pacontainer_0.0.55.css<br>    Address: http://l.yimg.com/zz/combo?nn/lib/metro/g/core_yui_3.4.6.css&nn/lib/metro/g/core_srvc_1.0.24.css&nn/lib/metro/g/core_mod_1.0.129.css&nn/lib/metro/g/fp/fp_widecc_0.0.37.css&nn/lib/metro/g/fp/fp_403_0.0.7.css&nn/lib/metro/g/uiplugins/windowshade_service_0.0.23.css&nn/lib/metro/g/ipredirect/ipredirect_0.0.21.css&nn/lib/metro/g/masthead/masthead_0.2.165.css&nn/lib/metro/g/uicontrib/miniassist-yui3_0.0.9.css&nn/lib/metro/g/masthead/masthead_miniassist_baseline_0.0.13.css&nn/lib/metro/g/masthead/masthead_403_0.0.49.css&nn/lib/metro2/g/announcebar/announcebar_1.0.27.css&nn/lib/metro/g/contentcarousel/contentcarousel_widecc_0.0.20.css&nn/lib/metro/g/multimedia/multimedia_1.0.53.css&nn/lib/metro/g/contentcarousel/contentcarousel_news_0.0.13.css&nn/lib/metro/g/mostpopular/mostpopular_0.0.13.css&nn/lib/metro/g/marketindices/marketindices_widecc_0.0.14.css&nn/lib/metro/g/news/offlead_0.1.21.css&nn/lib/metro/g/news/news_accordion_1.9.11.css&nn/lib/metro/g/tabbar/tabbar_0.0.100.css&nn/lib/metro/g/tuc/tuc_wave3_0.0.29.css&nn/lib/metro/g/mail/mail_0.0.55.css&nn/lib/metro/g/mail/mail_403_0.0.47.css&nn/lib/metro/g/fptoday/fptoday_widecc_0.0.29.css&nn/lib/metro/g/contentcarousel/contentcarousel_polls_0.0.49.css&nn/lib/metro/g/pa/pa_widecc_0.1.31.css&nn/lib/metro/g/pa/pa_detached_0.1.96.css&nn/lib/metro/g/pa/pa_add_0.1.75.css&nn/lib/metro/g/tts/tts_widecc_0.0.29.css&nn/lib/metro/g/footer/footer_0.1.84.css&nn/lib/metro/g/footer/subfooter_0.0.35.css<br>    Address: http://ca.yahoo.com/?p=us<br>&nbsp; LOC (CSS): 13061<br>&nbsp; Total Defined CSS rules: 2934<br>&nbsp; Total Defined CSS selectors: 3686 from which: <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Ignored (:link, :hover, etc):   153<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Unmatched: 3507<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Matched:   26<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Ineffective: 0<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Effective: 26<br>&nbsp; Total Defined CSS Properties: 7641<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Ignored Properties: 241<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Unused Properties: 7313<br>&nbsp;> Undefined Classes: 79<br>By deleting unused rules, css size reduced by: 42.0 percent<br>
+
+        <!-- virtual="summary.html" -->
+        <!-- file="summary.txt" -->
+        <!-- <?php
+            $file = "summary.txt";
+            $f = fopen($file, "r");
+            while ( $line = fgets($f,1000) ) {
+                print $line;
+            }
+        ?> -->
+    </p>
+</div>
+
+<script>
+//  Call the "use" method, passing in "node-menunav".  This will load the
+//  script and CSS for the MenuNav Node Plugin and all of the required
+//  dependencies.
+YUI().use('node-menunav', function(Y) {
+    //  Retrieve the Node instance representing the root menu
+    //  (<div id="productsandservices">) and call the "plug" method
+    //  passing in a reference to the MenuNav Node Plugin.
+    var menu = Y.one("#menu");
+    menu.plug(Y.Plugin.NodeMenuNav);
+
+});
+</script>
+<script>
+
+window.onload=function() {
+var summary=getElementById('summary');
+var txtNode=document.createTextNode("<html src="include/summary.shtml"></html>");
+summary.appendChild(txtNode);
+}
+
+</script>
+</body>
+</html>
+

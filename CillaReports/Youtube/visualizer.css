@@ -1,0 +1,98 @@
+
+    html{
+        font-size: 100%
+    }
+    
+    body{
+        font-size: 1.1em;
+        font-family: georgia, serif;
+        text-align: center;
+        color: #444;
+        background: #e6e6e6;
+        padding: 0;
+        margin: 0;
+    }
+
+    #banner{
+        margin-top: 0;
+        width: 46.25em;
+        margin: 1.5em auto;
+        border: 0.063em solid #ccc;
+        background: #fff;
+        text-align: left;
+    }   
+
+    #content{
+        margin-top: 0;
+        width: 46.25em;
+        margin: 1.5em auto;
+        text-align: left;
+    }   
+
+    #wrapper{
+        margin-top: 0;
+        width: 46.25em;
+        margin: 1.5em auto;
+        border: 0.063em solid #ccc;
+        background: #fff;
+        text-align: left;
+    }   
+
+    p{  
+        font-size: 0.762em;
+        line-height: 1.25em;
+        margin: 1.5em;
+        margin-left: 1.5em;
+        text-align: left;
+        margin-right: 1.5em;
+    }   
+
+    h1{ 
+        font-size: 2.125em;
+        line-height: 2em;
+        margin: 0.5em;
+        font-weight: 600;
+    }   
+ 
+    h2{ 
+        font-size: 1.125em;
+        line-height: 1em;
+        margin: 1em;
+        font-weight: 300;
+    }   
+
+    h3{ 
+        font-size: 0.9em;
+        line-height: 1.2em;
+        margin: 0.5em;
+        font-weight: 200;
+    }   
+
+    table{
+        margin-top: 1.2em;
+        border: 5px solid;
+        border-color: #fff;
+    }
+
+    th{
+        font-size: 0.750em;
+        line-height: 1.25em;
+        text-align: center;
+        border: 1px  solid #ccc;
+    }
+
+    td{
+        border: 0px;
+    }
+        
+    a:link {color: #56617a}
+
+    div.scroll {
+        height: 35em;
+        width: 47.5em;
+        overflow: auto;
+        padding: 0.5em;
+        resize: vertical;
+    }
+
+

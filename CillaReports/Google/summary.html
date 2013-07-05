@@ -1,0 +1,81 @@
+<html>
+<script src="http://yui.yahooapis.com/3.4.1/build/yui/yui-min.js"></script>
+<link rel="stylesheet" href="visualizer.css">
+<head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <title>CILLA Visualizer</title>
+    </meta>
+</head>
+
+<body class=yui3-skin-sam>
+
+
+
+<div id = "banner">
+    <h1> CILLA Visualizer </h1>
+</div>
+
+<div id="wrapper">
+<div id="menu" class="yui3-menu yui3-menu-horizontal yui3menubuttonnav"><!-- Bounding box -->
+    <div class="yui3-menu-content"><!-- Content box -->
+        <ul>
+            <!-- Menu items -->
+            <li><a class="yui3-menu-label" href="summary.html"><em>Summary</em></a>
+            </li>
+
+            <li><a class="yui3-menu-label" href="css-analysis.html"><em>CSS Analysis</em></a>
+            </li>
+
+            <li><a class="yui3-menu-label" href="html-analysis.html"><em>HTML Analysis</em></a>
+            </li>
+        </ul>
+    </div>
+</div>
+</div>
+
+<div id="content">
+    <h2> Summary </h2>
+    <p> Generated: Thu, 4 Jul 2013 15:10:24 -0700 <br> Crawled: http://www.google.com </p>
+</div>
+<div id="wrapper">
+    <p id="summary"> 
+        <br> 
+        Analyzed http://www.google.com on 04/07/13-03:10:24<br>&nbsp; Files with CSS code: 9<br>    Address: http://www.google.com/<br>    Address: https://www.google.com/intl/en/chrome/assets/common/css/chrome.min.css<br>    Address: https://www.google.com/intl/fr/chrome/assets/common/css/chrome.min.css<br>    Address: https://www.google.com/intl/en/chrome/assets/consumer/css/tiffany.css<br>    Address: http://www.google.ca/<br>    Address: https://www.google.com/intl/en/chrome/<br>    Address: http://www.google.com/imghp?hl=en&tab=wi<br>    Address: https://www.google.com/intl/fr/chrome/assets/common/css/default-consumer.css<br>    Address: http://www.google.com/webhp?hl=en&tab=ww<br>&nbsp; LOC (CSS): 30246<br>&nbsp; Total Defined CSS rules: 4276<br>&nbsp; Total Defined CSS selectors: 5449 from which: <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Ignored (:link, :hover, etc):   404<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Unmatched: 4989<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Matched:   56<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Ineffective: 4<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Effective: 52<br>&nbsp; Total Defined CSS Properties: 12946<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Ignored Properties: 954<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Unused Properties: 11780<br>&nbsp;> Undefined Classes: 66<br>By deleting unused rules, css size reduced by: 58.0 percent<br>
+
+        <!-- virtual="summary.html" -->
+        <!-- file="summary.txt" -->
+        <!-- <?php
+            $file = "summary.txt";
+            $f = fopen($file, "r");
+            while ( $line = fgets($f,1000) ) {
+                print $line;
+            }
+        ?> -->
+    </p>
+</div>
+
+<script>
+//  Call the "use" method, passing in "node-menunav".  This will load the
+//  script and CSS for the MenuNav Node Plugin and all of the required
+//  dependencies.
+YUI().use('node-menunav', function(Y) {
+    //  Retrieve the Node instance representing the root menu
+    //  (<div id="productsandservices">) and call the "plug" method
+    //  passing in a reference to the MenuNav Node Plugin.
+    var menu = Y.one("#menu");
+    menu.plug(Y.Plugin.NodeMenuNav);
+
+});
+</script>
+<script>
+
+window.onload=function() {
+var summary=getElementById('summary');
+var txtNode=document.createTextNode("<html src="include/summary.shtml"></html>");
+summary.appendChild(txtNode);
+}
+
+</script>
+</body>
+</html>
+

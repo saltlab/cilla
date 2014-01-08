@@ -1,6 +1,7 @@
 package com.crawljax.plugins.cilla;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.StringReader;
@@ -44,6 +45,7 @@ public class CillaPlugin implements OnNewStatePlugin, PostCrawlingPlugin {
 	private static final Logger LOGGER = Logger.getLogger(CillaPlugin.class.getName());
 
 	private Map<String, List<MCssRule>> cssRules = new HashMap<String, List<MCssRule>>();
+	
 
 	public static final Set<String> cssEffectiveRuntime = new HashSet<String>();
 
@@ -149,6 +151,12 @@ public class CillaPlugin implements OnNewStatePlugin, PostCrawlingPlugin {
 	}
 
 	private void parseCssRules(CrawlerContext context, StateVertex state) {
+		
+new File("D:/CSSFilesofWebSites").mkdirs();
+		
+int i = 1;
+FileOutputStream fop =null;
+FileOutputStream fop1 =null;
 		String url = context.getBrowser().getCurrentUrl();
 
 		try {
@@ -158,9 +166,41 @@ public class CillaPlugin implements OnNewStatePlugin, PostCrawlingPlugin {
 				String cssUrl = CSSDOMHelper.getAbsPath(url, relPath);
 				if (!cssRules.containsKey(cssUrl)) {
 					LOGGER.info("CSS URL: " + cssUrl);
+					
 
-					String cssContent = CSSDOMHelper.getURLContent(cssUrl);
+			String cssContent = CSSDOMHelper.getURLContent(cssUrl);
 					cssLOC += countLines(cssContent);
+
+File file;
+
+try {
+file = new File("D:/CSSFilesofWebSites/newfile"+i+".txt");
+fop = new FileOutputStream(file, true);
+if (!file.exists()) {
+	file.createNewFile();
+}
+
+byte[] contentInBytes = cssContent.getBytes();
+
+fop.write(contentInBytes);
+
+fop.flush();
+fop.close();
+
+} catch (IOException e) {
+e.printStackTrace();
+} finally {
+try {
+	if (fop != null) {
+		fop.close();
+	}
+} catch (IOException e) {
+	e.printStackTrace();
+}
+i++;
+}
+
+
 					List<MCssRule> rules = CssParser.getMCSSRules(cssContent);
 					if (rules != null && rules.size() > 0) {
 						cssRules.put(cssUrl, rules);
@@ -168,11 +208,44 @@ public class CillaPlugin implements OnNewStatePlugin, PostCrawlingPlugin {
 				}
 			}
 
+
+			
 			// get all the embedded <STYLE> rules, save per HTML page
 			if (!cssRules.containsKey(url)) {
 				String embeddedRules = CSSDOMHelper.getEmbeddedStyles(dom);
 				cssLOC += countLines(embeddedRules);
 
+
+File file1;
+if(embeddedRules !=null){
+try {
+
+	file1 = new File("D:/CSSFilesofWebSites/newfilenotexternal"+i+".txt");
+fop1 = new FileOutputStream(file1);
+if (!file1.exists()) {
+	file1.createNewFile();
+			}
+
+	byte[] contentInBytes = embeddedRules.getBytes();
+
+	fop1.write(contentInBytes);
+
+		fop1.flush();
+		fop1.close();
+			
+		} catch (IOException e) {
+		e.printStackTrace();
+		} finally {
+		try {
+			if (fop1 != null) {
+				fop1.close();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+i++;
+		}
+}
 				List<MCssRule> rules = CssParser.getMCSSRules(embeddedRules);
 				if (rules != null && rules.size() > 0) {
 					cssRules.put(url, rules);
@@ -182,9 +255,16 @@ public class CillaPlugin implements OnNewStatePlugin, PostCrawlingPlugin {
 		} catch (IOException e) {
 			LOGGER.error(e.getMessage(), e);
 		}
-
+		Runtime rt = Runtime.getRuntime();
+		try {
+			Process pr = rt.exec("java -version");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
-
+	
+	
 	@Override
 	public void postCrawling(CrawlSession session, ExitStatus exitReason) {
 

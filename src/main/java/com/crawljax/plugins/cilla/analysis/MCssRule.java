@@ -12,6 +12,7 @@ import org.w3c.dom.css.CSSRuleList;
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSStyleRule;
 
+import com.crawljax.plugins.cilla.util.CssToXpathConverter;
 import com.steadystate.css.dom.CSSStyleRuleImpl;
 import com.steadystate.css.userdata.UserDataConstants;
 
@@ -57,7 +58,8 @@ public class MCssRule {
 			CSSStyleRule styleRule = (CSSStyleRule) rule;
 
 			this.ruleSelector = styleRule.getSelectorText();
-			// this.ruleSelector = CssToXpathConverter.removeChar(this.ruleSelector, '*');
+			this.ruleSelector = this.ruleSelector.replace("*", " ");
+			//this.ruleSelector = CssToXpathConverter.removeChar(this.ruleSelector, '*');
 			// in case there are Grouping selectors: p, div, .news { }
 			List<MProperty> props = getProperties();
 			for (String sel : ruleSelector.split(",")) {

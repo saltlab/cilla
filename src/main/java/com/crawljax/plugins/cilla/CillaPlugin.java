@@ -1,8 +1,10 @@
 package com.crawljax.plugins.cilla;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.StringReader;
 import java.text.SimpleDateFormat;
@@ -151,12 +153,7 @@ public class CillaPlugin implements OnNewStatePlugin, PostCrawlingPlugin {
 	}
 
 	private void parseCssRules(CrawlerContext context, StateVertex state) {
-		
-new File("D:/CSSFilesofWebSites").mkdirs();
-		
-int i = 1;
-FileOutputStream fop =null;
-FileOutputStream fop1 =null;
+
 		String url = context.getBrowser().getCurrentUrl();
 
 		try {
@@ -170,36 +167,6 @@ FileOutputStream fop1 =null;
 
 			String cssContent = CSSDOMHelper.getURLContent(cssUrl);
 					cssLOC += countLines(cssContent);
-
-File file;
-
-try {
-file = new File("D:/CSSFilesofWebSites/newfile"+i+".txt");
-fop = new FileOutputStream(file, true);
-if (!file.exists()) {
-	file.createNewFile();
-}
-
-byte[] contentInBytes = cssContent.getBytes();
-
-fop.write(contentInBytes);
-
-fop.flush();
-fop.close();
-
-} catch (IOException e) {
-e.printStackTrace();
-} finally {
-try {
-	if (fop != null) {
-		fop.close();
-	}
-} catch (IOException e) {
-	e.printStackTrace();
-}
-i++;
-}
-
 
 					List<MCssRule> rules = CssParser.getMCSSRules(cssContent);
 					if (rules != null && rules.size() > 0) {
@@ -216,36 +183,7 @@ i++;
 				cssLOC += countLines(embeddedRules);
 
 
-File file1;
-if(embeddedRules !=null){
-try {
 
-	file1 = new File("D:/CSSFilesofWebSites/newfilenotexternal"+i+".txt");
-fop1 = new FileOutputStream(file1);
-if (!file1.exists()) {
-	file1.createNewFile();
-			}
-
-	byte[] contentInBytes = embeddedRules.getBytes();
-
-	fop1.write(contentInBytes);
-
-		fop1.flush();
-		fop1.close();
-			
-		} catch (IOException e) {
-		e.printStackTrace();
-		} finally {
-		try {
-			if (fop1 != null) {
-				fop1.close();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-i++;
-		}
-}
 				List<MCssRule> rules = CssParser.getMCSSRules(embeddedRules);
 				if (rules != null && rules.size() > 0) {
 					cssRules.put(url, rules);
@@ -255,27 +193,82 @@ i++;
 		} catch (IOException e) {
 			LOGGER.error(e.getMessage(), e);
 		}
-		Runtime rt = Runtime.getRuntime();
-		try {
-			Process pr = rt.exec("java -version");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
 	}
 	
 	
 	@Override
 	public void postCrawling(CrawlSession session, ExitStatus exitReason) {
-
+		
+		
+		//Copying Css Code of the web site(both embedded and external) into a file to be used by csslint later on.
+		int i = 1;
+		new File("C:/Users/Golnaz/cilla/CSSFileofWebSite"+i).mkdirs();
+		FileOutputStream fop =null;
+		
 		int totalCssRules = 0;
 		int totalCssSelectors = 0;
 		for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()) {
 			totalCssRules += entry.getValue().size();
 			for (MCssRule mrule : entry.getValue()) {
 				totalCssSelectors += mrule.getSelectors().size();
+				
+File file;
+
+	try {
+	file = new File("C:/Users/Golnaz/cilla/CSSFileofWebSite"+i+"/cssfile.css");
+		fop = new FileOutputStream(file, true);
+		if (!file.exists()) {
+					file.createNewFile();
+				}
+
+		byte[] contentInBytes = mrule.getRule().getCssText().getBytes();
+
+				fop.write(contentInBytes);
+
+				fop.flush();
+				fop.close();
+
+				} catch (IOException e) {
+				e.printStackTrace();
+				} finally {
+				try {
+					if (fop != null) {
+						fop.close();
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				
+				}
 
 			}
+		}
+		//running csslint by command line on the css file (cssfile.css) and providing results in an output file
+	Runtime rt = Runtime.getRuntime();
+		try {
+			
+			Process pr = rt.exec("cmd.exe /c csslint C:/Users/Golnaz/cilla/CSSFileofWebSite"+i+"/cssfile.css"+"> C:/Users/Golnaz/cilla/CSSFileofWebSite"+i+ "/output.txt");
+			
+			BufferedReader stdInput = new BufferedReader(new 
+		             InputStreamReader(pr.getInputStream()));
+			
+		        BufferedReader stdError = new BufferedReader(new 
+		             InputStreamReader(pr.getErrorStream()));
+
+		        // read the output from the command
+		        String s = null;
+		        while ((s = stdInput.readLine()) != null) {
+		            System.out.println(s);
+		        }
+
+		        // read any errors from the attempted command
+		        while ((s = stdError.readLine()) != null) {
+		            System.out.println(s);
+		        }
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 		StringBuffer output = new StringBuffer();
@@ -348,7 +341,7 @@ i++;
 		} catch (IOException e) {
 			LOGGER.error(e.getMessage(), e);
 		}
-
+i++;
 	}
 
 	private int countProperties() {

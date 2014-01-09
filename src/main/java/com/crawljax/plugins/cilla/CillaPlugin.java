@@ -63,7 +63,7 @@ public class CillaPlugin implements OnNewStatePlugin, PostCrawlingPlugin {
 	private int cssLOC;
 	private int ineffectivePropsSize;
 	private int totalCssRulesSize;
-
+static int i = 1;
 	public void onNewState(CrawlerContext context, StateVertex newState) {
 		// if the external CSS files are not parsed yet, do so
 		parseCssRules(context, newState);
@@ -202,8 +202,8 @@ public class CillaPlugin implements OnNewStatePlugin, PostCrawlingPlugin {
 		
 		
 		//Copying Css Code of the web site(both embedded and external) into a file to be used by csslint later on.
-		int i = 1;
-		new File("C:/Users/Golnaz/cilla/CSSFileofWebSite"+i).mkdirs();
+		new File("C:/Users/Golnaz/cilla/CsslintReports").mkdirs();	
+		
 		FileOutputStream fop =null;
 		
 		int totalCssRules = 0;
@@ -216,7 +216,9 @@ public class CillaPlugin implements OnNewStatePlugin, PostCrawlingPlugin {
 File file;
 
 	try {
-	file = new File("C:/Users/Golnaz/cilla/CSSFileofWebSite"+i+"/cssfile.css");
+		
+		new File("C:/Users/Golnaz/cilla/CsslintReports/"+i).mkdirs();
+	file = new File("C:/Users/Golnaz/cilla/CsslintReports/"+i+"/cssfile.css");
 		fop = new FileOutputStream(file, true);
 		if (!file.exists()) {
 					file.createNewFile();
@@ -241,32 +243,18 @@ File file;
 				}
 				
 				}
-
+	
 			}
 		}
 		//running csslint by command line on the css file (cssfile.css) and providing results in an output file
-	Runtime rt = Runtime.getRuntime();
+
+		Runtime rt = Runtime.getRuntime();
 		try {
 			
-			Process pr = rt.exec("cmd.exe /c csslint C:/Users/Golnaz/cilla/CSSFileofWebSite"+i+"/cssfile.css"+"> C:/Users/Golnaz/cilla/CSSFileofWebSite"+i+ "/output.txt");
-			
-			BufferedReader stdInput = new BufferedReader(new 
-		             InputStreamReader(pr.getInputStream()));
-			
-		        BufferedReader stdError = new BufferedReader(new 
-		             InputStreamReader(pr.getErrorStream()));
-
-		        // read the output from the command
-		        String s = null;
-		        while ((s = stdInput.readLine()) != null) {
-		            System.out.println(s);
-		        }
-
-		        // read any errors from the attempted command
-		        while ((s = stdError.readLine()) != null) {
-		            System.out.println(s);
-		        }
-		} catch (IOException e) {
+			Process pr = rt.exec("cmd.exe /c csslint C:/Users/Golnaz/cilla/CsslintReports/"+i+"/cssfile.css"+"> C:/Users/Golnaz/cilla/CsslintReports/"+i+"/output.txt");
+	i++;			
+		}
+			catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -341,7 +329,7 @@ File file;
 		} catch (IOException e) {
 			LOGGER.error(e.getMessage(), e);
 		}
-i++;
+
 	}
 
 	private int countProperties() {

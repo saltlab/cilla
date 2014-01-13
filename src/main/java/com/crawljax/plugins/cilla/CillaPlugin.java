@@ -1,7 +1,9 @@
 package com.crawljax.plugins.cilla;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -200,7 +202,7 @@ static int i = 1;
 	@Override
 	public void postCrawling(CrawlSession session, ExitStatus exitReason) {
 		
-		
+		int partCounter = 1;
 		//Copying Css Code of the web site(both embedded and external) into a file to be used by csslint later on.
 		new File("C:/Users/Golnaz/cilla/CsslintReports").mkdirs();	
 		
@@ -212,53 +214,56 @@ static int i = 1;
 			totalCssRules += entry.getValue().size();
 			for (MCssRule mrule : entry.getValue()) {
 				totalCssSelectors += mrule.getSelectors().size();
-				
-File file;
+				new File("C:/Users/Golnaz/cilla/CsslintReports/"+i).mkdirs();
+			
+			
+					File file;
+					try{
+						
+						file = new File("C:/Users/Golnaz/cilla/CsslintReports/"+i+"/cssfile.css");
+						fop = new FileOutputStream(file, true);
+						if (!file.exists()) {
+									file.createNewFile();
+								}
+						 byte[] contentInBytes = mrule.getRule().getCssText().getBytes();
 
-	try {
-		
-		new File("C:/Users/Golnaz/cilla/CsslintReports/"+i).mkdirs();
-	file = new File("C:/Users/Golnaz/cilla/CsslintReports/"+i+"/cssfile.css");
-		fop = new FileOutputStream(file, true);
-		if (!file.exists()) {
-					file.createNewFile();
-				}
-
-		byte[] contentInBytes = mrule.getRule().getCssText().getBytes();
-
-				fop.write(contentInBytes);
-
-				fop.flush();
-				fop.close();
-
-				} catch (IOException e) {
-				e.printStackTrace();
-				} finally {
-				try {
-					if (fop != null) {
+                         fop.write(contentInBytes);
+						fop.flush();
 						fop.close();
-					}
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+						
+					} catch (IOException e) {
+						e.printStackTrace();
+						} finally {
+						try {
+							if (fop != null) {
+								fop.close();
+							}
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						}
 				
-				}
-	
 			}
-		}
+				
+		}	
+		
+	
+		
 		//running csslint by command line on the css file (cssfile.css) and providing results in an output file
 
 		Runtime rt = Runtime.getRuntime();
+		
 		try {
 			
-			Process pr = rt.exec("cmd.exe /c csslint C:/Users/Golnaz/cilla/CsslintReports/"+i+"/cssfile.css"+"> C:/Users/Golnaz/cilla/CsslintReports/"+i+"/output.txt");
+			Process pr = rt.exec("cmd.exe /c csslint C:/Users/Golnaz/cilla/CsslintReports/"+i+"/cssfile.css"+" > C:/Users/Golnaz/cilla/CsslintReports/"+i+"/output.txt");
 	i++;			
 		}
+		
 			catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		
 		StringBuffer output = new StringBuffer();
 		StringBuffer bufferUnused = new StringBuffer();
 		StringBuffer bufferUsed = new StringBuffer();
@@ -273,6 +278,23 @@ File file;
 
 		StringBuffer ineffectiveBuffer = new StringBuffer();
 		int ineffectiveInt = getIneffectiveSelectorsBasedOnProps(ineffectiveBuffer);
+		
+StringBuffer tooSpecific = new StringBuffer();
+int toospec = getTooSpecificSelectors(tooSpecific);
+StringBuffer tooLazy = new StringBuffer();
+int toolaz = getLazyRules(tooLazy);
+StringBuffer tooLong = new StringBuffer();
+int toolog = getTooLongRules(tooLong);
+StringBuffer emptyCatch = new StringBuffer();
+int emptycat = getEmptyCatch(emptyCatch);
+StringBuffer undoingStyle = new StringBuffer();
+int undostyle = getUndoingStyle(undoingStyle);
+StringBuffer idWithClassOrElement = new StringBuffer();
+int idwith = getIdWithClassOrElement(idWithClassOrElement);
+StringBuffer reactiveImportant = new StringBuffer();
+int impo = getReactiveImportant(reactiveImportant);
+StringBuffer inappFontSize = new StringBuffer();
+int inappfo = getInnappFontSize(inappFontSize);
 
 		output.append("Analyzed " + session.getConfig().getUrl() + " on "
 		        + new SimpleDateFormat("dd/MM/yy-hh:mm:ss").format(new Date()) + "\n");
@@ -304,6 +326,17 @@ File file;
 		output.append("By deleting unused rules, css size reduced by: "
 		        + Math.ceil((double) reducedSize() / getTotalCssRulesSize() * 100) + " percent"
 		        + "\n");
+		
+// prints number of css smells in the summary tab	
+output.append("CSS SMELLS: " + "\n");
+output.append("   -> Rules with Too Specific Selectors: "+ toospec+ "\n");
+output.append("   -> Lazy Rules: "+ toolaz+ "\n");
+output.append("   -> Too Long Rules: "+ toolog+ "\n");
+output.append("   -> Rules with Empty Catch: "+ emptycat+ "\n");
+output.append("   -> Overriding Properties: "+ undostyle+ "\n");
+output.append("   -> Selectors with ID and at least one class or element: "+ idwith + "\n");
+output.append("   -> Total Number of !important used in the code(Reactiveness): "+ impo + "\n");
+output.append("   -> Selectors with Inappropriate Font-size Value for their Properties: "+ inappfo + "\n");
 
 		/*
 		 * This is where the com.crawljax.plugins.cilla.visualizer gets called.
@@ -322,6 +355,15 @@ File file;
 		// output.append(bufferUsed.toString());
 		output.append(undefinedClasses);
 		// output.append(duplicateSelectors);
+		
+output.append(tooSpecific.toString());
+output.append(tooLazy.toString());
+output.append(tooLong.toString());
+output.append(emptyCatch.toString());
+output.append(undoingStyle.toString());
+output.append(idWithClassOrElement.toString());
+output.append(reactiveImportant.toString());
+output.append(inappFontSize.toString());
 
 		try {
 			FileUtils.writeStringToFile(outputFile, output.toString());
@@ -464,6 +506,8 @@ File file;
 		return counter;
 	}
 
+	
+	
 	private void analyzeProperties() {
 
 		for (String keyElement : MatchedElements.elementSelectors.keySet()) {
@@ -666,6 +710,242 @@ File file;
 			}
 		}
 		return ineffectivePropsSize;
+	}
+	
+	
+private int getReactiveImportant(StringBuffer buffer){
+LOGGER.info("Reporting CSS Rules with reactive !important...");
+buffer.append("========== CSS RULES with REACTIVE !important ==========\n");
+//SpecificityCalculator sc = new SpecificityCalculator();
+int counter = 0;
+	for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()){
+	List<MCssRule> rules = entry.getValue();
+	buffer.append("== RULES WITH REACTIVE !IMPORTANT IN: " + entry.getKey() + "\n");
+	for (MCssRule rule : rules){
+				
+		//sc.reset();
+		List<MSelector> selectors = rule.getReactiveImportant();
+		counter += selectors.size();
+		if (selectors.size() > 0) { //more than 3 !important is used
+		buffer.append("!important used: ");
+		buffer.append("CSS rule: " + rule.getRule().getCssText() + "\n");
+		buffer.append("at line: " + rule.getLocator().getLineNumber() + "\n");
+
+		for (MSelector selector : selectors) {
+				// ineffectivePropsSize+=selector.getSize();
+				buffer.append(selector.toString() + "\n");
+					}
+				}
+				
+
+			}
+		}
+					return counter;
+		
+		}
+
+private int getLazyRules(StringBuffer buffer){
+LOGGER.info("Reporting Lazy CSS Rules...");
+buffer.append("========== LAZY CSS RULES ==========\n");
+int counter = 0;
+for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()){
+		List<MCssRule> rules = entry.getValue();
+		buffer.append("== LAZY RULES IN: " + entry.getKey() + "\n");
+			for (MCssRule rule : rules){
+				
+				
+				List<MSelector> selectors = rule.getLazyRules();
+				counter += selectors.size();
+				if (selectors.size() > 0) {
+					buffer.append("Lazy: ");
+					buffer.append("CSS rule: " + rule.getRule().getCssText() + "\n");
+					buffer.append("at line: " + rule.getLocator().getLineNumber() + "\n");
+
+					for (MSelector selector : selectors) {
+						// ineffectivePropsSize+=selector.getSize();
+						buffer.append(selector.toString() + "\n");
+					}
+				}
+
+			}
+		}
+					return counter;
+		
+		}
+private int getTooLongRules(StringBuffer buffer){
+LOGGER.info("Reporting Too Long CSS Rules...");
+buffer.append("========== TOO LONG CSS RULES ==========\n");
+int counter = 0;
+	for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()){
+			List<MCssRule> rules = entry.getValue();
+			buffer.append("== TOO LONG RULES IN: " + entry.getKey() + "\n");
+			for (MCssRule rule : rules){
+				
+				
+				List<MSelector> selectors = rule.getTooLongRules();
+				counter += selectors.size();
+				if (selectors.size() > 0) {
+					buffer.append("Long: ");
+					buffer.append("CSS rule: " + rule.getRule().getCssText() + "\n");
+					buffer.append("at line: " + rule.getLocator().getLineNumber() + "\n");
+
+					for (MSelector selector : selectors) {
+						// ineffectivePropsSize+=selector.getSize();
+						buffer.append(selector.toString() + "\n");
+					}
+				}
+
+			}
+		}
+					return counter;
+		
+		}
+
+private int getEmptyCatch(StringBuffer buffer){
+	LOGGER.info("Reporting CSS Rules with Empty Catch...");
+	buffer.append("========== CSS RULES with EMPTY CATCH ==========\n");
+	int counter = 0;
+	for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()){
+			List<MCssRule> rules = entry.getValue();
+			buffer.append("== RULES with EMPTY CATCH IN: " + entry.getKey() + "\n");
+			for (MCssRule rule : rules){
+				
+				
+				List<MSelector> selectors = rule.getEmptyCatch();
+				counter += selectors.size();
+				if (selectors.size() > 0) {
+					buffer.append("Empty Catch: ");
+					buffer.append("CSS rule: " + rule.getRule().getCssText() + "\n");
+					buffer.append("at line: " + rule.getLocator().getLineNumber() + "\n");
+
+					for (MSelector selector : selectors) {
+						// ineffectivePropsSize+=selector.getSize();
+						buffer.append(selector.toString() + "\n");
+					}
+				}
+
+			}
+		}
+					return counter;
+		
+		}
+
+private int getUndoingStyle(StringBuffer buffer){
+LOGGER.info("Reporting CSS Rules with Overriding Properties...");
+buffer.append("========== CSS RULES with OVERRIDING PROPERTIES ==========\n");
+int counter = 0;
+for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()){
+			List<MCssRule> rules = entry.getValue();
+			buffer.append("== RULES with OVERRIDING PROPERTIES IN: " + entry.getKey() + "\n");
+			for (MCssRule rule : rules){
+				
+				
+				List<MSelector> selectors = rule.getUndoingStyle();
+				counter += selectors.size();
+				if (selectors.size() > 0) {
+					buffer.append("Overriding: ");
+					buffer.append("CSS rule: " + rule.getRule().getCssText() + "\n");
+					buffer.append("at line: " + rule.getLocator().getLineNumber() + "\n");
+
+					for (MSelector selector : selectors) {
+						// ineffectivePropsSize+=selector.getSize();
+						buffer.append(selector.toString() + "\n");
+					}
+				}
+
+			}
+		}
+					return counter;
+		
+		}
+
+private int getIdWithClassOrElement(StringBuffer buffer){
+LOGGER.info("Reporting Selectors with ID and at Least One Class or Element...");
+buffer.append("========== Selectors with ID and at Least One Class or Element ==========\n");
+int counter = 0;
+	for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()){
+			List<MCssRule> rules = entry.getValue();
+			buffer.append("== ID+ RULES IN: " + entry.getKey() + "\n");
+			for (MCssRule rule : rules){
+				
+				
+				List<MSelector> selectors = rule.getIdWithClassOrElement();
+				counter += selectors.size();
+				if (selectors.size() > 0) {
+					buffer.append("ID+: ");
+					buffer.append("CSS rule: " + rule.getRule().getCssText() + "\n");
+					buffer.append("at line: " + rule.getLocator().getLineNumber() + "\n");
+
+					for (MSelector selector : selectors) {
+						// ineffectivePropsSize+=selector.getSize();
+						buffer.append(selector.toString() + "\n");
+					}
+				}
+
+			}
+		}
+					return counter;
+		
+		}
+
+private int getTooSpecificSelectors(StringBuffer buffer){
+LOGGER.info("Reporting CSS Rules with Too Specific Selectors...");
+buffer.append("========== TOO SPECIFIC CSS RULES ==========\n");
+	//SpecificityCalculator sc = new SpecificityCalculator();
+	int counter = 0;
+	for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()){
+			List<MCssRule> rules = entry.getValue();
+			buffer.append("== TOO SPECIFIC RULES IN: " + entry.getKey() + "\n");
+			for (MCssRule rule : rules){
+				
+				//sc.reset();
+				List<MSelector> selectors = rule.getTooSpecificSelectors();
+				counter += selectors.size();
+				if (selectors.size() > 0) {
+					buffer.append("Too Specific: ");
+					buffer.append("CSS rule: " + rule.getRule().getCssText() + "\n");
+					buffer.append("at line: " + rule.getLocator().getLineNumber() + "\n");
+
+					for (MSelector selector : selectors) {
+						// ineffectivePropsSize+=selector.getSize();
+						buffer.append(selector.toString() + "\n");
+					}
+				}
+
+			}
+		}
+					return counter;
+		
+		}
+
+private int getInnappFontSize(StringBuffer buffer){
+LOGGER.info("Reporting Selectors with Inappropriate Value for Font-size...");
+buffer.append("========== Selectors with Font-sie Property with Inappropriate Value ==========\n");
+int counter = 0;
+	for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()){
+			List<MCssRule> rules = entry.getValue();
+			buffer.append("== Inappropriate Font-size RULES IN: " + entry.getKey() + "\n");
+			for (MCssRule rule : rules){
+				
+				
+				List<MSelector> selectors = rule.checkFontSize();
+				counter += selectors.size();
+				if (selectors.size() > 0) {
+					buffer.append("Inappropriate Font-size: ");
+					buffer.append("CSS rule: " + rule.getRule().getCssText() + "\n");
+					buffer.append("at line: " + rule.getLocator().getLineNumber() + "\n");
+
+					for (MSelector selector : selectors) {
+						// ineffectivePropsSize+=selector.getSize();
+						buffer.append(selector.toString() + "\n");
+					}
+				}
+
+			}
+		}
+					return counter;
+		
+		
 	}
 
 }

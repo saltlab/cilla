@@ -22,6 +22,9 @@ public class CillaVisualizer implements VisualizerPlugin {
 		vs.constructRuleMap(cssRules);
 		vs.addSortedOutput(cssRules, elementsWithNoClassDef);
 		
+//CSS Validation
+vs.addValidation(url);
+		
 		// Call the open com.crawljax.plugins.cilla to open to welcome page
 		OpenBrowser.open(vs.getWelcomePage());
 	}

@@ -32,8 +32,11 @@
 
             <li><a class="yui3-menu-label" href="css-analysis.html"><em>CSS Analysis</em></a>
             </li>
-
+            
             <li><a class="yui3-menu-label" href="html-analysis.html"><em>HTML Analysis</em></a>
+            </li>
+            
+            <li><a class="yui3-menu-label" href="css-validation.html"><em>W3C CSS Validator</em></a>
             </li>
         </ul>
     </div>
@@ -91,6 +94,17 @@
             <td style="background-color: $unmatchedColor"><p> Unmatched </p></td>
             <td style="background-color: $ineffectiveColor"><p> Matched & Ineffective </p></td>
             <td style="background-color: $effectiveColor"><p> Matched & Effective </p></td>
+<td style="background-color: $tooSpecificColor"><p> Type 1: Too Specific </p></td>
+<td style="background-color: $lazyColor"><p> Type 2: Lazy </p></td>
+
+</tr>
+<tr>
+<td style="background-color: $tooLongColor"><p> Type 3: Too Long </p></td>
+<td style="background-color: $emptyCatchColor"><p> Type 4: Empty Catch </p></td>
+<td style="background-color: $overridingColor"><p> Type 5: Overriding </p></td>
+<td style="background-color: $idPlusColor"><p> Type 6: ID Plus </p></td>
+<td style="background-color: $importantColor"><p> Type 7: Important </p></td>
+
         </tr>
         </table>
         <br>

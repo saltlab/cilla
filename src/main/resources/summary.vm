@@ -36,6 +36,9 @@
             
             <li><a class="yui3-menu-label" href="css-validation.html"><em>W3C CSS Validator</em></a>
             </li>
+            
+            <li><a class="yui3-menu-label" href="css-lint.html"><em>CSS Lint</em></a>
+            </li>
         </ul>
     </div>
 </div>

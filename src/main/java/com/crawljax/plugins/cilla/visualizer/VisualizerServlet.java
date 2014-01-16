@@ -1,12 +1,14 @@
 package com.crawljax.plugins.cilla.visualizer;
 
 import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,6 +45,10 @@ import org.jsoup.select.Elements;
 import org.w3c.css.selectors.SelectorsList;
 import org.w3c.dom.Node;
 
+
+
+
+import com.crawljax.plugins.cilla.CillaPlugin;
 import com.crawljax.plugins.cilla.analysis.ElementWithClass;
 import com.crawljax.plugins.cilla.analysis.MCssRule;
 import com.crawljax.plugins.cilla.analysis.MSelector;
@@ -51,6 +57,7 @@ import com.google.common.base.Charsets;
 import com.google.common.collect.SetMultimap;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
+
 
 public class VisualizerServlet extends VelocityViewServlet {
 	/**
@@ -63,6 +70,7 @@ public class VisualizerServlet extends VelocityViewServlet {
 	private final File htmlAnalysisHTML;
 	
 private final File cssValidationHTML;
+private final File cssLintHTML;
 	private final File outputFolder = new File("output");
 	
 
@@ -72,6 +80,7 @@ private final File cssValidationHTML;
 	private Template htmlAnalysisTemplate;
 	
 private Template cssValidationTemplate;
+private Template cssLintTemplate;
 
 	private enum HighlightColor {
 		NONE, UNMATCHED, INEFFECTIVE, EFFECTIVE
@@ -121,6 +130,8 @@ private Template cssValidationTemplate;
 		htmlAnalysisHTML = new File(outputDir + "/html-analysis.html");
 		
 cssValidationHTML = new File(outputDir + "/css-validation.html");
+cssLintHTML = new File(outputDir + "/css-lint.html");
+
 
 		try {
 			Velocity.init();
@@ -134,6 +145,7 @@ cssValidationHTML = new File(outputDir + "/css-validation.html");
 			// htmlAnalysisTemplate = ve.getTemplate("html-analysis.vm");
 			
 cssValidationTemplate = ve.getTemplate("validation.vm");
+cssLintTemplate = ve.getTemplate("lint.vm");
 
 			Files.write(Resources.toString(
 			        VisualizerServlet.class.getResource("/visualizer.css"), Charsets.UTF_8),
@@ -248,6 +260,45 @@ String cssValidationMsg;
 		
 	}
 
+public void addCssLint(){
+	//crawledAddress = url;
+	VelocityContext context = new VelocityContext();
+	String template;
+	String cssLintMsg;
+			try {
+				template = getTemplateAsString(cssLintTemplate.getName());
+
+				File f = new File("C:/Users/Golnaz/cilla/CsslintReports/output"+CillaPlugin.i+".txt");
+				//File f = new File("D:/Output.txt");
+			    FileInputStream fin = new FileInputStream(f);
+			    byte[] buffer = new byte[(int) f.length()];
+			    new DataInputStream(fin).readFully(buffer);
+			    fin.close();
+			    String s = new String(buffer, "UTF-8");
+			    //System.out.println(s);
+				
+		
+				cssLintMsg = s;
+				cssLintMsg = cssLintMsg.replace("\n", "<br> ");
+				
+				
+				
+				context.put("summary", cssLintMsg);
+				//context.put("url", url);
+				context.put("date", dateString);
+				
+				FileWriter writer = new FileWriter(cssLintHTML);
+
+				ve.evaluate(context, writer, "CSS Lint", template);
+				writer.flush();
+				writer.close();
+
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+	
+}
 	public void addSortedOutput(Map<String, List<MCssRule>> cssRules,
 	        SetMultimap<String, ElementWithClass> elementsWithNoClassDef) {
 

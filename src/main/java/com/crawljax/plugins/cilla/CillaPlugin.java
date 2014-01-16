@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.StringReader;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.Arrays;
 
 import javax.xml.xpath.XPathExpressionException;
 
@@ -42,10 +44,13 @@ import com.crawljax.plugins.cilla.analysis.MatchedElements;
 import com.crawljax.plugins.cilla.util.CSSDOMHelper;
 import com.crawljax.plugins.cilla.util.CssParser;
 import com.crawljax.plugins.cilla.visualizer.CillaVisualizer;
+import com.crawljax.plugins.cilla.visualizer.VisualizerServlet;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 
 public class CillaPlugin implements OnNewStatePlugin, PostCrawlingPlugin {
+	
+
 	private static final Logger LOGGER = Logger.getLogger(CillaPlugin.class.getName());
 
 	private Map<String, List<MCssRule>> cssRules = new HashMap<String, List<MCssRule>>();
@@ -65,7 +70,7 @@ public class CillaPlugin implements OnNewStatePlugin, PostCrawlingPlugin {
 	private int cssLOC;
 	private int ineffectivePropsSize;
 	private int totalCssRulesSize;
-static int i = 1;
+public static int i = 1;
 	public void onNewState(CrawlerContext context, StateVertex newState) {
 		// if the external CSS files are not parsed yet, do so
 		parseCssRules(context, newState);
@@ -197,14 +202,56 @@ static int i = 1;
 		}
 		
 	}
+public void determineThreshold(){
 	
+	
+	double Mean = 0;
+	int Median = 0;
+	double sum = 0;
+	//int i =0;
+	
+	for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()) {
+		int i =0;
+		int k = 0;
+		int[] a = new int[entry.getValue().size()];
+		int[] b = new int[a.length];
+		//int[] b = new int[entry.getValue().size()];
+		for (MCssRule mrule : entry.getValue()) {
+			a[i]= mrule.getProperties().size();
+			//i++;
+			
+			System.out.println("rule"+i+" "+a[i]);
+			
+			//Arrays.sort(a);
+			b[k] = a[i];
+			k++;
+			sum += a[i];
+			
+				}
+			i++;
+			Arrays.sort(b);
+			Mean = (sum/ (double)entry.getValue().size());
+		
+			for(int j = 0; j< entry.getValue().size(); j++){
+			//	Arrays.sort(a);
+				System.out.println(b[j]);
+			}
+		}
+	
+	}
+	
+	
+	
+
 	
 	@Override
 	public void postCrawling(CrawlSession session, ExitStatus exitReason) {
 		
+		
+		determineThreshold();
 		int partCounter = 1;
 		//Copying Css Code of the web site(both embedded and external) into a file to be used by csslint later on.
-		new File("C:/Users/Golnaz/cilla/CsslintReports").mkdirs();	
+	//	new File("C:/Users/Golnaz/cilla/CsslintReports").mkdirs();	
 		
 		FileOutputStream fop =null;
 		
@@ -214,13 +261,13 @@ static int i = 1;
 			totalCssRules += entry.getValue().size();
 			for (MCssRule mrule : entry.getValue()) {
 				totalCssSelectors += mrule.getSelectors().size();
-				new File("C:/Users/Golnaz/cilla/CsslintReports/"+i).mkdirs();
+				new File("C:/Users/Golnaz/cilla/CsslintReports").mkdirs();
 			
 			
 					File file;
 					try{
 						
-						file = new File("C:/Users/Golnaz/cilla/CsslintReports/"+i+"/cssfile.css");
+						file = new File("C:/Users/Golnaz/cssfile"+i+".css");
 						fop = new FileOutputStream(file, true);
 						if (!file.exists()) {
 									file.createNewFile();
@@ -255,7 +302,80 @@ static int i = 1;
 		
 		try {
 			
-			Process pr = rt.exec("cmd.exe /c csslint C:/Users/Golnaz/cilla/CsslintReports/"+i+"/cssfile.css"+" > C:/Users/Golnaz/cilla/CsslintReports/"+i+"/output.txt");
+			FileOutputStream fop1 =null;
+			 String[] command = {"java","-jar", "js.jar", "csslint-rhino.js", "cssfile"+i+".css"};
+		        ProcessBuilder probuilder = new ProcessBuilder( command );
+		        //You can set up your work directory
+		        probuilder.directory(new File("C:/Users/Golnaz"));
+
+		        Process process = probuilder.start();
+
+		        //Read out dir output
+		        InputStream is = process.getInputStream();
+		        InputStreamReader isr = new InputStreamReader(is);
+		        BufferedReader br = new BufferedReader(isr);
+		     String line;
+		        System.out.printf("Output of running %s is:\n",  Arrays.toString(command));
+		        while ((line = br.readLine()) != null) {
+		        
+		            System.out.println(line);
+		           File file1;
+					try{
+						
+						file1 = new File("C:/Users/Golnaz/cilla/CsslintReports/output"+i+".txt");
+						
+						fop1 = new FileOutputStream(file1, true);
+						
+						if (!file1.exists()) {
+									file1.createNewFile();
+								}
+						 byte[] contentInBytes = line.getBytes();
+						 
+						 
+						 
+						 
+	                     fop1.write(contentInBytes);
+	                     // go to next line
+	                fop1.write(13);
+	                 fop1.write(10);
+						fop1.flush();
+						fop1.close();
+						
+					} catch (IOException e) {
+						e.printStackTrace();
+						} finally {
+						try {
+							if (fop1 != null) {
+								fop1.close();
+							}
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						}
+				
+		        }
+	
+
+		        //Wait to get exit value
+		        try {
+		            int exitValue = process.waitFor();
+		            System.out.println("\n\nExit Value is " + exitValue);
+		        } catch (InterruptedException e) {
+		            // TODO Auto-generated catch block
+		            e.printStackTrace();
+		        }
+		    
+
+		
+			
+		//	Process pr = rt.exec("cmd.exe /c csslint C:/Users/Golnaz/cilla/CsslintReports/"+i+"/cssfile.css"+" > C:/Users/Golnaz/cilla/CsslintReports/"+i+"/output.txt");
+			//String[] commands = {"cmd.exe /c cd cilla/CsslintReports", "cmd.exe /c java -jar js.jar csslint-rhino.js cssfile1.css > output.txt"};
+			//Process pr = rt.exec(commands);
+			//Process pr1 = rt.exec("cmd.exe /c cd cilla/CsslintReports");
+			//Process pr = rt.exec("cmd.exe /c java -jar js.jar csslint-rhino.js C:/Users/Golnaz/cssfile1.css > C:/Users/Golnaz/output1.txt");
+			//Process pr = rt.exec("cmd.exe /c java -jar js.jar csslint-rhino.js C:/Users/Golnaz/Downloads/test/normalize.css > C:/Users/Golnaz/Downloads/test/output.txt");
+		       VisualizerServlet a = new VisualizerServlet();
+		       a.addCssLint();
 	i++;			
 		}
 		

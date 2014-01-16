@@ -50,7 +50,8 @@ import com.google.common.collect.SetMultimap;
 
 public class CillaPlugin implements OnNewStatePlugin, PostCrawlingPlugin {
 	
-
+	int totalCssRules = 0;
+	int totalCssSelectors = 0;
 	private static final Logger LOGGER = Logger.getLogger(CillaPlugin.class.getName());
 
 	private Map<String, List<MCssRule>> cssRules = new HashMap<String, List<MCssRule>>();
@@ -204,59 +205,58 @@ public static int i = 1;
 	}
 public void determineThreshold(){
 	
-	
 	double Mean = 0;
-	int Median = 0;
+	double Median = 0;
 	double sum = 0;
-	//int i =0;
+	int[] a;
+	int i=0;
+	
+	if(totalCssRules>totalCssSelectors){
+	a = new int[totalCssRules+1];
+	}
+	else{
+		a = new int[totalCssSelectors+1];
+	}
 	
 	for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()) {
-		int i =0;
-		int k = 0;
-		int[] a = new int[entry.getValue().size()];
-		int[] b = new int[a.length];
-		//int[] b = new int[entry.getValue().size()];
+		
 		for (MCssRule mrule : entry.getValue()) {
-			a[i]= mrule.getProperties().size();
-			//i++;
+			i++;
 			
-			System.out.println("rule"+i+" "+a[i]);
-			
-			//Arrays.sort(a);
-			b[k] = a[i];
-			k++;
+			a[i] = mrule.getProperties().size();
 			sum += a[i];
 			
-				}
-			i++;
-			Arrays.sort(b);
-			Mean = (sum/ (double)entry.getValue().size());
-		
-			for(int j = 0; j< entry.getValue().size(); j++){
-			//	Arrays.sort(a);
-				System.out.println(b[j]);
 			}
-		}
+	}
 	
+	Mean = sum/i;
+	Arrays.sort(a);
+
+	
+	if((a.length-1)%2 == 0){
+		Median = (a[(a.length-1)/2]+a[((a.length-1)/2)+1])/2; 
+	}
+	else{
+		Median = a[((a.length-1)/2)+1];
 	}
 	
 	
+	}
 	
-
 	
 	@Override
 	public void postCrawling(CrawlSession session, ExitStatus exitReason) {
 		
 		
-		determineThreshold();
-		int partCounter = 1;
+		//determineThreshold();
+		
 		//Copying Css Code of the web site(both embedded and external) into a file to be used by csslint later on.
 	//	new File("C:/Users/Golnaz/cilla/CsslintReports").mkdirs();	
 		
 		FileOutputStream fop =null;
 		
-		int totalCssRules = 0;
-		int totalCssSelectors = 0;
+		//int totalCssRules = 0;
+		//int totalCssSelectors = 0;
 		for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()) {
 			totalCssRules += entry.getValue().size();
 			for (MCssRule mrule : entry.getValue()) {
@@ -295,7 +295,7 @@ public void determineThreshold(){
 		}	
 		
 	
-		
+		determineThreshold();
 		//running csslint by command line on the css file (cssfile.css) and providing results in an output file
 
 		Runtime rt = Runtime.getRuntime();
@@ -318,7 +318,7 @@ public void determineThreshold(){
 		        System.out.printf("Output of running %s is:\n",  Arrays.toString(command));
 		        while ((line = br.readLine()) != null) {
 		        
-		            System.out.println(line);
+		           // System.out.println(line);
 		           File file1;
 					try{
 						

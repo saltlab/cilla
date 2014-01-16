@@ -14,15 +14,15 @@ public class CillaRunner {
 	private static final int waitAfterEvent = 400;
 	private static final int waitAfterReload = 400;
 
-	//private static final String INDEX = "http://www.ece.ubc.ca/~amesbah/exp";
-//	private static final String INDEX = "http://www.facebook.com";
+	private static final String INDEX = "http://www.ece.ubc.ca/~amesbah/exp";
+	//private static final String INDEX = "http://www.google.com";
 	
 public static String name;	
 public static long startTime;
 public static boolean enable_validation;
 public static String b;
     public static void main(String[] args) {
-		
+		/*
 		String[] urlArray = new String[10];
 			urlArray = GetUrls.getArray("src//main//resources//WebsitesUnderStudy.txt", 10);
 			for (int i = 0 ; i < 5; i++) {
@@ -31,12 +31,13 @@ public static String b;
 		
 		
 				b = urlArray[i].replaceAll("http://", "");
+				*/
 		
-	//	b = INDEX.replaceAll("http://", "");
+		b = INDEX.replaceAll("http://", "");
 		
 
-		//CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(INDEX);
-CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(urlArray[i]);
+		CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(INDEX);
+//CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(urlArray[i]);
 		builder.crawlRules().insertRandomDataInInputForms(false);
 
 		// Set timeouts
@@ -57,7 +58,7 @@ CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(urlArray
 		crawljax.call();
 
 	}
-   }
+  // }
     
     private static void getName(String URLstring) {
     	String initialization = "", resticting = "";

@@ -30,14 +30,17 @@
 
             <li><a class="yui3-menu-label" href="css-analysis.html"><em>CSS Analysis</em></a>
             </li>
-            
+           
             <li><a class="yui3-menu-label" href="html-analysis.html"><em>HTML Analysis</em></a>
             </li>
             
-             <li><a class="yui3-menu-label" href="css-validation.html"><em>W3C CSS Validator</em></a>
+            <li><a class="yui3-menu-label" href="css-validation.html"><em>W3C CSS Validator</em></a>
             </li>
             
             <li><a class="yui3-menu-label" href="css-lint.html"><em>CSS Lint</em></a>
+            </li>
+            
+              <li><a class="yui3-menu-label" href="statistics.html"><em>Statistics</em></a>
             </li>
         </ul>
     </div>

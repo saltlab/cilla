@@ -48,6 +48,7 @@ import org.w3c.dom.Node;
 
 
 
+
 import com.crawljax.plugins.cilla.CillaPlugin;
 import com.crawljax.plugins.cilla.analysis.ElementWithClass;
 import com.crawljax.plugins.cilla.analysis.MCssRule;
@@ -71,6 +72,7 @@ public class VisualizerServlet extends VelocityViewServlet {
 	
 private final File cssValidationHTML;
 private final File cssLintHTML;
+private final File statisticsHTML;
 	private final File outputFolder = new File("output");
 	
 
@@ -81,6 +83,7 @@ private final File cssLintHTML;
 	
 private Template cssValidationTemplate;
 private Template cssLintTemplate;
+private Template statisticsTemplate;
 
 	private enum HighlightColor {
 		NONE, UNMATCHED, INEFFECTIVE, EFFECTIVE
@@ -131,6 +134,7 @@ private Template cssLintTemplate;
 		
 cssValidationHTML = new File(outputDir + "/css-validation.html");
 cssLintHTML = new File(outputDir + "/css-lint.html");
+statisticsHTML= new File(outputDir + "/statistics.html");
 
 
 		try {
@@ -146,6 +150,7 @@ cssLintHTML = new File(outputDir + "/css-lint.html");
 			
 cssValidationTemplate = ve.getTemplate("validation.vm");
 cssLintTemplate = ve.getTemplate("lint.vm");
+statisticsTemplate = ve.getTemplate("statistics.vm");
 
 			Files.write(Resources.toString(
 			        VisualizerServlet.class.getResource("/visualizer.css"), Charsets.UTF_8),
@@ -299,6 +304,38 @@ public void addCssLint(){
 			
 	
 }
+
+public void addStatistics(){
+
+	VelocityContext context = new VelocityContext();
+	String template;
+	String statisticsMsg;
+			try {
+				template = getTemplateAsString(statisticsTemplate.getName());
+				CillaPlugin d = new CillaPlugin();
+				String s = "The average number of properties used in one CSS rule in this web site: "+ String.valueOf(CillaPlugin.Mean)+
+						"\n"+"The median of number of properties used in one CSS rule in this web site: "+ String.valueOf(CillaPlugin.Median); 
+				statisticsMsg= s;
+
+				statisticsMsg = statisticsMsg.replace("\n", "<br><br> ");
+				
+				
+				context.put("summary", statisticsMsg);
+				
+				context.put("date", dateString);
+				
+				FileWriter writer = new FileWriter(statisticsHTML);
+
+				ve.evaluate(context, writer, "Statistics", template);
+				writer.flush();
+				writer.close();
+
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+	
+}
 	public void addSortedOutput(Map<String, List<MCssRule>> cssRules,
 	        SetMultimap<String, ElementWithClass> elementsWithNoClassDef) {
 
@@ -341,6 +378,8 @@ undoingStyle = new StringBuffer();
 idWithClassOrElement = new StringBuffer();
 reactiveImportant = new StringBuffer();
 inappFontSize = new StringBuffer();
+
+
 
 			// Loop through the rules
 			for (MCssRule rule : rules) {

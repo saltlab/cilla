@@ -45,6 +45,7 @@ public class MSelector {
 		this.properties = properties;
 		setXPathSelector();
 		setSpecificity();
+		
 	}
 
 	public Specificity getSpecificity() {

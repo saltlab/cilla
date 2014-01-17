@@ -25,6 +25,7 @@ public class CillaVisualizer implements VisualizerPlugin {
 //CSS Validation
 vs.addValidation(url);
 vs.addCssLint();
+vs.addStatistics();
 		
 		// Call the open com.crawljax.plugins.cilla to open to welcome page
 		OpenBrowser.open(vs.getWelcomePage());

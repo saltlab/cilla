@@ -26,6 +26,7 @@ import javax.xml.xpath.XPathExpressionException;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
+import org.w3c.dom.css.CSSRule;
 
 import se.fishtank.css.selectors.NodeSelectorException;
 
@@ -50,13 +51,13 @@ import com.google.common.collect.SetMultimap;
 
 public class CillaPlugin implements OnNewStatePlugin, PostCrawlingPlugin {
 	
-	int totalCssRules = 0;
-	int totalCssSelectors = 0;
+public static int totalCssRules = 0;
+	public static int totalCssSelectors = 0;
 	private static final Logger LOGGER = Logger.getLogger(CillaPlugin.class.getName());
 
 	private Map<String, List<MCssRule>> cssRules = new HashMap<String, List<MCssRule>>();
 	
-
+private Map<String, List<MSelector>> cssSelectors = new HashMap<String, List<MSelector>>();
 	public static final Set<String> cssEffectiveRuntime = new HashSet<String>();
 
 	final SetMultimap<String, ElementWithClass> elementsWithNoClassDef = HashMultimap.create();
@@ -72,6 +73,8 @@ public class CillaPlugin implements OnNewStatePlugin, PostCrawlingPlugin {
 	private int ineffectivePropsSize;
 	private int totalCssRulesSize;
 public static int i = 1;
+public static double Mean = 0;
+public static double Median = 0;
 	public void onNewState(CrawlerContext context, StateVertex newState) {
 		// if the external CSS files are not parsed yet, do so
 		parseCssRules(context, newState);
@@ -205,47 +208,49 @@ public static int i = 1;
 	}
 public void determineThreshold(){
 	
-	double Mean = 0;
-	double Median = 0;
+	List<MSelector> allSelectors=new ArrayList<MSelector>();
+	int[] b = new int[totalCssSelectors];
+	int j = 0;
 	double sum = 0;
-	int[] a;
-	int i=0;
-	
-	if(totalCssRules>totalCssSelectors){
-	a = new int[totalCssRules+1];
-	}
-	else{
-		a = new int[totalCssSelectors+1];
-	}
+	//double Mean = 0;
+	//double Median = 0;
 	
 	for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()) {
-		
 		for (MCssRule mrule : entry.getValue()) {
-			i++;
-			
-			a[i] = mrule.getProperties().size();
-			sum += a[i];
-			
-			}
+			allSelectors.addAll(mrule.getSelectors());
+		}
+		
 	}
-	
-	Mean = sum/i;
-	Arrays.sort(a);
-
-	
-	if((a.length-1)%2 == 0){
-		Median = (a[(a.length-1)/2]+a[((a.length-1)/2)+1])/2; 
+	for(int i=0; i<allSelectors.size();i++){
+		
+		b[j]= allSelectors.get(i).getProperties().size();
+		j++;
+		//System.out.println(allSelectors.get(i).getProperties().size());
+		
+	}
+	for(int k=0; k<b.length;k++){
+		System.out.println(b[k]);
+		sum+= b[k];
+	}
+	Mean = sum/totalCssSelectors;
+	Arrays.sort(b);
+	if(b.length%2 == 0){
+		Median = (b[(b.length)/2]+b[(b.length)/2+1])/2;
 	}
 	else{
-		Median = a[((a.length-1)/2)+1];
+		Median = b[(b.length)/2+1];
 	}
 	
+	//System.out.println("The average number of properties used in one CSS rule in this web site:"+ String.valueOf(Mean));
+	//System.out.println("The median of number of properties used in one CSS rule in this web site:"+ Median);
 	
 	}
 	
 	
 	@Override
 	public void postCrawling(CrawlSession session, ExitStatus exitReason) {
+		
+		
 		
 		
 		//determineThreshold();
@@ -376,6 +381,7 @@ public void determineThreshold(){
 			//Process pr = rt.exec("cmd.exe /c java -jar js.jar csslint-rhino.js C:/Users/Golnaz/Downloads/test/normalize.css > C:/Users/Golnaz/Downloads/test/output.txt");
 		       VisualizerServlet a = new VisualizerServlet();
 		       a.addCssLint();
+		       a.addStatistics();
 	i++;			
 		}
 		
@@ -528,7 +534,10 @@ output.append(inappFontSize.toString());
 		return counter;
 
 	}
-
+	
+		
+		
+	
 	private int getEffectiveSelectorsBasedOnProps(StringBuffer buffer) {
 
 		int counterEffectiveSelectors = 0;

@@ -12,6 +12,7 @@ import org.w3c.dom.css.CSSRuleList;
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSStyleRule;
 
+import com.crawljax.plugins.cilla.CillaPlugin;
 import com.crawljax.plugins.cilla.util.CssToXpathConverter;
 import com.crawljax.plugins.cilla.util.specificity.SpecificityCalculator;
 import com.steadystate.css.dom.CSSStyleRuleImpl;
@@ -44,6 +45,7 @@ public class MCssRule {
 		this.rule = rule;
 		selectors = new ArrayList<MSelector>();
 		setSelectors();
+		
 	}
 
 	public CSSRule getRule() {
@@ -391,7 +393,7 @@ List<MSelector> idWith = new ArrayList<MSelector>();
 			
 public List<MSelector> getReactiveImportant(){
 
-
+	
 List<MSelector> reactiveImportant = new ArrayList<MSelector>();
 			
 		for (MSelector selector : this.selectors){
@@ -424,5 +426,21 @@ List<MSelector> reactiveImportant = new ArrayList<MSelector>();
 				
 			return reactiveImportant;
 		}
+
+public void averageProperties(){
+	int[] p = new int[1000];
+	int i =0;
+	double sum = 0;
+	double Mean = 0;
+	double Median = 0;
+	for (MSelector selector : this.selectors){
+		i++;
+		p[i]= selector.getProperties().size();
+		sum += p[i];
+		
+		
+	}
+	System.out.println("this.s"+ sum);
+}
 
 }

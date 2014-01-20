@@ -16,6 +16,7 @@ public class CillaRunner {
 
 	//private static final String INDEX = "http://www.ece.ubc.ca/~amesbah/exp";
 	private static final String INDEX = "http://www.google.com";
+	//private static final String INDEX = "http://www.youtube.com";
 	
 public static String name;	
 public static long startTime;

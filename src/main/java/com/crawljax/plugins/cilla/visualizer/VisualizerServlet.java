@@ -8,6 +8,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -49,6 +51,8 @@ import org.w3c.dom.Node;
 
 
 
+
+
 import com.crawljax.plugins.cilla.CillaPlugin;
 import com.crawljax.plugins.cilla.analysis.ElementWithClass;
 import com.crawljax.plugins.cilla.analysis.MCssRule;
@@ -73,6 +77,7 @@ public class VisualizerServlet extends VelocityViewServlet {
 private final File cssValidationHTML;
 private final File cssLintHTML;
 private final File statisticsHTML;
+
 	private final File outputFolder = new File("output");
 	
 
@@ -151,6 +156,7 @@ statisticsHTML= new File(outputDir + "/statistics.html");
 cssValidationTemplate = ve.getTemplate("validation.vm");
 cssLintTemplate = ve.getTemplate("lint.vm");
 statisticsTemplate = ve.getTemplate("statistics.vm");
+
 
 			Files.write(Resources.toString(
 			        VisualizerServlet.class.getResource("/visualizer.css"), Charsets.UTF_8),
@@ -243,9 +249,11 @@ String cssValidationMsg;
 			Document doc = Jsoup.connect("http://jigsaw.w3.org/css-validator/validator?uri=http%3A%2F%2F"+CillaRunner.b+"%2F&warning=2&profile=css2").get();
 		
 			
-			Elements table = doc.select("tr");   
+			Elements table = doc.select("tr"); 
+			
 
 			cssValidationMsg = table.toString();
+			
 			cssValidationMsg = cssValidationMsg.replace("\n", "<br> ");
 			
 			
@@ -312,9 +320,9 @@ public void addStatistics(){
 	String statisticsMsg;
 			try {
 				template = getTemplateAsString(statisticsTemplate.getName());
-				CillaPlugin d = new CillaPlugin();
+				
 				String s = "The average number of properties used in one CSS rule in this web site: "+ String.valueOf(CillaPlugin.Mean)+
-						"\n"+"The median of number of properties used in one CSS rule in this web site: "+ String.valueOf(CillaPlugin.Median); 
+						"\n"+"The median of number of properties used in one CSS rule in this web site: "+ String.valueOf(CillaPlugin.Median)+"\n"+"The minimum number of properties in one CSS rule: "+String.valueOf(CillaPlugin.min)+"\n"+"The maximum number of properties used in one CSS rule: "+String.valueOf(CillaPlugin.max)+"\n"+"The average number of selector types used in one CSS rule: "+CillaPlugin.meanSelector+"\n"+"The median of selector types used in one CSS rule: "+CillaPlugin.medianSelector+"\n"+"The minimum number of selector types in one CSS rule: "+CillaPlugin.minSelector+"\n"+"The maximum number of selector types in one CSS rule: "+CillaPlugin.maxSelector; 
 				statisticsMsg= s;
 
 				statisticsMsg = statisticsMsg.replace("\n", "<br><br> ");
@@ -336,6 +344,8 @@ public void addStatistics(){
 			
 	
 }
+
+
 	public void addSortedOutput(Map<String, List<MCssRule>> cssRules,
 	        SetMultimap<String, ElementWithClass> elementsWithNoClassDef) {
 

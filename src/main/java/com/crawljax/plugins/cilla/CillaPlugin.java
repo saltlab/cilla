@@ -44,6 +44,7 @@ import com.crawljax.plugins.cilla.analysis.MSelector;
 import com.crawljax.plugins.cilla.analysis.MatchedElements;
 import com.crawljax.plugins.cilla.util.CSSDOMHelper;
 import com.crawljax.plugins.cilla.util.CssParser;
+import com.crawljax.plugins.cilla.util.specificity.SpecificityCalculator;
 import com.crawljax.plugins.cilla.visualizer.CillaVisualizer;
 import com.crawljax.plugins.cilla.visualizer.VisualizerServlet;
 import com.google.common.collect.HashMultimap;
@@ -75,6 +76,12 @@ private Map<String, List<MSelector>> cssSelectors = new HashMap<String, List<MSe
 public static int i = 1;
 public static double Mean = 0;
 public static double Median = 0;
+public static int min = 0;
+public static int max = 0;
+public static double meanSelector;
+public static double medianSelector;
+public static double minSelector;
+public static double maxSelector;
 	public void onNewState(CrawlerContext context, StateVertex newState) {
 		// if the external CSS files are not parsed yet, do so
 		parseCssRules(context, newState);
@@ -212,6 +219,8 @@ public void determineThreshold(){
 	int[] b = new int[totalCssSelectors];
 	int j = 0;
 	double sum = 0;
+	double sum1 = 0;
+	
 	//double Mean = 0;
 	//double Median = 0;
 	
@@ -224,6 +233,7 @@ public void determineThreshold(){
 	for(int i=0; i<allSelectors.size();i++){
 		
 		b[j]= allSelectors.get(i).getProperties().size();
+		
 		j++;
 		//System.out.println(allSelectors.get(i).getProperties().size());
 		
@@ -234,11 +244,43 @@ public void determineThreshold(){
 	}
 	Mean = sum/totalCssSelectors;
 	Arrays.sort(b);
+	min = b[0];
+	max = b[b.length-1];
 	if(b.length%2 == 0){
 		Median = (b[(b.length)/2]+b[(b.length)/2+1])/2;
 	}
 	else{
 		Median = b[(b.length)/2+1];
+	}
+	System.out.println("min:"+min+" "+"max:"+max);
+	
+	int z = 0;
+	int[] c = new int[totalCssSelectors];
+	for(int p = 0;p<allSelectors.size();p++){
+	String s = allSelectors.get(p).getSpecificity().toString();
+	int l = Integer.parseInt(s.substring(1, 2));
+	int m = Integer.parseInt(s.substring(4, 5));
+	int n = Integer.parseInt(s.substring(7, 8));
+	int o = Integer.parseInt(s.substring(10, 11));
+	int q = l+m+n+o;
+	c[z]= q;
+	z++;
+	System.out.println("bye"+s+allSelectors.get(p));
+	}
+	for(int y = 0; y<c.length;y++){
+		sum1+= c[y];
+		
+	}
+	Arrays.sort(c);
+	meanSelector = sum1/c.length;
+	minSelector = c[0];
+	maxSelector = c[c.length-1];
+	
+	if(c.length%2 == 0){
+		medianSelector = (c[(c.length)/2]+c[(c.length)/2+1])/2;
+	}
+	else{
+		medianSelector = c[(c.length)/2+1];
 	}
 	
 	//System.out.println("The average number of properties used in one CSS rule in this web site:"+ String.valueOf(Mean));

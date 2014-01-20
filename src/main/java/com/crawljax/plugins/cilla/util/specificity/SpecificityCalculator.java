@@ -1,5 +1,7 @@
 package com.crawljax.plugins.cilla.util.specificity;
 
+import javax.swing.text.html.HTML;
+
 /**
  * Represents a CSS com.crawljax.plugins.cilla.util.specificity calculation. The com.crawljax.plugins.cilla.util.specificity for a <code>Matcher</code> is
  * calculated according to the <a href="http://www.w3.org/TR/CSS21/cascade.html#specificity"> 2.1
@@ -87,6 +89,70 @@ public class SpecificityCalculator {
 	}
 
 	public Specificity getSpecificity(String selector) {
+		
+		//me
+		
+		int count1 = 0; //class
+		int count2 = 0; //id
+		
+		 
+		
+		String[] parts = selector.split(" ");
+		for (String part : parts) {
+			
+			 
+			if(part.isEmpty() || part.length() == 0){
+				continue;
+			}
+			else{
+			if (part.contains(".")) {
+
+				String[] temp = part.split("\\.");
+
+				if (temp.length > 1 && !temp[0].equals("")) {
+
+					this.addElementSelector();
+				}
+				this.addClassSelector();
+				count1++;
+			} else {
+			
+				if (part.contains("#")) {
+					String[] temp = part.split("\\#");
+					if (temp.length > 1 && !temp[0].equals("")) {
+						this.addElementSelector();
+					}
+					this.addIDSelector();
+					count2++;
+				} else {
+				
+					// Element: DIV
+					this.addElementSelector();
+				}
+			}
+		}
+		
+		}
+		
+		if(selector.length()-selector.replaceAll("\\.", "").length() > count1){
+			int diff1 = (selector.length()-selector.replaceAll("\\.", "").length()) - count1;
+			while(diff1 > 0){
+			this.addClassSelector();
+			diff1--;
+			}
+		}
+			if(selector.length()-selector.replaceAll("\\#", "").length() > count2){
+				int diff2 = (selector.length()-selector.replaceAll("\\#", "").length()) - count2;
+				while(diff2 > 0){
+				this.addIDSelector();
+				diff2--;
+				}
+			}
+		return getSpecificity();
+	}
+	
+		//Mesbah
+	/*	
 		String[] parts = selector.split(" ");
 		for (String part : parts) {
 			// CLASS: DIV.news or .news
@@ -114,6 +180,8 @@ public class SpecificityCalculator {
 			}
 		}
 		return getSpecificity();
+		
 	}
+	*/
 
 }

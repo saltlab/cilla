@@ -11,77 +11,77 @@ import com.crawljax.plugins.cilla.CillaPlugin;
 
 public class CillaRunner {
 
-	private static final int waitAfterEvent = 400;
-	private static final int waitAfterReload = 400;
+        private static final int waitAfterEvent = 400;
+        private static final int waitAfterReload = 400;
 
-	//private static final String INDEX = "http://www.ece.ubc.ca/~amesbah/exp";
-	private static final String INDEX = "http://www.google.com";
-	//private static final String INDEX = "http://www.youtube.com";
-	
-public static String name;	
+        private static final String INDEX = "http://www.ece.ubc.ca/~amesbah/exp";
+       // private static final String INDEX = "http://www.google.com";
+        //private static final String INDEX = "http://www.youtube.com";
+        
+public static String name;        
 public static long startTime;
 public static boolean enable_validation;
 public static String b;
     public static void main(String[] args) {
-		/*
-		String[] urlArray = new String[10];
-			urlArray = GetUrls.getArray("src//main//resources//WebsitesUnderStudy.txt", 10);
-			for (int i = 0 ; i < 5; i++) {
-				getName(urlArray[i]);
-				startTime = System.currentTimeMillis();
-		
-		
-				b = urlArray[i].replaceAll("http://", "");
-				*/
-		
-		b = INDEX.replaceAll("http://", "");
-		
+                /*
+                String[] urlArray = new String[10];
+                        urlArray = GetUrls.getArray("src//main//resources//WebsitesUnderStudy.txt", 10);
+                        for (int i = 0 ; i < 5; i++) {
+                                getName(urlArray[i]);
+                                startTime = System.currentTimeMillis();
+                
+                
+                                b = urlArray[i].replaceAll("http://", "");
+                                */
+                
+                b = INDEX.replaceAll("http://", "");
+                
 
-		CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(INDEX);
+                CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(INDEX);
 //CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(urlArray[i]);
-		builder.crawlRules().insertRandomDataInInputForms(false);
+                builder.crawlRules().insertRandomDataInInputForms(false);
 
-		// Set timeouts
-		builder.crawlRules().waitAfterReloadUrl(waitAfterReload, TimeUnit.MILLISECONDS);
-		builder.crawlRules().waitAfterEvent(waitAfterEvent, TimeUnit.MILLISECONDS);
-		builder.setMaximumDepth(3);
-		builder.crawlRules().clickOnce(true);
+                // Set timeouts
+                builder.crawlRules().waitAfterReloadUrl(waitAfterReload, TimeUnit.MILLISECONDS);
+                builder.crawlRules().waitAfterEvent(waitAfterEvent, TimeUnit.MILLISECONDS);
+                builder.setMaximumDepth(3);
+                builder.crawlRules().clickOnce(true);
 
-		builder.crawlRules().click("a");
+                builder.crawlRules().click("a");
 
-		builder.setMaximumRunTime(60, TimeUnit.SECONDS);
+                builder.setMaximumRunTime(60, TimeUnit.SECONDS);
 
-		builder.setBrowserConfig(new BrowserConfiguration(BrowserType.firefox, 1));
+                builder.setBrowserConfig(new BrowserConfiguration(BrowserType.firefox, 1));
 
-		builder.addPlugin(new CillaPlugin());
+                builder.addPlugin(new CillaPlugin());
 
-		CrawljaxRunner crawljax = new CrawljaxRunner(builder.build());
-		crawljax.call();
+                CrawljaxRunner crawljax = new CrawljaxRunner(builder.build());
+                crawljax.call();
 
-	}
+        }
   // }
     
     private static void getName(String URLstring) {
-    	String initialization = "", resticting = "";
-    	int first = 0, second = 0;
-    	initialization = URLstring;
-    	first = initialization.indexOf(".");
-    	if (initialization.contains(".org"))
-    		second = initialization.indexOf("org");
-    	else if (initialization.contains(".ru"))
-    			second = URLstring.indexOf(".ru");
-    	else if (initialization.contains(".ca"))
-    		second = URLstring.indexOf(".ca");
-    	else if (initialization.contains(".co"))
-    		second = URLstring.indexOf(".co");
-    	else if (initialization.contains(".ly"))
-    		second = URLstring.indexOf(".ly");
-    	else if (initialization.contains(".se"))
-    		second = URLstring.indexOf(".se");
-    	else
-    		second = URLstring.indexOf(".com");
-    	resticting = initialization.substring(first + 1, second);
-    	name = "-".concat(resticting);
+            String initialization = "", resticting = "";
+            int first = 0, second = 0;
+            initialization = URLstring;
+            first = initialization.indexOf(".");
+            if (initialization.contains(".org"))
+                    second = initialization.indexOf("org");
+            else if (initialization.contains(".ru"))
+                            second = URLstring.indexOf(".ru");
+            else if (initialization.contains(".ca"))
+                    second = URLstring.indexOf(".ca");
+            else if (initialization.contains(".co"))
+                    second = URLstring.indexOf(".co");
+            else if (initialization.contains(".ly"))
+                    second = URLstring.indexOf(".ly");
+            else if (initialization.contains(".se"))
+                    second = URLstring.indexOf(".se");
+            else
+                    second = URLstring.indexOf(".com");
+            resticting = initialization.substring(first + 1, second);
+            name = "-".concat(resticting);
 
     }
 

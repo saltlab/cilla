@@ -43,7 +43,7 @@
               <li><a class="yui3-menu-label" href="statistics.html"><em>Statistics</em></a>
             </li>
             
-            
+           
         </ul>
     </div>
 </div>
@@ -54,8 +54,8 @@
     <p> Generated: $date <br> Crawled: $url </p>
 </div>
 <div id="wrapper">
-    <p id="summary"> 
-        <br> 
+    <p id="summary">
+        <br>
         $summary
 
         <!--#include virtual="summary.html" -->
@@ -71,13 +71,13 @@
 </div>
 
 <script>
-//  Call the "use" method, passing in "node-menunav".  This will load the
-//  script and CSS for the MenuNav Node Plugin and all of the required
-//  dependencies.
+// Call the "use" method, passing in "node-menunav". This will load the
+// script and CSS for the MenuNav Node Plugin and all of the required
+// dependencies.
 YUI().use('node-menunav', function(Y) {
-    //  Retrieve the Node instance representing the root menu
-    //  (<div id="productsandservices">) and call the "plug" method
-    //  passing in a reference to the MenuNav Node Plugin.
+    // Retrieve the Node instance representing the root menu
+    // (<div id="productsandservices">) and call the "plug" method
+    // passing in a reference to the MenuNav Node Plugin.
     var menu = Y.one("#menu");
     menu.plug(Y.Plugin.NodeMenuNav);
 
@@ -94,4 +94,3 @@ summary.appendChild(txtNode);
 </script>
 </body>
 </html>
-

@@ -218,7 +218,7 @@ List<MSelector> tooSpecific = new ArrayList<MSelector>();
         String h = s.substring(10, 11);
         int i = Integer.parseInt(e+f+g+h);
                                                 
-                                                if(a+b+c+d>3 && !selector.isIgnore()){
+                                                if(a+b+c+d>1 && !selector.isIgnore()){
                                                         tooSpecific.add(selector);
                                                 }
                                                 if( i> 122 && !selector.isIgnore()){
@@ -240,7 +240,7 @@ List<MSelector> tooLazy = new ArrayList<MSelector>();
                         for (MSelector selector : this.selectors){
                                                 int z = selector.getProperties().size();
                                                 
-                                                if(z < 3 && !selector.isIgnore()){
+                                                if(z < 2 && !selector.isIgnore()){
                                         
                                                         tooLazy.add(selector);
                                                 }

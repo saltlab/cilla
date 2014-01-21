@@ -51,8 +51,12 @@
 <div id = "wrapper">
 <div id="tabs" style="resize: vertical">
     <ul>
-        <li><a href="#sorted">Sorted</a></li>
-        <li><a href="#unsorted">Unsorted</a></li>
+          
+           <li><a href="#sorted">Sorted</a></li>
+            <li><a href="#unsorted">Unsorted</a></li>
+         
+        
+         
     </ul>
     <div>
         <div id="sorted">
@@ -99,6 +103,16 @@
             <td style="background-color: $unmatchedColor"><p> Unmatched </p></td>
             <td style="background-color: $ineffectiveColor"><p> Matched & Ineffective </p></td>
             <td style="background-color: $effectiveColor"><p> Matched & Effective </p></td>
+             <td style="background-color: $lazyColor"><p> Lazy </p></td>
+             <td style="background-color: $longColor"><p> Long </p></td>
+             <td style="background-color: $toospecificColor"><p> Too Specific </p></td>
+             </tr>
+             <tr>
+             <td style="background-color: $emptycatColor"><p> Empty Catch </p></td>
+             <td style="background-color: $undstyColor"><p> Undoing Style </p></td>
+             <td style="background-color: $idplusColor"><p> ID Plus </p></td>
+             <td style="background-color: $reactimpoColor"><p> Reactive Important </p></td>
+             <td style="background-color: $inappfontColor"><p> Inappropriate Font Size </p></td>
         </tr>
         </table>
         <br>

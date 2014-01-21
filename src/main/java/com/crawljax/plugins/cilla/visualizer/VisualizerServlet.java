@@ -51,8 +51,8 @@ import com.google.common.io.Resources;
 
 public class VisualizerServlet extends VelocityViewServlet {
         /**
-         *
-         */
+*
+*/
         private static final long serialVersionUID = 1L;
 
         private final File summaryHTML;
@@ -61,7 +61,7 @@ public class VisualizerServlet extends VelocityViewServlet {
         
 private final File cssValidationHTML;
 private final File cssLintHTML;
-private final File statisticsHTML; 
+private final File statisticsHTML;
 
         private final File outputFolder = new File("output");
 
@@ -179,8 +179,8 @@ highlightMap.put(HighlightColor.INAPPFONT, InappfontHighlight);
         }
 
         /*
-         * The Servlet
-         */
+* The Servlet
+*/
         public Template handleRequest(HttpServletRequest request, HttpServletResponse response,
          Context ctx) {
                 Template temp = null;
@@ -215,13 +215,13 @@ highlightMap.put(HighlightColor.INAPPFONT, InappfontHighlight);
                         context.put("date", dateString);
 
                         /*
-                         * StringWriter sw = new StringWriter(); try { summaryTemplate.merge( context, sw ); }
-                         * catch (ResourceNotFoundException e) {
-                         * System.err.println("Could not find the summary template."); } catch
-                         * (ParseErrorException e) { System.err.println("summaryTemplate: parse error"); } catch
-                         * (MethodInvocationException e) { System.err.println("summaryTemplate: " +
-                         * "something invoked in the template threw an exception"); }
-                         */
+* StringWriter sw = new StringWriter(); try { summaryTemplate.merge( context, sw ); }
+* catch (ResourceNotFoundException e) {
+* System.err.println("Could not find the summary template."); } catch
+* (ParseErrorException e) { System.err.println("summaryTemplate: parse error"); } catch
+* (MethodInvocationException e) { System.err.println("summaryTemplate: " +
+* "something invoked in the template threw an exception"); }
+*/
 
                         FileWriter writer = new FileWriter(summaryHTML);
 
@@ -242,108 +242,108 @@ highlightMap.put(HighlightColor.INAPPFONT, InappfontHighlight);
  VelocityContext context = new VelocityContext();
  String template;
  String cssValidationMsg;
-        	     try {
-        	           template = getTemplateAsString(cssValidationTemplate.getName());
+                 try {
+                 template = getTemplateAsString(cssValidationTemplate.getName());
 
-        	          //Document doc = Jsoup.connect("http://jigsaw.w3.org/css-validator/validator?uri=http%3A%2F%2Fwww.ece.ubc.ca/~amesbah/exp%2F&warning=2&profile=css2").get();
-        	          Document doc = Jsoup.connect("http://jigsaw.w3.org/css-validator/validator?uri=http%3A%2F%2F"+CillaRunner.b+"%2F&warning=2&profile=css2").get();
-        	                
-        	                        
-        	        Elements table = doc.select("tr");
-        	                        
+                 //Document doc = Jsoup.connect("http://jigsaw.w3.org/css-validator/validator?uri=http%3A%2F%2Fwww.ece.ubc.ca/~amesbah/exp%2F&warning=2&profile=css2").get();
+                 Document doc = Jsoup.connect("http://jigsaw.w3.org/css-validator/validator?uri=http%3A%2F%2F"+CillaRunner.b+"%2F&warning=2&profile=css2").get();
+                
+                
+                 Elements table = doc.select("tr");
+                
 
-        	         cssValidationMsg = table.toString();
-        	                        
-        	         cssValidationMsg = cssValidationMsg.replace("\n", "<br> ");
-        	                        
-        	                        
-        	         context.put("summary", cssValidationMsg);
-        	         context.put("url", url);
-        	         context.put("date", dateString);
-        	                        
-        	         FileWriter writer = new FileWriter(cssValidationHTML);
+                 cssValidationMsg = table.toString();
+                
+                 cssValidationMsg = cssValidationMsg.replace("\n", "<br> ");
+                
+                
+                 context.put("summary", cssValidationMsg);
+                 context.put("url", url);
+                 context.put("date", dateString);
+                
+                 FileWriter writer = new FileWriter(cssValidationHTML);
 
-        	         ve.evaluate(context, writer, "CSS Validation", template);
-        	         writer.flush();
-        	         writer.close();
+                 ve.evaluate(context, writer, "CSS Validation", template);
+                 writer.flush();
+                 writer.close();
 
-        	                } catch (IOException e) {
-        	                        e.printStackTrace();
-        	                }
-        	                
-        	        }
+                 } catch (IOException e) {
+                 e.printStackTrace();
+                 }
+                
+                 }
 
  public void addCssLint(){
   //crawledAddress = url;
   VelocityContext context = new VelocityContext();
   String template;
   String cssLintMsg;
-        	       try {
-        	        template = getTemplateAsString(cssLintTemplate.getName());
+                 try {
+                 template = getTemplateAsString(cssLintTemplate.getName());
 
-        	        File f = new File("C:/Users/Golnaz/cilla/CsslintReports/output"+CillaPlugin.i+".txt");
-        	        //File f = new File("D:/Output.txt");
-        	        FileInputStream fin = new FileInputStream(f);
-        	        byte[] buffer = new byte[(int) f.length()];
-        	        new DataInputStream(fin).readFully(buffer);
-        	        fin.close();
-        	       String s = new String(buffer, "UTF-8");
-        	       //System.out.println(s);
-        	                                
-        	                
-        	         cssLintMsg = s;
-        	         cssLintMsg = cssLintMsg.replace("\n", "<br> ");
-        	                                
-        	                                
-        	                                
-        	        context.put("summary", cssLintMsg);
-        	       //context.put("url", url);
-        	        context.put("date", dateString);
-        	                                
-        	      FileWriter writer = new FileWriter(cssLintHTML);
+                 File f = new File("C:/Users/Golnaz/cilla/CsslintReports/output"+CillaPlugin.i+".txt");
+                 //File f = new File("D:/Output.txt");
+                 FileInputStream fin = new FileInputStream(f);
+                 byte[] buffer = new byte[(int) f.length()];
+                 new DataInputStream(fin).readFully(buffer);
+                 fin.close();
+                 String s = new String(buffer, "UTF-8");
+                 //System.out.println(s);
+                
+                
+                 cssLintMsg = s;
+                 cssLintMsg = cssLintMsg.replace("\n", "<br> ");
+                
+                
+                
+                 context.put("summary", cssLintMsg);
+                 //context.put("url", url);
+                 context.put("date", dateString);
+                
+                 FileWriter writer = new FileWriter(cssLintHTML);
 
-        	        ve.evaluate(context, writer, "CSS Lint", template);
-        	         writer.flush();
-        	         writer.close();
+                 ve.evaluate(context, writer, "CSS Lint", template);
+                 writer.flush();
+                 writer.close();
 
-        	               } catch (IOException e) {
-        	                       e.printStackTrace();
-        	                        }
-        	                        
-        	        
-        	}
+                 } catch (IOException e) {
+                 e.printStackTrace();
+                 }
+                
+                
+                }
 
   public void addStatistics(){
 
    VelocityContext context = new VelocityContext();
    String template;
    String statisticsMsg;
-        	       try {
-        	             template = getTemplateAsString(statisticsTemplate.getName());
-        	                                
-        	             String s = "The average number of properties used in one CSS rule in this web site: "+ String.valueOf(CillaPlugin.Mean)+
-        	                        "\n"+"The median of number of properties used in one CSS rule in this web site: "+ String.valueOf(CillaPlugin.Median)+"\n"+"The minimum number of properties in one CSS rule: "+String.valueOf(CillaPlugin.min)+"\n"+"The maximum number of properties used in one CSS rule: "+String.valueOf(CillaPlugin.max)+"\n"+"The average number of selector types used in one CSS rule: "+CillaPlugin.meanSelector+"\n"+"The median of selector types used in one CSS rule: "+CillaPlugin.medianSelector+"\n"+"The minimum number of selector types in one CSS rule: "+CillaPlugin.minSelector+"\n"+"The maximum number of selector types in one CSS rule: "+CillaPlugin.maxSelector;
-        	           statisticsMsg= s;
+                 try {
+                 template = getTemplateAsString(statisticsTemplate.getName());
+                
+                 String s = "The average number of properties used in one CSS rule in this web site: "+ String.valueOf(CillaPlugin.Mean)+
+                 "\n"+"The median of number of properties used in one CSS rule in this web site: "+ String.valueOf(CillaPlugin.Median)+"\n"+"The minimum number of properties in one CSS rule: "+String.valueOf(CillaPlugin.min)+"\n"+"The maximum number of properties used in one CSS rule: "+String.valueOf(CillaPlugin.max)+"\n"+"The average number of selector types used in one CSS rule: "+CillaPlugin.meanSelector+"\n"+"The median of selector types used in one CSS rule: "+CillaPlugin.medianSelector+"\n"+"The minimum number of selector types in one CSS rule: "+CillaPlugin.minSelector+"\n"+"The maximum number of selector types in one CSS rule: "+CillaPlugin.maxSelector;
+                 statisticsMsg= s;
 
-        	           statisticsMsg = statisticsMsg.replace("\n", "<br><br> ");
-        	                                
-        	                                
-        	           context.put("summary", statisticsMsg);
-        	                                
-        	           context.put("date", dateString);
-        	                                
-        	          FileWriter writer = new FileWriter(statisticsHTML);
+                 statisticsMsg = statisticsMsg.replace("\n", "<br><br> ");
+                
+                
+                 context.put("summary", statisticsMsg);
+                
+                 context.put("date", dateString);
+                
+                 FileWriter writer = new FileWriter(statisticsHTML);
 
-        	          ve.evaluate(context, writer, "Statistics", template);
-        	          writer.flush();
-        	          writer.close();
+                 ve.evaluate(context, writer, "Statistics", template);
+                 writer.flush();
+                 writer.close();
 
-        	           } catch (IOException e) {
-        	                  e.printStackTrace();
-        	                        }
-        	                        
-        	        
-        	}
+                 } catch (IOException e) {
+                 e.printStackTrace();
+                 }
+                
+                
+                }
 
 
 
@@ -366,7 +366,7 @@ StringBuffer emptyCatch;
 StringBuffer undoingStyle;
 StringBuffer idWithClassOrElement;
 StringBuffer reactiveImportant;
-StringBuffer inappFontSize;  
+StringBuffer inappFontSize;
                 // Look through the files and format the sorted output
                 for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()) {
                         Map<String, String> analysisMap = new HashMap<String, String>();
@@ -447,8 +447,8 @@ inappFontSize = new StringBuffer();
                         + rule.getLocator().getLineNumber() + "<br>");
                       tooSpecific.append(" Selector: " + sel.getCssSelector()
                                   + "<br><br>");
-     //        updateUnsortedMap(filename, rule.getLocator().getLineNumber(), rule
-        //         .getRule().getCssText(), HighlightColor.TOOSPECIFIC);
+     // updateUnsortedMap(filename, rule.getLocator().getLineNumber(), rule
+        // .getRule().getCssText(), HighlightColor.TOOSPECIFIC);
                                                                                 
                                      }
                                                                         
@@ -458,9 +458,9 @@ List<MSelector> tooLazyy = rule.getLazyRules();
 
                  if(tooLazyy.size()>0){
                     for (MSelector sel : tooLazyy){
-                    	
-                    	
-                    	
+                            
+                            
+                            
                        tooLazy.append("CSS rule: " + rule.getRule().getCssText()
                                   + "<br>");
                        tooLazy.append("at line: "
@@ -468,10 +468,10 @@ List<MSelector> tooLazyy = rule.getLazyRules();
                        tooLazy.append(" Selector: " + sel.getCssSelector()
                                               + "<br><br>");
                        
-                     //  tooLazy.append(String.format("<font color=green>" , rule.getRule().getCssText()));     	
+                     // tooLazy.append(String.format("<font color=green>" , rule.getRule().getCssText()));         
                       
-          //   updateUnsortedMap(filename, rule.getLocator().getLineNumber(), rule
-           //   .getRule().getCssText(), HighlightColor.LAZY);        
+          // updateUnsortedMap(filename, rule.getLocator().getLineNumber(), rule
+           // .getRule().getCssText(), HighlightColor.LAZY);
                                                                    
                                                  }
                                                                         
@@ -505,7 +505,7 @@ List<MSelector> empcat = rule.getEmptyCatch();
                   emptyCatch.append(" Selector: " + sel.getCssSelector()
                                      + "<br><br>");
                                                                                 
-         //        updateUnsortedMap(filename, rule.getLocator().getLineNumber(), rule
+         // updateUnsortedMap(filename, rule.getLocator().getLineNumber(), rule
                // .getRule().getCssText(), HighlightColor.EMPTYCATCH);
                                                                                 
                                                        }
@@ -522,8 +522,8 @@ List<MSelector> undsty = rule.getEmptyCatch();
                       emptyCatch.append(" Selector: " + sel.getCssSelector()
                                             + "<br><br>");
                                                                                 
-          //        updateUnsortedMap(filename, rule.getLocator().getLineNumber(), rule
-                    //         .getRule().getCssText(), HighlightColor.OVERRIDING);
+          // updateUnsortedMap(filename, rule.getLocator().getLineNumber(), rule
+                    // .getRule().getCssText(), HighlightColor.OVERRIDING);
                                                                                 
                                                                         }
                                                                         
@@ -539,7 +539,7 @@ List<MSelector> IDWithh = rule.getIdWithClassOrElement();
               idWithClassOrElement.append(" Selector: " + sel.getCssSelector()
                                   + "<br><br>");
                                                                                 
-           //        updateUnsortedMap(filename, rule.getLocator().getLineNumber(), rule
+           // updateUnsortedMap(filename, rule.getLocator().getLineNumber(), rule
               // .getRule().getCssText(), HighlightColor.IDPLUS);
                                                                                 
                                                                         }
@@ -556,8 +556,8 @@ List<MSelector> reactive = rule.getReactiveImportant();
                               + rule.getLocator().getLineNumber() + "<br>");
                        reactiveImportant.append(" Selector: " + sel.getCssSelector()
                                              + "<br><br>");
-      //        updateUnsortedMap(filename, rule.getLocator().getLineNumber(), rule
-          //         .getRule().getCssText(), HighlightColor.IMPORTANT);
+      // updateUnsortedMap(filename, rule.getLocator().getLineNumber(), rule
+          // .getRule().getCssText(), HighlightColor.IMPORTANT);
                                                                                 
                                                                         }
                                                                         
@@ -572,8 +572,8 @@ List<MSelector> inappfont = rule.checkFontSize();
                                           + rule.getLocator().getLineNumber() + "<br>");
                                      inappFontSize.append(" Selector: " + sel.getCssSelector()
                                                          + "<br><br>");
-            //        updateUnsortedMap(filename, rule.getLocator().getLineNumber(), rule
-               //         .getRule().getCssText(), HighlightColor.IMPORTANT);
+            // updateUnsortedMap(filename, rule.getLocator().getLineNumber(), rule
+               // .getRule().getCssText(), HighlightColor.IMPORTANT);
                                                                                 
                                                                         }
                                                                         
@@ -647,14 +647,14 @@ analysisMap.put("Rules with Inappropriate Font-size Value", inappFontStr);
                 VelocityContext context = new VelocityContext();
                 context.put("filemap", fileMap);
                 /*
-                 * StringWriter sw = new StringWriter(); try { cssAnalysisTemplate.merge( context, sw ); }
-                 * catch (ResourceNotFoundException e) {
-                 * System.err.println("Could not find the css-com.crawljax.plugins.cilla.analysis template."
-                 * ); } catch (ParseErrorException e) {
-                 * System.err.println("cssAnalysisTemplate: parse error"); } catch
-                 * (MethodInvocationException e) { System.err.println("cssAnalysisTemplate: " +
-                 * "something invoked in the template threw an exception"); }
-                 */
+* StringWriter sw = new StringWriter(); try { cssAnalysisTemplate.merge( context, sw ); }
+* catch (ResourceNotFoundException e) {
+* System.err.println("Could not find the css-com.crawljax.plugins.cilla.analysis template."
+* ); } catch (ParseErrorException e) {
+* System.err.println("cssAnalysisTemplate: parse error"); } catch
+* (MethodInvocationException e) { System.err.println("cssAnalysisTemplate: " +
+* "something invoked in the template threw an exception"); }
+*/
 
                 context.put("filemap2", getVTLReference());
                 context.put("date", dateString);
@@ -693,6 +693,13 @@ context.put("inappfontColor", InappfontHighlight);
                 unsortedMap = new HashMap<String, Map<String, Map<Integer, HighlightColor>>>();
                 Map<String, Map<Integer, HighlightColor>> ruleMap;
                 Map<Integer, HighlightColor> colorMap;
+                Map<Integer, HighlightColor> colorMap1;
+                Map<Integer, HighlightColor> colorMap2;
+                Map<Integer, HighlightColor> colorMap3;
+                Map<Integer, HighlightColor> colorMap4;
+                Map<Integer, HighlightColor> colorMap5;
+                Map<Integer, HighlightColor> colorMap6;
+                Map<Integer, HighlightColor> colorMap7;
              
                 try {
                         for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()) {
@@ -708,61 +715,101 @@ context.put("inappfontColor", InappfontHighlight);
                                                 parsedRule = rule.getRule().getCssText();
                                                 colorMap.put(line, HighlightColor.NONE);
                                                 ruleMap.put(parsedRule, colorMap);
-                                                
+                                               
                                                if(!rule.getLazyRules().isEmpty() && null != rule.getLocator()){
-                                            	   i++;
-                                            	   colorMap.put(line, HighlightColor.LAZY);
-                                            	  
+                                            	   colorMap = new HashMap<Integer, HighlightColor>();
+                                            	   
+                                                     i++;
+                                                     colorMap.put(line, HighlightColor.LAZY);
+                                                    
                                                    ruleMap.put(" "+"Lazy Rule Number "+i+" "+parsedRule, colorMap);
+                                                   
+                                                   
+                                                   
                                                }
                                                 
                                                    if(!rule.getTooLongRules().isEmpty() && null != rule.getLocator()){
-                                                	   j++;
-                                                	   colorMap.put(line, HighlightColor.LONG);
-                                                	  
-                                                       ruleMap.put(" "+"Long Rule Number "+j+" "+parsedRule, colorMap);
+                                                	   colorMap1 = new HashMap<Integer, HighlightColor>();
+                                                         j++;
+                                                         colorMap1.put(line, HighlightColor.LONG);
+                                                        
+                                                       ruleMap.put(" "+"Long Rule Number "+j+" "+parsedRule, colorMap1);
+                                                    
+                                                  
+                                                       
+                                                       
                                                    }
                                                        
                                                        if(!rule.getTooSpecificSelectors().isEmpty() && null != rule.getLocator()){
-                                                    	   k++;
-                                                    	   colorMap.put(line, HighlightColor.TOOSPECIFIC);
-                                                    	  
-                                                           ruleMap.put(" "+"Too Specific Rule Number "+k+" "+parsedRule, colorMap);
+                                                    	   colorMap2 = new HashMap<Integer, HighlightColor>();
+                                                             k++;
+                                                             colorMap2.put(line, HighlightColor.TOOSPECIFIC);
+                                                            
+                                                           ruleMap.put(" "+"Too Specific Rule Number "+k+" "+parsedRule, colorMap2);
+                                                         
+                                                           
+                                                          
+                                                           
                                                        }
                                                            
                                                            if(!rule.getEmptyCatch().isEmpty() && null != rule.getLocator()){
-                                                        	   l++;
-                                                        	   colorMap.put(line, HighlightColor.EMPTYCAT);
-                                                        	  
-                                                               ruleMap.put(" "+"Empty Catch Number "+l+" "+parsedRule, colorMap);
+                                                        	   colorMap3 = new HashMap<Integer, HighlightColor>();
+                                                                 l++;
+                                                                 colorMap3.put(line, HighlightColor.EMPTYCAT);
+                                                                
+                                                               ruleMap.put(" "+"Empty Catch Number "+l+" "+parsedRule, colorMap3);
+                                                               
+                                                               
+                                                               
+                                                               
                                                            }
                                                                
                                                                if(!rule.getUndoingStyle().isEmpty() && null != rule.getLocator()){
-                                                            	   m++;
-                                                            	   colorMap.put(line, HighlightColor.UNDSTY);
-                                                            	  
-                                                                   ruleMap.put(" "+"Undoing Style Number "+m+" "+parsedRule, colorMap);
+                                                            	   colorMap4 = new HashMap<Integer, HighlightColor>();
+                                                                     m++;
+                                                                     colorMap4.put(line, HighlightColor.UNDSTY);
+                                                                    
+                                                                   ruleMap.put(" "+"Undoing Style Number "+m+" "+parsedRule, colorMap4);
+                                                                 
+                                                                   
+                                                                   
+                                                                  
                                                                }
                                                                    
                                                                    if(!rule.getIdWithClassOrElement().isEmpty() && null != rule.getLocator()){
-                                                                	   n++;
-                                                                	   colorMap.put(line, HighlightColor.IDPLUS);
-                                                                	  
-                                                                       ruleMap.put(" "+"ID Plus Number "+n+" "+parsedRule, colorMap);
+                                                                	   colorMap5 = new HashMap<Integer, HighlightColor>();
+                                                                         n++;
+                                                                         colorMap5.put(line, HighlightColor.IDPLUS);
+                                                                        
+                                                                       ruleMap.put(" "+"ID Plus Number "+n+" "+parsedRule, colorMap5);
+                                                                    
+                                                                     
+                                                                      
+                                                                       
                                                                    }
                                                                        
                                                                        if(!rule.getReactiveImportant().isEmpty() && null != rule.getLocator()){
-                                                                    	   o++;
-                                                                    	   colorMap.put(line, HighlightColor.REACTIMPO);
-                                                                    	  
-                                                                           ruleMap.put(" "+"Reactive Important Number "+o+" "+parsedRule, colorMap);
+                                                                    	   colorMap6 = new HashMap<Integer, HighlightColor>();
+                                                                             o++;
+                                                                             colorMap6.put(line, HighlightColor.REACTIMPO);
+                                                                            
+                                                                           ruleMap.put(" "+"Reactive Important Number "+o+" "+parsedRule, colorMap6);
+                                                                        
+                                                                          
+                                                                           
+                                                                           
                                                                        }
                                                                            
                                                                            if(!rule.checkFontSize().isEmpty() && null != rule.getLocator()){
-                                                                        	   p++;
-                                                                        	   colorMap.put(line, HighlightColor.INAPPFONT);
-                                                                        	  
-                                                                               ruleMap.put(" "+"Inappropriate Font Size Number "+p+" "+parsedRule, colorMap);
+                                                                        	   colorMap7 = new HashMap<Integer, HighlightColor>();
+                                                                                 p++;
+                                                                                 colorMap7.put(line, HighlightColor.INAPPFONT);
+                                                                                
+                                                                               ruleMap.put(" "+"Inappropriate Font Size Number "+p+" "+parsedRule, colorMap7);
+                                                                              
+                                                                               
+                                                                              
+                                                                               
                                                                            }
                                                }
                                                
@@ -774,7 +821,7 @@ context.put("inappfontColor", InappfontHighlight);
                                                 System.err.println("CANNOT FIND LOCATOR");
                                         }
                                 }
-                                unsortedMap.put(filename, ruleMap);
+                              unsortedMap.put(filename, ruleMap);
                                 
                         }
                         
@@ -865,15 +912,15 @@ context.put("inappfontColor", InappfontHighlight);
         }
 
         /**
-         * Retrieves the content of the filename. Also reads from JAR Searches for the resource in the
-         * root folder in the jar
-         *
-         * @param fname
-         * Filename.
-         * @return The contents of the file.
-         * @throws IOException
-         * On error.
-         */
+* Retrieves the content of the filename. Also reads from JAR Searches for the resource in the
+* root folder in the jar
+*
+* @param fname
+* Filename.
+* @return The contents of the file.
+* @throws IOException
+* On error.
+*/
         private static String getTemplateAsString(String fname) throws IOException {
                 // in .jar file
                 String fnameJar = getFileNameInPath(fname);
@@ -901,12 +948,12 @@ context.put("inappfontColor", InappfontHighlight);
         }
 
         /**
-         * Returns the filename in a path. For example with path = "foo/bar/crawljax.txt" returns
-         * "crawljax.txt"
-         *
-         * @param path
-         * @return the filename from the path
-         */
+* Returns the filename in a path. For example with path = "foo/bar/crawljax.txt" returns
+* "crawljax.txt"
+*
+* @param path
+* @return the filename from the path
+*/
         private static String getFileNameInPath(String path) {
                 String fname;
                 if (path.indexOf("/") != -1) {

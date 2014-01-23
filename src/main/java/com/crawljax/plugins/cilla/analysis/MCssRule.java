@@ -3,7 +3,9 @@ package com.crawljax.plugins.cilla.analysis;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.w3c.css.sac.Locator;
@@ -21,7 +23,8 @@ import com.steadystate.css.userdata.UserDataConstants;
 public class MCssRule {
 
         private CSSRule rule;
-        private List<MSelector> selectors;
+       private List<MSelector> selectors;
+        
         private String ruleSelector;
 
         private static Set<String> ignorePseudoClasses = new HashSet<String>(Arrays.asList(":link",
@@ -427,20 +430,5 @@ List<MSelector> reactiveImportant = new ArrayList<MSelector>();
                         return reactiveImportant;
                 }
 
-public void averageProperties(){
-        int[] p = new int[1000];
-        int i =0;
-        double sum = 0;
-        double Mean = 0;
-        double Median = 0;
-        for (MSelector selector : this.selectors){
-                i++;
-                p[i]= selector.getProperties().size();
-                sum += p[i];
-                
-                
-        }
-        System.out.println("this.s"+ sum);
-}
 
 }

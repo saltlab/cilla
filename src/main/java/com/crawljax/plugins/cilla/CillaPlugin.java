@@ -1,9 +1,8 @@
 package com.crawljax.plugins.cilla;
 
-import java.io.BufferedInputStream;
+
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,16 +19,11 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.Arrays;
-
 import javax.xml.xpath.XPathExpressionException;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
-import org.w3c.dom.css.CSSRule;
-
 import se.fishtank.css.selectors.NodeSelectorException;
-
 import com.crawljax.core.CrawlSession;
 import com.crawljax.core.CrawlerContext;
 import com.crawljax.core.ExitNotifier.ExitStatus;
@@ -44,11 +38,11 @@ import com.crawljax.plugins.cilla.analysis.MSelector;
 import com.crawljax.plugins.cilla.analysis.MatchedElements;
 import com.crawljax.plugins.cilla.util.CSSDOMHelper;
 import com.crawljax.plugins.cilla.util.CssParser;
-import com.crawljax.plugins.cilla.util.specificity.SpecificityCalculator;
 import com.crawljax.plugins.cilla.visualizer.CillaVisualizer;
 import com.crawljax.plugins.cilla.visualizer.VisualizerServlet;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
+
 
 public class CillaPlugin implements OnNewStatePlugin, PostCrawlingPlugin {
         
@@ -58,7 +52,9 @@ public static int totalCssRules = 0;
 
         private Map<String, List<MCssRule>> cssRules = new HashMap<String, List<MCssRule>>();
         
-private Map<String, List<MSelector>> cssSelectors = new HashMap<String, List<MSelector>>();
+public static Map<String, List<MCssRule>> embeddedcssRules1 = new HashMap<String, List<MCssRule>>();
+        
+
         public static final Set<String> cssEffectiveRuntime = new HashSet<String>();
 
         final SetMultimap<String, ElementWithClass> elementsWithNoClassDef = HashMultimap.create();
@@ -82,6 +78,9 @@ public static double meanSelector;
 public static double medianSelector;
 public static double minSelector;
 public static double maxSelector;
+public int countEmbeddedRules = 0;
+public static List<String> allEmbeddedRules;
+
         public void onNewState(CrawlerContext context, StateVertex newState) {
                 // if the external CSS files are not parsed yet, do so
                 parseCssRules(context, newState);
@@ -194,24 +193,38 @@ public static double maxSelector;
                         }
 
 
-                        
+                     
                         // get all the embedded <STYLE> rules, save per HTML page
                         if (!cssRules.containsKey(url)) {
                                 String embeddedRules = CSSDOMHelper.getEmbeddedStyles(dom);
                                 cssLOC += countLines(embeddedRules);
-
-
+                                
+ 
+ 
 
                                 List<MCssRule> rules = CssParser.getMCSSRules(embeddedRules);
+                               
+   countEmbeddedRules+= rules.size();   
+  
                                 if (rules != null && rules.size() > 0) {
                                         cssRules.put(url, rules);
-                                }
-                        }
+    embeddedcssRules1.put(url, rules);  
+    
+                       
+    }
+                                
+                                        
+                           
+   }
+  
+                            
+                       
+               
 
                 } catch (IOException e) {
                         LOGGER.error(e.getMessage(), e);
                 }
-                
+                     
         }
 public void determineThreshold(){
         
@@ -221,8 +234,7 @@ public void determineThreshold(){
         double sum = 0;
         double sum1 = 0;
         
-        //double Mean = 0;
-        //double Median = 0;
+        
         
         for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()) {
                 for (MCssRule mrule : entry.getValue()) {
@@ -230,16 +242,17 @@ public void determineThreshold(){
                 }
                 
         }
+        
         for(int i=0; i<allSelectors.size();i++){
                 
                 b[j]= allSelectors.get(i).getProperties().size();
                 
                 j++;
-                //System.out.println(allSelectors.get(i).getProperties().size());
+               
                 
         }
         for(int k=0; k<b.length;k++){
-                System.out.println(b[k]);
+               
                 sum+= b[k];
         }
         Mean = sum/totalCssSelectors;
@@ -252,7 +265,7 @@ public void determineThreshold(){
         else{
                 Median = b[(b.length)/2+1];
         }
-        System.out.println("min:"+min+" "+"max:"+max);
+       
         
         int z = 0;
         int[] c = new int[totalCssSelectors];
@@ -265,7 +278,7 @@ public void determineThreshold(){
         int q = l+m+n+o;
         c[z]= q;
         z++;
-        System.out.println("bye"+s+allSelectors.get(p));
+        
         }
         for(int y = 0; y<c.length;y++){
                 sum1+= c[y];
@@ -283,20 +296,33 @@ public void determineThreshold(){
                 medianSelector = c[(c.length)/2+1];
         }
         
-        //System.out.println("The average number of properties used in one CSS rule in this web site:"+ String.valueOf(Mean));
-        //System.out.println("The median of number of properties used in one CSS rule in this web site:"+ Median);
+        
         
         }
-        
+        public void getEmbeddedRules(){
+        	
+allEmbeddedRules = new ArrayList<String>();
+        	
+        	for (Map.Entry<String, List<MCssRule>> entry : embeddedcssRules1.entrySet()) {
+          		 for (MCssRule mrule : entry.getValue()){
+          			 if(mrule.getRule().toString().contains("import")){
+          				 continue;
+          			 }
+          			 else{
+          			 allEmbeddedRules.add(mrule.getRule().toString());
+          			 }
+          		 }
+          		
+           	}
+        	
+        }
         
         @Override
         public void postCrawling(CrawlSession session, ExitStatus exitReason) {
-                
-                
-                
-                
-                //determineThreshold();
-                
+        	
+        	getEmbeddedRules();
+        	
+        	
                 //Copying Css Code of the web site(both embedded and external) into a file to be used by csslint later on.
         //        new File("C:/Users/Golnaz/cilla/CsslintReports").mkdirs();        
                 
@@ -414,13 +440,7 @@ public void determineThreshold(){
                 
 
                 
-                        
-                //        Process pr = rt.exec("cmd.exe /c csslint C:/Users/Golnaz/cilla/CsslintReports/"+i+"/cssfile.css"+" > C:/Users/Golnaz/cilla/CsslintReports/"+i+"/output.txt");
-                        //String[] commands = {"cmd.exe /c cd cilla/CsslintReports", "cmd.exe /c java -jar js.jar csslint-rhino.js cssfile1.css > output.txt"};
-                        //Process pr = rt.exec(commands);
-                        //Process pr1 = rt.exec("cmd.exe /c cd cilla/CsslintReports");
-                        //Process pr = rt.exec("cmd.exe /c java -jar js.jar csslint-rhino.js C:/Users/Golnaz/cssfile1.css > C:/Users/Golnaz/output1.txt");
-                        //Process pr = rt.exec("cmd.exe /c java -jar js.jar csslint-rhino.js C:/Users/Golnaz/Downloads/test/normalize.css > C:/Users/Golnaz/Downloads/test/output.txt");
+               
                  VisualizerServlet a = new VisualizerServlet();
                 
                  a.addCssLint();
@@ -432,7 +452,7 @@ public void determineThreshold(){
                         // TODO Auto-generated catch block
                         e.printStackTrace();
                 }
-                
+ 
                 StringBuffer output = new StringBuffer();
                 StringBuffer bufferUnused = new StringBuffer();
                 StringBuffer bufferUsed = new StringBuffer();
@@ -464,6 +484,8 @@ StringBuffer reactiveImportant = new StringBuffer();
 int impo = getReactiveImportant(reactiveImportant);
 StringBuffer inappFontSize = new StringBuffer();
 int inappfo = getInnappFontSize(inappFontSize);
+StringBuffer embeddedRules = new StringBuffer();
+int dsf = getNumEmbeddedRules(embeddedRules);
 
                 output.append("Analyzed " + session.getConfig().getUrl() + " on "
                  + new SimpleDateFormat("dd/MM/yy-hh:mm:ss").format(new Date()) + "\n");
@@ -506,7 +528,7 @@ output.append(" -> Overriding Properties: "+ undostyle+ "\n");
 output.append(" -> Selectors with ID and at least one class or element: "+ idwith + "\n");
 output.append(" -> Total Number of !important used in the code(Reactiveness): "+ impo + "\n");
 output.append(" -> Selectors with Inappropriate Font-size Value for their Properties: "+ inappfo + "\n");
-
+output.append(" -> Embedded Rules: "+ dsf +"\n");
                 /*
                  * This is where the com.crawljax.plugins.cilla.visualizer gets called.
                  */
@@ -533,6 +555,7 @@ output.append(undoingStyle.toString());
 output.append(idWithClassOrElement.toString());
 output.append(reactiveImportant.toString());
 output.append(inappFontSize.toString());
+output.append(embeddedRules.toString());
 
                 try {
                         FileUtils.writeStringToFile(outputFile, output.toString());
@@ -1119,5 +1142,17 @@ int counter = 0;
                 
                 
         }
+
+public int getNumEmbeddedRules(StringBuffer buffer){
+	
+LOGGER.info("Reporting Embedded CSS Rules...");
+buffer.append("========== EMBEDDED CSS RULES ==========\n");
+        
+     int counter = allEmbeddedRules.size();  
+        
+                
+       return counter;
+                
+                }
 
 }

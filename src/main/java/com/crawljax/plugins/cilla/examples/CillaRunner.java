@@ -9,18 +9,19 @@ import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.plugins.cilla.CillaPlugin;
 
+
 public class CillaRunner {
 
         private static final int waitAfterEvent = 400;
         private static final int waitAfterReload = 400;
 
-        private static final String INDEX = "http://www.ece.ubc.ca/~amesbah/exp";
-       // private static final String INDEX = "http://www.google.com";
-        //private static final String INDEX = "http://www.youtube.com";
+ // private static final String INDEX = "http://www.ece.ubc.ca/~amesbah/exp";
+      private static final String INDEX = "http://www.google.com";
+        
+     
         
 public static String name;        
 public static long startTime;
-public static boolean enable_validation;
 public static String b;
     public static void main(String[] args) {
                 /*
@@ -48,8 +49,16 @@ public static String b;
                 builder.crawlRules().clickOnce(true);
 
                 builder.crawlRules().click("a");
+builder.crawlRules().click("div");
+builder.crawlRules().click("img");
+builder.crawlRules().click("button");
+builder.crawlRules().click("span");
+builder.crawlRules().click("input");
+
+builder.setMaximumStates(50);
 
                 builder.setMaximumRunTime(60, TimeUnit.SECONDS);
+
 
                 builder.setBrowserConfig(new BrowserConfiguration(BrowserType.firefox, 1));
 

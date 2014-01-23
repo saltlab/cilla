@@ -1,6 +1,6 @@
 package com.crawljax.plugins.cilla.visualizer;
 
-import java.awt.Color;
+
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.File;
@@ -76,7 +76,7 @@ private Template statisticsTemplate;
 
 
         private enum HighlightColor {
-                NONE, UNMATCHED, INEFFECTIVE, EFFECTIVE, LAZY, LONG, TOOSPECIFIC, EMPTYCAT, UNDSTY, IDPLUS, REACTIMPO, INAPPFONT
+                NONE, UNMATCHED, INEFFECTIVE, EFFECTIVE, LAZY, LONG, TOOSPECIFIC, EMPTYCAT, UNDSTY, IDPLUS, REACTIMPO, INAPPFONT, EMBEDDED
         }
 
         private Map<HighlightColor, String> highlightMap;
@@ -93,6 +93,7 @@ private final String UndstyHighlight = "99FF00";
 private final String IdplusHighlight = "6699CC";
 private final String ReactimpoHighlight = "#B8B8B8 ";
 private final String InappfontHighlight = "#00FFFF";
+private final String EmbeddedHighlight = "#00FF00";
 
         private Map<String, Map<String, Map<Integer, HighlightColor>>> unsortedMap;
 
@@ -130,6 +131,8 @@ highlightMap.put(HighlightColor.UNDSTY, UndstyHighlight);
 highlightMap.put(HighlightColor.IDPLUS, IdplusHighlight);
 highlightMap.put(HighlightColor.REACTIMPO, ReactimpoHighlight);
 highlightMap.put(HighlightColor.INAPPFONT, InappfontHighlight);
+highlightMap.put(HighlightColor.EMBEDDED, EmbeddedHighlight);
+
 
                 outputDir = outputFolder.getAbsolutePath() + folderString;
                 File outputPath = new File(outputDir);
@@ -367,9 +370,11 @@ StringBuffer undoingStyle;
 StringBuffer idWithClassOrElement;
 StringBuffer reactiveImportant;
 StringBuffer inappFontSize;
+StringBuffer embeddedRules;
                 // Look through the files and format the sorted output
                 for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()) {
-                        Map<String, String> analysisMap = new HashMap<String, String>();
+                       Map<String, String> analysisMap = new HashMap<String, String>();
+                	
                         List<MCssRule> rules = entry.getValue();
 
                         // Get the file name
@@ -389,6 +394,7 @@ undoingStyle = new StringBuffer();
 idWithClassOrElement = new StringBuffer();
 reactiveImportant = new StringBuffer();
 inappFontSize = new StringBuffer();
+embeddedRules = new StringBuffer();
                         // Loop through the rules
                         for (MCssRule rule : rules) {
 
@@ -468,7 +474,7 @@ List<MSelector> tooLazyy = rule.getLazyRules();
                        tooLazy.append(" Selector: " + sel.getCssSelector()
                                               + "<br><br>");
                        
-                     // tooLazy.append(String.format("<font color=green>" , rule.getRule().getCssText()));         
+                     // tooLazy.append(String.format("<font color=green>" , rule.getRule().getCssText()));
                       
           // updateUnsortedMap(filename, rule.getLocator().getLineNumber(), rule
            // .getRule().getCssText(), HighlightColor.LAZY);
@@ -562,7 +568,7 @@ List<MSelector> reactive = rule.getReactiveImportant();
                                                                         }
                                                                         
                                                                 }
-
+              
 List<MSelector> inappfont = rule.checkFontSize();
                      if(inappfont.size()>0){
                                        for (MSelector sel : inappfont){
@@ -578,8 +584,24 @@ List<MSelector> inappfont = rule.checkFontSize();
                                                                         }
                                                                         
                                                                 }
+if(!CillaPlugin.allEmbeddedRules.isEmpty() && CillaPlugin.allEmbeddedRules.contains(rule.getRule().toString())){
+	
+            	 embeddedRules.append("CSS rule: " + rule.getRule().getCssText()
+                         + "<br>");
+        	 embeddedRules.append("at line: "
+       + rule.getLocator().getLineNumber() + "<br>");
+        	 embeddedRules.append(" Selector: " + rule.getRuleSelector().toString()
+                      + "<br><br>");
+            	
+            }
+            
+                  
+  
                         } // for rules
+                        
 
+                       
+                       
                         // Third append the Undefined Classes
                         undefClassBuffer = new StringBuffer();
                         // undefClassBuffer.append("<h2> Undefined CSS Classes </h2>");
@@ -624,6 +646,8 @@ String reactiveStr = reactiveImportant.toString().replaceAll("#", "&#35");
 reactiveStr = reactiveStr.replaceAll("\\*", "&#42");
 String inappFontStr = inappFontSize.toString().replaceAll("#", "&#35");
 inappFontStr = inappFontStr.replaceAll("\\*", "&#42");
+String embeddedRulesStr = embeddedRules.toString().replaceAll("#", "&#35");
+embeddedRulesStr = embeddedRulesStr.replaceAll("\\*", "&#42");
 
                         analysisMap.put("Unmatched CSS Rules", unmatchedStr);
                         analysisMap.put("Matched & Ineffective CSS Rules", ineffectiveStr);
@@ -639,10 +663,13 @@ analysisMap.put("CSS Rules with Overriding Properties", undoStr);
 analysisMap.put("Selectors with ID and at Least One Class or Element", idWithStr);
 analysisMap.put("Rules with !important in their Declaration", reactiveStr);
 analysisMap.put("Rules with Inappropriate Font-size Value", inappFontStr);
-
+analysisMap.put("Embedded Rules", embeddedRulesStr);
+		
                         fileMap.put(filename, analysisMap);
 
                 } // for entry set
+               
+            
 
                 VelocityContext context = new VelocityContext();
                 context.put("filemap", fileMap);
@@ -670,6 +697,7 @@ context.put("undstyColor", UndstyHighlight);
 context.put("idplusColor", IdplusHighlight);
 context.put("reactimpoColor", ReactimpoHighlight);
 context.put("inappfontColor", InappfontHighlight);
+context.put("embeddedruleColor", EmbeddedHighlight);
 
                 String template;
                 try {
@@ -689,7 +717,7 @@ context.put("inappfontColor", InappfontHighlight);
                 int line;
                 String parsedRule;
                 String filename;
-                int i = 0; int j = 0; int k = 0; int l = 0; int m = 0; int n = 0; int o = 0; int p =0;
+                int i = 0; int j = 0; int k = 0; int l = 0; int m = 0; int n = 0; int o = 0; int p =0; int q = 0;
                 unsortedMap = new HashMap<String, Map<String, Map<Integer, HighlightColor>>>();
                 Map<String, Map<Integer, HighlightColor>> ruleMap;
                 Map<Integer, HighlightColor> colorMap;
@@ -700,6 +728,7 @@ context.put("inappfontColor", InappfontHighlight);
                 Map<Integer, HighlightColor> colorMap5;
                 Map<Integer, HighlightColor> colorMap6;
                 Map<Integer, HighlightColor> colorMap7;
+                Map<Integer, HighlightColor> colorMap8;
              
                 try {
                         for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()) {
@@ -717,8 +746,8 @@ context.put("inappfontColor", InappfontHighlight);
                                                 ruleMap.put(parsedRule, colorMap);
                                                
                                                if(!rule.getLazyRules().isEmpty() && null != rule.getLocator()){
-                                            	   colorMap = new HashMap<Integer, HighlightColor>();
-                                            	   
+                                                     colorMap = new HashMap<Integer, HighlightColor>();
+                                                    
                                                      i++;
                                                      colorMap.put(line, HighlightColor.LAZY);
                                                     
@@ -729,7 +758,7 @@ context.put("inappfontColor", InappfontHighlight);
                                                }
                                                 
                                                    if(!rule.getTooLongRules().isEmpty() && null != rule.getLocator()){
-                                                	   colorMap1 = new HashMap<Integer, HighlightColor>();
+                                                         colorMap1 = new HashMap<Integer, HighlightColor>();
                                                          j++;
                                                          colorMap1.put(line, HighlightColor.LONG);
                                                         
@@ -741,7 +770,7 @@ context.put("inappfontColor", InappfontHighlight);
                                                    }
                                                        
                                                        if(!rule.getTooSpecificSelectors().isEmpty() && null != rule.getLocator()){
-                                                    	   colorMap2 = new HashMap<Integer, HighlightColor>();
+                                                             colorMap2 = new HashMap<Integer, HighlightColor>();
                                                              k++;
                                                              colorMap2.put(line, HighlightColor.TOOSPECIFIC);
                                                             
@@ -753,7 +782,7 @@ context.put("inappfontColor", InappfontHighlight);
                                                        }
                                                            
                                                            if(!rule.getEmptyCatch().isEmpty() && null != rule.getLocator()){
-                                                        	   colorMap3 = new HashMap<Integer, HighlightColor>();
+                                                                 colorMap3 = new HashMap<Integer, HighlightColor>();
                                                                  l++;
                                                                  colorMap3.put(line, HighlightColor.EMPTYCAT);
                                                                 
@@ -765,7 +794,7 @@ context.put("inappfontColor", InappfontHighlight);
                                                            }
                                                                
                                                                if(!rule.getUndoingStyle().isEmpty() && null != rule.getLocator()){
-                                                            	   colorMap4 = new HashMap<Integer, HighlightColor>();
+                                                                     colorMap4 = new HashMap<Integer, HighlightColor>();
                                                                      m++;
                                                                      colorMap4.put(line, HighlightColor.UNDSTY);
                                                                     
@@ -777,7 +806,7 @@ context.put("inappfontColor", InappfontHighlight);
                                                                }
                                                                    
                                                                    if(!rule.getIdWithClassOrElement().isEmpty() && null != rule.getLocator()){
-                                                                	   colorMap5 = new HashMap<Integer, HighlightColor>();
+                                                                         colorMap5 = new HashMap<Integer, HighlightColor>();
                                                                          n++;
                                                                          colorMap5.put(line, HighlightColor.IDPLUS);
                                                                         
@@ -789,7 +818,7 @@ context.put("inappfontColor", InappfontHighlight);
                                                                    }
                                                                        
                                                                        if(!rule.getReactiveImportant().isEmpty() && null != rule.getLocator()){
-                                                                    	   colorMap6 = new HashMap<Integer, HighlightColor>();
+                                                                             colorMap6 = new HashMap<Integer, HighlightColor>();
                                                                              o++;
                                                                              colorMap6.put(line, HighlightColor.REACTIMPO);
                                                                             
@@ -801,7 +830,7 @@ context.put("inappfontColor", InappfontHighlight);
                                                                        }
                                                                            
                                                                            if(!rule.checkFontSize().isEmpty() && null != rule.getLocator()){
-                                                                        	   colorMap7 = new HashMap<Integer, HighlightColor>();
+                                                                                 colorMap7 = new HashMap<Integer, HighlightColor>();
                                                                                  p++;
                                                                                  colorMap7.put(line, HighlightColor.INAPPFONT);
                                                                                 
@@ -811,6 +840,18 @@ context.put("inappfontColor", InappfontHighlight);
                                                                               
                                                                                
                                                                            }
+                                                                           
+                                                                           if(CillaPlugin.allEmbeddedRules.contains(rule.getRule().toString()) && null != rule.getLocator()){
+                                                                               colorMap8 = new HashMap<Integer, HighlightColor>();
+                                                                               q++;
+                                                                               colorMap8.put(line, HighlightColor.EMBEDDED);
+                                                                              
+                                                                             ruleMap.put(" "+"Embedded Rule Number "+q+" "+parsedRule, colorMap8);
+                                                                          
+                                                                            
+                                                                             
+                                                                             
+                                                                         }
                                                }
                                                
                                             

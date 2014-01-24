@@ -19,11 +19,15 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.Arrays;
+
 import javax.xml.xpath.XPathExpressionException;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
+
 import se.fishtank.css.selectors.NodeSelectorException;
+
 import com.crawljax.core.CrawlSession;
 import com.crawljax.core.CrawlerContext;
 import com.crawljax.core.ExitNotifier.ExitStatus;
@@ -80,6 +84,10 @@ public static double minSelector;
 public static double maxSelector;
 public int countEmbeddedRules = 0;
 public static List<String> allEmbeddedRules;
+List<MSelector> allSelectors;
+public static double uni = 0;
+
+int[] h;
 
         public void onNewState(CrawlerContext context, StateVertex newState) {
                 // if the external CSS files are not parsed yet, do so
@@ -226,31 +234,42 @@ public static List<String> allEmbeddedRules;
                 }
                      
         }
+        
+      
+        
 public void determineThreshold(){
         
-        List<MSelector> allSelectors=new ArrayList<MSelector>();
+        allSelectors=new ArrayList<MSelector>();
         int[] b = new int[totalCssSelectors];
         int j = 0;
         double sum = 0;
         double sum1 = 0;
         
         
+      
         
         for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()) {
-                for (MCssRule mrule : entry.getValue()) {
+              for (MCssRule mrule : entry.getValue()) {
+        	
                         allSelectors.addAll(mrule.getSelectors());
+                	
+                	 
+                	
                 }
                 
         }
+       
         
         for(int i=0; i<allSelectors.size();i++){
                 
                 b[j]= allSelectors.get(i).getProperties().size();
                 
                 j++;
-               
+             
                 
         }
+        
+      
         for(int k=0; k<b.length;k++){
                
                 sum+= b[k];
@@ -267,8 +286,9 @@ public void determineThreshold(){
         }
        
         
-        int z = 0;
-        int[] c = new int[totalCssSelectors];
+        int z = 0; int r= 0;
+       int[] c = new int[totalCssSelectors];
+       h = new int[totalCssSelectors];
         for(int p = 0;p<allSelectors.size();p++){
         String s = allSelectors.get(p).getSpecificity().toString();
         int l = Integer.parseInt(s.substring(1, 2));
@@ -277,14 +297,20 @@ public void determineThreshold(){
         int o = Integer.parseInt(s.substring(10, 11));
         int q = l+m+n+o;
         c[z]= q;
+        h[r] = q; // I need this unsorted array for universality method
         z++;
+        r++;
         
         }
         for(int y = 0; y<c.length;y++){
                 sum1+= c[y];
                 
+                
         }
-        Arrays.sort(c);
+       
+       
+       Arrays.sort(c);
+      
         meanSelector = sum1/c.length;
         minSelector = c[0];
         maxSelector = c[c.length-1];
@@ -295,10 +321,54 @@ public void determineThreshold(){
         else{
                 medianSelector = c[(c.length)/2+1];
         }
-        
+    
+      
+       
         
         
         }
+       
+
+public void universality(){
+	 double countElements = 0;
+	 for(int y = 0; y<h.length;y++){
+         int a = Integer.parseInt(allSelectors.get(y).getSpecificity().toString().substring(10, 11));
+         // checks simple element selector 
+		 if(h[y] == 1 && a == 1){
+			 countElements++;
+			
+		 }
+		 
+	 }
+	// checks combined selectors in which the last simple selector is element
+	  for(int j0=0; j0<allSelectors.size();j0++){
+     	 
+          String[] parts2 = allSelectors.get(j0).toString().split("XPath");
+          
+          
+         String f = parts2[0].replace("Selector:", "");
+        
+         String[] parts3 = f.split(" ");
+         int k = parts3.length-1;
+         while(parts3[k].isEmpty()){
+         	k--;
+         }
+         
+    		 if(!parts3[k].isEmpty() && !parts3[k].contains(".") && !parts3[k].contains("#") && h[j0]!=1){
+                 countElements++;
+         
+         
+           
+    		 }
+      }
+
+      uni = countElements/totalCssSelectors;
+	 
+	
+
+    
+}
+
         public void getEmbeddedRules(){
         	
 allEmbeddedRules = new ArrayList<String>();
@@ -367,8 +437,10 @@ allEmbeddedRules = new ArrayList<String>();
                                 
                 }        
                 
-        
                 determineThreshold();
+                
+               
+            universality();
                 //running csslint by command line on the css file (cssfile.css) and providing results in an output file
 
                 Runtime rt = Runtime.getRuntime();

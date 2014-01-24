@@ -15,8 +15,8 @@ public class CillaRunner {
         private static final int waitAfterEvent = 400;
         private static final int waitAfterReload = 400;
 
- // private static final String INDEX = "http://www.ece.ubc.ca/~amesbah/exp";
-      private static final String INDEX = "http://www.google.com";
+private static final String INDEX = "http://www.ece.ubc.ca/~amesbah/exp";
+//      private static final String INDEX = "http://www.google.com";
         
      
         

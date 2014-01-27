@@ -9,6 +9,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.StringReader;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -54,8 +56,8 @@ public static int totalCssRules = 0;
         public static int totalCssSelectors = 0;
         private static final Logger LOGGER = Logger.getLogger(CillaPlugin.class.getName());
 
-        private Map<String, List<MCssRule>> cssRules = new HashMap<String, List<MCssRule>>();
-        
+  //  private static Map<String, List<MCssRule>> cssRules = new HashMap<String, List<MCssRule>>();
+        public static Map<String, List<MCssRule>> cssRules = new HashMap<String, List<MCssRule>>();
 public static Map<String, List<MCssRule>> embeddedcssRules1 = new HashMap<String, List<MCssRule>>();
         
 
@@ -86,8 +88,17 @@ public int countEmbeddedRules = 0;
 public static List<String> allEmbeddedRules;
 List<MSelector> allSelectors;
 public static double uni = 0;
-
+public static double AS = 0;
+public static double abstFactor = 0;
 int[] h;
+public static double id =0;
+public static double clas =0;
+public static double element =0;
+public static double averageid = 0;
+public static double averageclas = 0;
+public static double averageelement = 0;
+
+
 
         public void onNewState(CrawlerContext context, StateVertex newState) {
                 // if the external CSS files are not parsed yet, do so
@@ -146,15 +157,21 @@ int[] h;
                 LOGGER.info("Checking CSS on DOM...");
                 // check the rules on the current DOM state.
                 try {
+    
                         for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()) {
                                 CssAnalyzer.checkCssSelectorRulesOnDom(state.getName(), state.getDocument(),
                                  entry.getValue());
+     
                         }
+  
+              
+                       
                 } catch (IOException e) {
                         LOGGER.error(e.getMessage(), e);
                 } catch (NodeSelectorException e) {
                         LOGGER.error(e.getMessage(), e);
                 }
+                
         }
 
         private int countLines(String cssText) {
@@ -369,6 +386,82 @@ public void universality(){
     
 }
 
+public static void averageScope() throws Exception{
+	
+	 int sum2= 0 ;
+	 int numberoffilenames = 0;
+	for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()) {
+		String filename = new String();
+		 filename = entry.getKey();
+		 numberoffilenames++;
+	}
+	int[] total = new int[numberoffilenames];
+	int i = 0;
+	System.out.println("total length"+total.length);
+	for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()) {
+		
+		String filename = new String();
+		 filename = entry.getKey();
+		 int count = 0;
+			int count1 = 0;
+			
+			
+			  //Set URL
+			  URL url = new URL(filename);
+			  URLConnection spoof = url.openConnection();
+			 
+			  //Spoof the connection so we look like a web browser
+			  spoof.setRequestProperty( "User-Agent", "Mozilla/4.0 (compatible; MSIE 5.5; Windows NT 5.0; H010818)" );
+			  BufferedReader in = new BufferedReader(new InputStreamReader(spoof.getInputStream()));
+			  String strLine = "";
+			
+			  //Loop through every line in the source
+			  while ((strLine = in.readLine()) != null){
+			 
+			   //Prints each line to the console
+			   System.out.println(strLine);
+			    count = strLine.length()-strLine.replace("</", " ").length();
+			    count1 = strLine.length()-strLine.replace("/>", " ").length();
+			   total[i] = total[i]+ count+count1;
+			   
+			  }
+			 
+			  System.out.println("number of tags"+total[i]);
+			  i++;
+			  System.out.println("End of page.");
+			 
+			 
+			  
+			 }
+	 for(int j = 0; j< total.length;j++){
+		  sum2+= total[j];
+		  
+	  }
+	// number of elements in the document tree
+	System.out.println("All Tags "+sum2);
+	
+	AS = CssAnalyzer.totaldescendants/(totalCssSelectors*sum2);
+	}
+
+
+public void abstractnessFactor(){
+	
+	abstFactor = Math.min(uni, AS);
+}
+
+public void countCharacteristics(){
+	
+	
+	 for(int p = 0;p<allSelectors.size();p++){
+	        String s = allSelectors.get(p).getSpecificity().toString();
+	        id = id+ Integer.parseInt(s.substring(4, 5));
+	        clas = clas+ Integer.parseInt(s.substring(7, 8));
+	        element = element+ Integer.parseInt(s.substring(10, 11));
+	 }
+	 averageid = id / totalCssSelectors;
+	averageclas = clas / totalCssSelectors;
+	averageelement = element / totalCssSelectors;
+}
         public void getEmbeddedRules(){
         	
 allEmbeddedRules = new ArrayList<String>();
@@ -441,6 +534,15 @@ allEmbeddedRules = new ArrayList<String>();
                 
                
             universality();
+            
+            try {
+				averageScope();
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+            abstractnessFactor();
+            countCharacteristics();
                 //running csslint by command line on the css file (cssfile.css) and providing results in an output file
 
                 Runtime rt = Runtime.getRuntime();

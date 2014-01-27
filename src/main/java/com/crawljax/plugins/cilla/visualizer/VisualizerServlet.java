@@ -39,6 +39,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import com.crawljax.plugins.cilla.CillaPlugin;
+import com.crawljax.plugins.cilla.analysis.CssAnalyzer;
 import com.crawljax.plugins.cilla.analysis.ElementWithClass;
 import com.crawljax.plugins.cilla.analysis.MCssRule;
 import com.crawljax.plugins.cilla.analysis.MSelector;
@@ -325,7 +326,7 @@ highlightMap.put(HighlightColor.EMBEDDED, EmbeddedHighlight);
                  template = getTemplateAsString(statisticsTemplate.getName());
                 
                  String s = "The average number of properties used in one CSS rule in this web site: "+ String.valueOf(CillaPlugin.Mean)+
-                 "\n"+"The median of number of properties used in one CSS rule in this web site: "+ String.valueOf(CillaPlugin.Median)+"\n"+"The minimum number of properties in one CSS rule: "+String.valueOf(CillaPlugin.min)+"\n"+"The maximum number of properties used in one CSS rule: "+String.valueOf(CillaPlugin.max)+"\n"+"The average number of selector types used in one CSS rule: "+CillaPlugin.meanSelector+"\n"+"The median of selector types used in one CSS rule: "+CillaPlugin.medianSelector+"\n"+"The minimum number of selector types in one CSS rule: "+CillaPlugin.minSelector+"\n"+"The maximum number of selector types in one CSS rule: "+CillaPlugin.maxSelector+"\n"+ "Universality: "+CillaPlugin.uni;
+                 "\n"+"The median of number of properties used in one CSS rule in this web site: "+ String.valueOf(CillaPlugin.Median)+"\n"+"The minimum number of properties in one CSS rule: "+String.valueOf(CillaPlugin.min)+"\n"+"The maximum number of properties used in one CSS rule: "+String.valueOf(CillaPlugin.max)+"\n"+"The average number of selector types used in one CSS rule: "+CillaPlugin.meanSelector+"\n"+"The median of selector types used in one CSS rule: "+CillaPlugin.medianSelector+"\n"+"The minimum number of selector types in one CSS rule: "+CillaPlugin.minSelector+"\n"+"The maximum number of selector types in one CSS rule: "+CillaPlugin.maxSelector+"\n"+ "Universality: "+CillaPlugin.uni+"\n"+ "Average Scope: "+CillaPlugin.AS+"\n"+"Abstractness Factor: "+CillaPlugin.abstFactor+"\n"+"Total Number of IDs in CSS Rules: "+CillaPlugin.id+"\n"+"Total Number of Classes in CSS Rules: "+CillaPlugin.clas+"\n"+"Total Number of Elements in CSS Rules: "+CillaPlugin.element+"\n"+"Average Number of IDs used in one CSS Rule: "+CillaPlugin.averageid+"\n"+"Average Number of Classes used in one CSS Rule: "+CillaPlugin.averageclas+"\n"+"Average Number of Elements used in one CSS Rule: "+CillaPlugin.averageelement;
                  statisticsMsg= s;
 
                  statisticsMsg = statisticsMsg.replace("\n", "<br><br> ");

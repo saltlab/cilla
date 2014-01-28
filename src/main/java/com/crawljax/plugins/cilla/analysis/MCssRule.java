@@ -430,5 +430,27 @@ List<MSelector> reactiveImportant = new ArrayList<MSelector>();
                         return reactiveImportant;
                 }
 
+public List<MSelector> getDangerousSelectors(){
+	SpecificityCalculator sc = new SpecificityCalculator();
+	List<MSelector> dangerousSelectors = new ArrayList<MSelector>();
+    
+    for (MSelector selector : this.selectors){
+    	sc.reset();
 
+        String s = sc.getSpecificity(selector.getCssSelector()).toString();
+        
+        int b = Integer.parseInt(s.substring(4, 5));
+        int c = Integer.parseInt(s.substring(7, 8));
+        int d = Integer.parseInt(s.substring(10, 11));
+        if(b==0 && c==0 && d == 1){
+        	if(selector.toString().contains("div") || selector.toString().contains("header") || selector.toString().contains("aside") || selector.toString().contains("ul")){
+        		dangerousSelectors.add(selector);
+        	}
+        	
+        }
+        
+    	
+    }
+return dangerousSelectors;	
+}
 }

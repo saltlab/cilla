@@ -77,7 +77,7 @@ private Template statisticsTemplate;
 
 
         private enum HighlightColor {
-                NONE, UNMATCHED, INEFFECTIVE, EFFECTIVE, LAZY, LONG, TOOSPECIFIC, EMPTYCAT, UNDSTY, IDPLUS, REACTIMPO, INAPPFONT, EMBEDDED
+                NONE, UNMATCHED, INEFFECTIVE, EFFECTIVE, LAZY, LONG, TOOSPECIFIC, EMPTYCAT, UNDSTY, IDPLUS, REACTIMPO, INAPPFONT, EMBEDDED, DANGEROUS
         }
 
         private Map<HighlightColor, String> highlightMap;
@@ -95,6 +95,7 @@ private final String IdplusHighlight = "6699CC";
 private final String ReactimpoHighlight = "#B8B8B8 ";
 private final String InappfontHighlight = "#00FFFF";
 private final String EmbeddedHighlight = "#00FF00";
+private final String DangerousHighlight = "FF6699";
 
         private Map<String, Map<String, Map<Integer, HighlightColor>>> unsortedMap;
 
@@ -133,6 +134,7 @@ highlightMap.put(HighlightColor.IDPLUS, IdplusHighlight);
 highlightMap.put(HighlightColor.REACTIMPO, ReactimpoHighlight);
 highlightMap.put(HighlightColor.INAPPFONT, InappfontHighlight);
 highlightMap.put(HighlightColor.EMBEDDED, EmbeddedHighlight);
+highlightMap.put(HighlightColor.DANGEROUS, DangerousHighlight);
 
 
                 outputDir = outputFolder.getAbsolutePath() + folderString;
@@ -372,6 +374,7 @@ StringBuffer idWithClassOrElement;
 StringBuffer reactiveImportant;
 StringBuffer inappFontSize;
 StringBuffer embeddedRules;
+StringBuffer dangSelectors;
                 // Look through the files and format the sorted output
                 for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()) {
                        Map<String, String> analysisMap = new HashMap<String, String>();
@@ -396,6 +399,7 @@ idWithClassOrElement = new StringBuffer();
 reactiveImportant = new StringBuffer();
 inappFontSize = new StringBuffer();
 embeddedRules = new StringBuffer();
+dangSelectors = new StringBuffer();
                         // Loop through the rules
                         for (MCssRule rule : rules) {
 
@@ -596,7 +600,17 @@ if(!CillaPlugin.allEmbeddedRules.isEmpty() && CillaPlugin.allEmbeddedRules.conta
             	
             }
             
-                  
+List<MSelector> dangSelectorss = rule.getDangerousSelectors();
+if(dangSelectorss.size()>0){
+ for (MSelector sel : dangSelectorss){
+       dangSelectors.append("CSS rule: " + rule.getRule().getCssText()
+                          + "<br>");
+             dangSelectors.append("at line: "
+               + rule.getLocator().getLineNumber() + "<br>");
+             dangSelectors.append(" Selector: " + sel.getCssSelector()
+                         + "<br><br>"); 
+ }
+}
   
                         } // for rules
                         
@@ -649,6 +663,8 @@ String inappFontStr = inappFontSize.toString().replaceAll("#", "&#35");
 inappFontStr = inappFontStr.replaceAll("\\*", "&#42");
 String embeddedRulesStr = embeddedRules.toString().replaceAll("#", "&#35");
 embeddedRulesStr = embeddedRulesStr.replaceAll("\\*", "&#42");
+String dangSelectorsStr = dangSelectors.toString().replaceAll("#", "&#35");
+dangSelectorsStr = dangSelectorsStr.replaceAll("\\*", "&#42");
 
                         analysisMap.put("Unmatched CSS Rules", unmatchedStr);
                         analysisMap.put("Matched & Ineffective CSS Rules", ineffectiveStr);
@@ -665,7 +681,7 @@ analysisMap.put("Selectors with ID and at Least One Class or Element", idWithStr
 analysisMap.put("Rules with !important in their Declaration", reactiveStr);
 analysisMap.put("Rules with Inappropriate Font-size Value", inappFontStr);
 analysisMap.put("Embedded Rules", embeddedRulesStr);
-		
+analysisMap.put("Rules with Dangerous Selectors", dangSelectorsStr);		
                         fileMap.put(filename, analysisMap);
 
                 } // for entry set
@@ -699,6 +715,7 @@ context.put("idplusColor", IdplusHighlight);
 context.put("reactimpoColor", ReactimpoHighlight);
 context.put("inappfontColor", InappfontHighlight);
 context.put("embeddedruleColor", EmbeddedHighlight);
+context.put("dangerousselectorColor", DangerousHighlight);
 
                 String template;
                 try {
@@ -718,7 +735,7 @@ context.put("embeddedruleColor", EmbeddedHighlight);
                 int line;
                 String parsedRule;
                 String filename;
-                int i = 0; int j = 0; int k = 0; int l = 0; int m = 0; int n = 0; int o = 0; int p =0; int q = 0;
+                int i = 0; int j = 0; int k = 0; int l = 0; int m = 0; int n = 0; int o = 0; int p =0; int q = 0; int r = 0;
                 unsortedMap = new HashMap<String, Map<String, Map<Integer, HighlightColor>>>();
                 Map<String, Map<Integer, HighlightColor>> ruleMap;
                 Map<Integer, HighlightColor> colorMap;
@@ -730,6 +747,7 @@ context.put("embeddedruleColor", EmbeddedHighlight);
                 Map<Integer, HighlightColor> colorMap6;
                 Map<Integer, HighlightColor> colorMap7;
                 Map<Integer, HighlightColor> colorMap8;
+                Map<Integer, HighlightColor> colorMap9;
              
                 try {
                         for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()) {
@@ -851,6 +869,17 @@ context.put("embeddedruleColor", EmbeddedHighlight);
                                                                           
                                                                             
                                                                              
+                                                                             
+                                                                         }
+                                                                           if(!rule.getDangerousSelectors().isEmpty() && null != rule.getLocator()){
+                                                                               colorMap9 = new HashMap<Integer, HighlightColor>();
+                                                                               r++;
+                                                                               colorMap9.put(line, HighlightColor.DANGEROUS);
+                                                                              
+                                                                             ruleMap.put(" "+"Rule with Dangerous Selector Number "+r+" "+parsedRule, colorMap9);
+                                                                            
+                                                                             
+                                                                            
                                                                              
                                                                          }
                                                }

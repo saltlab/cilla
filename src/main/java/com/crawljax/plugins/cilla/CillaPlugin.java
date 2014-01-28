@@ -660,6 +660,9 @@ StringBuffer inappFontSize = new StringBuffer();
 int inappfo = getInnappFontSize(inappFontSize);
 StringBuffer embeddedRules = new StringBuffer();
 int dsf = getNumEmbeddedRules(embeddedRules);
+StringBuffer dangerousSelectors = new StringBuffer();
+int danSel = getDangerousSelectors(dangerousSelectors);
+
 
                 output.append("Analyzed " + session.getConfig().getUrl() + " on "
                  + new SimpleDateFormat("dd/MM/yy-hh:mm:ss").format(new Date()) + "\n");
@@ -703,6 +706,8 @@ output.append(" -> Selectors with ID and at least one class or element: "+ idwit
 output.append(" -> Total Number of !important used in the code(Reactiveness): "+ impo + "\n");
 output.append(" -> Selectors with Inappropriate Font-size Value for their Properties: "+ inappfo + "\n");
 output.append(" -> Embedded Rules: "+ dsf +"\n");
+output.append(" -> Rules with Dangerous Selectors: "+ danSel +"\n");
+
                 /*
                  * This is where the com.crawljax.plugins.cilla.visualizer gets called.
                  */
@@ -730,6 +735,8 @@ output.append(idWithClassOrElement.toString());
 output.append(reactiveImportant.toString());
 output.append(inappFontSize.toString());
 output.append(embeddedRules.toString());
+output.append(dangerousSelectors.toString());
+
 
                 try {
                         FileUtils.writeStringToFile(outputFile, output.toString());
@@ -1328,5 +1335,35 @@ buffer.append("========== EMBEDDED CSS RULES ==========\n");
        return counter;
                 
                 }
+
+private int getDangerousSelectors(StringBuffer buffer){
+LOGGER.info("Reporting Dangerous Selectors...");
+buffer.append("========== Dangerous Selectors ==========\n");
+int counter = 0;
+        for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()){
+                        List<MCssRule> rules = entry.getValue();
+                        buffer.append("== RULES WITH DANGEROUS SELECTORS IN: " + entry.getKey() + "\n");
+                        for (MCssRule rule : rules){
+                                
+                                
+                                List<MSelector> selectors = rule.getDangerousSelectors();
+                                counter += selectors.size();
+                                if (selectors.size() > 0) {
+                                        buffer.append("Dangerous Selectors: ");
+                                        buffer.append("CSS rule: " + rule.getRule().getCssText() + "\n");
+                                        buffer.append("at line: " + rule.getLocator().getLineNumber() + "\n");
+
+                                        for (MSelector selector : selectors) {
+                                                // ineffectivePropsSize+=selector.getSize();
+                                                buffer.append(selector.toString() + "\n");
+                                        }
+                                }
+
+                        }
+                }
+                                        return counter;
+                
+                
+        }
 
 }

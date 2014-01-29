@@ -1,10 +1,6 @@
+http://www.ece.ubc.ca/~amesbah/exp
 http://www.google.com
-http://www.facebook.com
+http://www.baidu.com
 http://www.youtube.com
 http://www.yahoo.com
-http://www.baidu.com
 http://www.wikipedia.org
-http://www.qq.com
-http://www.taobao.com 
-http://www.live.com
-http://www.amazon.com

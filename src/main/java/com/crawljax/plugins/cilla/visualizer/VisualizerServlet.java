@@ -589,18 +589,45 @@ List<MSelector> inappfont = rule.checkFontSize();
                                                                                 
                                                                         }
                                                                         
-                                                                }
+                                                               }
+                     
                      
 if(!CillaPlugin.allEmbeddedRules.isEmpty() && CillaPlugin.allEmbeddedRules.contains(rule.getRule().toString())){
-	
-            	 embeddedRules.append("CSS rule: " + rule.getRule().getCssText()
-                         + "<br>");
+	if(rule.getRule().toString().contains("@media")){
+		 embeddedRules.append("CSS rule: " + rule.getRule().toString()
+                 + "<br><br>");
+		 if(rule.getLocator()!=null){
         	 embeddedRules.append("at line: "
-       + rule.getLocator().getLineNumber() + "<br>");
-        	 embeddedRules.append(" Selector: " + rule.getRuleSelector().toString()
-                      + "<br><br>");
-        	
-            }
+       + rule.getLocator().getLineNumber() + "<br><br>");
+            	 }
+		
+	}
+	else{
+		if(rule.getRule().toString().contains("@import")){
+			 embeddedRules.append("CSS rule: " + rule.getRule().toString()
+	                + "<br><br>");
+			 if(rule.getLocator()!=null){
+	       	 embeddedRules.append("at line: "
+	      + rule.getLocator().getLineNumber() + "<br><br>");
+	           	 }
+		}
+		else{
+		embeddedRules.append("CSS rule: " + rule.getRule().getCssText()
+                + "<br>");
+   	 if(rule.getLocator()!=null){
+	 embeddedRules.append("at line: "
++ rule.getLocator().getLineNumber() + "<br>");
+   	 }
+
+	 embeddedRules.append(" Selector: " + rule.getRuleSelector().toString()
+             + "<br><br>");
+   	}
+	}
+}
+
+            	 
+
+            
            
 List<MSelector> dangSelectorss = rule.getDangerousSelectors();
 if(dangSelectorss.size()>0){

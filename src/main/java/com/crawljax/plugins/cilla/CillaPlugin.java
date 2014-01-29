@@ -215,6 +215,7 @@ countEmbeddedRules+= rules.get(k).getSelectors().size();
  }
  */
  countEmbeddedRules+= rules.size();
+ /*
  int countImport = 0;
  for(int k = 0; k<rules.size();k++){
 	 if(rules.get(k).getRule().toString().contains("import")){
@@ -222,6 +223,7 @@ countEmbeddedRules+= rules.get(k).getSelectors().size();
 	 }
  }
  countEmbeddedRules = countEmbeddedRules - countImport;
+ */
                                 if (rules != null && rules.size() > 0) {
                                         cssRules.put(url, rules);
                                         
@@ -242,12 +244,14 @@ countEmbeddedRules+= rules.get(k).getSelectors().size();
         	                
         	                for (Map.Entry<String, List<MCssRule>> entry : embeddedcssRules1.entrySet()) {
         	                           for (MCssRule mrule : entry.getValue()){
+        	                        	   /*
         	                                   if(mrule.getRule().toString().contains("import")){
         	                                           continue;
         	                                   }
         	                                   else{
+        	                                   */
         	                                   allEmbeddedRules.add(mrule.getRule().toString());
-        	                                   }
+        	                                 //  }
         	                           }
         	                          
         	                   }
@@ -291,6 +295,7 @@ countEmbeddedRules+= rules.get(k).getSelectors().size();
                    
                     sum+= b[k];
             }
+            if(totalCssSelectors != 0){
             Mean = sum/totalCssSelectors;
             Arrays.sort(b);
             min = b[0];
@@ -340,14 +345,14 @@ countEmbeddedRules+= rules.get(k).getSelectors().size();
             }
         
           
-           
+            }
             
             
             }
         
         public void countCharacteristics(){
             
-            
+            if(totalCssSelectors !=0){
             for(int p = 0;p<allSelectors.size();p++){
             String s = allSelectors.get(p).getSpecificity().toString();
             id = id+ Integer.parseInt(s.substring(4, 5));
@@ -357,9 +362,11 @@ countEmbeddedRules+= rules.get(k).getSelectors().size();
             averageid = id / totalCssSelectors;
            averageclas = clas / totalCssSelectors;
            averageelement = element / totalCssSelectors;
+            }
    }
         
         public void universality(){
+        	if(totalCssSelectors !=0){
             double countElements = 0;
             for(int y = 0; y<h.length;y++){
             int a = Integer.parseInt(allSelectors.get(y).getSpecificity().toString().substring(10, 11));
@@ -394,7 +401,7 @@ countEmbeddedRules+= rules.get(k).getSelectors().size();
 
          uni = countElements/totalCssSelectors;
            
-           
+        	}
 
        
    }
@@ -452,8 +459,9 @@ countEmbeddedRules+= rules.get(k).getSelectors().size();
             }
            // number of elements in the document tree
            System.out.println("All Tags "+sum2);
-           
+   if(totalCssSelectors != 0) {       
            AS = CssAnalyzer.totaldescendants/(totalCssSelectors*sum2);
+   }
            }
         public void abstractnessFactor(){
             
@@ -498,7 +506,7 @@ public void writecssintoFileCssLint(){
               }
                       
       } 
-      
+     /* 
       Runtime rt = Runtime.getRuntime();
       
       try {
@@ -565,15 +573,17 @@ fop1.write(10);
        // TODO Auto-generated catch block
        e.printStackTrace();
        }
+       */
  VisualizerServlet cl = new VisualizerServlet();
 cl.addCssLint();           
 outputNum++;
-      }
-      
+    //  }
+      /*
               catch (IOException e) {
               // TODO Auto-generated catch block
               e.printStackTrace();
       }
+      */
 }
 
 

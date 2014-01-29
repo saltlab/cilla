@@ -88,9 +88,9 @@ public static double uni = 0;
 public static double AS = 0;
 public static double abstFactor = 0;
 int[] h;
-public static double id =0;
-public static double clas =0;
-public static double element =0;
+public static double id;
+public static double clas;
+public static double element;
 public static double averageid = 0;
 public static double averageclas = 0;
 public static double averageelement = 0;
@@ -156,6 +156,7 @@ public static double averageelement = 0;
                                 CssAnalyzer.checkCssSelectorRulesOnDom(state.getName(), state.getDocument(),
                                  entry.getValue());
                         }
+  
                 } catch (IOException e) {
                         LOGGER.error(e.getMessage(), e);
                 } catch (NodeSelectorException e) {
@@ -351,7 +352,9 @@ countEmbeddedRules+= rules.get(k).getSelectors().size();
             }
         
         public void countCharacteristics(){
-            
+            id= 0;
+            clas = 0;
+            element = 0;
             if(totalCssSelectors !=0){
             for(int p = 0;p<allSelectors.size();p++){
             String s = allSelectors.get(p).getSpecificity().toString();
@@ -610,6 +613,7 @@ try {
     e1.printStackTrace();
 }
 abstractnessFactor();
+CssAnalyzer.totaldescendants = 0;
 writecssintoFileCssLint();
                 StringBuffer output = new StringBuffer();
                 StringBuffer bufferUnused = new StringBuffer();

@@ -16,7 +16,7 @@ public class CillaRunner {
         private static final int waitAfterReload = 400;
 
 //private static final String INDEX = "http://www.ece.ubc.ca/~amesbah/exp";
- private static final String INDEX = "http://www.google.com";
+ private static final String INDEX = "http://www.baidu.com";
         
      
         
@@ -24,7 +24,7 @@ public static String name;
 public static long startTime;
 public static String b;
     public static void main(String[] args) {
-             /*
+          /*
                 String[] urlArray = new String[10];
                         urlArray = GetUrls.getArray("src//main//resources//WebsitesUnderStudy.txt", 10);
                         for (int i = 0 ; i < 10; i++) {
@@ -33,7 +33,7 @@ public static String b;
                 
                 
                                 b = urlArray[i].replaceAll("http://", "");
-               */           
+                    */ 
                 
           b = INDEX.replaceAll("http://", "");
                 
@@ -58,7 +58,7 @@ builder.crawlRules().click("input");
 
 builder.setMaximumStates(50);
 
-                builder.setMaximumRunTime(30, TimeUnit.SECONDS);
+                builder.setMaximumRunTime(60, TimeUnit.SECONDS);
 
 
                 builder.setBrowserConfig(new BrowserConfiguration(BrowserType.firefox, 1));

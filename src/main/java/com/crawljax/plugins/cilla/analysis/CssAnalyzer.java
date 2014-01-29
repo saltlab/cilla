@@ -23,7 +23,7 @@ import com.crawljax.util.XPathHelper;
 
 public class CssAnalyzer {
 public static int[][] s;
-public static double totaldescendants = 0;
+public static double totaldescendants;
 public static double[] descendantArray;
 int j = 0;
         private static final Logger LOGGER = Logger.getLogger(CssAnalyzer.class.getName());

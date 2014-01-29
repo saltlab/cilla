@@ -593,6 +593,24 @@ List<MSelector> inappfont = rule.checkFontSize();
                      
                      
 if(!CillaPlugin.allEmbeddedRules.isEmpty() && CillaPlugin.allEmbeddedRules.contains(rule.getRule().toString())){
+	 if(rule.getLocator()!=null){
+		 embeddedRules.append("CSS rule: " + rule.getRule().getCssText()
+	                + "<br>");
+	   	
+		 embeddedRules.append("at line: "
+	+ rule.getLocator().getLineNumber() + "<br>");
+	   
+
+		 embeddedRules.append(" Selector: " + rule.getRuleSelector().toString()
+	             + "<br><br>");
+	   	
+		 
+	 }
+	 else{
+		 embeddedRules.append("CSS rule: " + rule.getRule().toString()
+	                + "<br><br>");
+	 }
+	/*
 	if(rule.getRule().toString().contains("@media")){
 		 embeddedRules.append("CSS rule: " + rule.getRule().toString()
                  + "<br><br>");
@@ -623,6 +641,7 @@ if(!CillaPlugin.allEmbeddedRules.isEmpty() && CillaPlugin.allEmbeddedRules.conta
              + "<br><br>");
    	}
 	}
+	*/
 }
 
             	 

@@ -114,7 +114,7 @@
              <td style="background-color: $reactimpoColor"><p> Reactive Important </p></td>
              <td style="background-color: $inappfontColor"><p> Inappropriate Font Size </p></td>
              <td style="background-color: $embeddedruleColor"><p> Embedded Rule </p></td>
-             <td style="background-color: $dangerousselectorColor"><p> Embedded Rule </p></td>
+             <td style="background-color: $dangerousselectorColor"><p> Rules with Dangerous Selectors </p></td>
              
         </tr>
         </table>

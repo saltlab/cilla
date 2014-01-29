@@ -443,7 +443,7 @@ public List<MSelector> getDangerousSelectors(){
         int c = Integer.parseInt(s.substring(7, 8));
         int d = Integer.parseInt(s.substring(10, 11));
         if(b==0 && c==0 && d == 1){
-        	if(selector.toString().contains("div") || selector.toString().contains("header") || selector.toString().contains("aside") || selector.toString().contains("ul")){
+        	if(selector.toString().contains("div") || selector.toString().contains("header") || selector.toString().contains("aside") || selector.toString().contains("ul") || selector.toString().contains("body")|| selector.toString().contains("title")){
         		dangerousSelectors.add(selector);
         	}
         	

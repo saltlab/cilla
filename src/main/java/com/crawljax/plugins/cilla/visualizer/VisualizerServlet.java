@@ -287,7 +287,7 @@ highlightMap.put(HighlightColor.DANGEROUS, DangerousHighlight);
                  try {
                  template = getTemplateAsString(cssLintTemplate.getName());
 
-                 File f = new File("C:/Users/Golnaz/cilla/CsslintReports/output"+CillaPlugin.i+".txt");
+                 File f = new File("C:/Users/Golnaz/cilla/CsslintReports/output"+CillaPlugin.outputNum+".txt");
                  //File f = new File("D:/Output.txt");
                  FileInputStream fin = new FileInputStream(f);
                  byte[] buffer = new byte[(int) f.length()];
@@ -319,6 +319,7 @@ highlightMap.put(HighlightColor.DANGEROUS, DangerousHighlight);
                 
                 }
 
+ 
   public void addStatistics(){
 
    VelocityContext context = new VelocityContext();
@@ -328,7 +329,7 @@ highlightMap.put(HighlightColor.DANGEROUS, DangerousHighlight);
                  template = getTemplateAsString(statisticsTemplate.getName());
                 
                  String s = "The average number of properties used in one CSS rule in this web site: "+ String.valueOf(CillaPlugin.Mean)+
-                 "\n"+"The median of number of properties used in one CSS rule in this web site: "+ String.valueOf(CillaPlugin.Median)+"\n"+"The minimum number of properties in one CSS rule: "+String.valueOf(CillaPlugin.min)+"\n"+"The maximum number of properties used in one CSS rule: "+String.valueOf(CillaPlugin.max)+"\n"+"The average number of selector types used in one CSS rule: "+CillaPlugin.meanSelector+"\n"+"The median of selector types used in one CSS rule: "+CillaPlugin.medianSelector+"\n"+"The minimum number of selector types in one CSS rule: "+CillaPlugin.minSelector+"\n"+"The maximum number of selector types in one CSS rule: "+CillaPlugin.maxSelector+"\n"+ "Universality: "+CillaPlugin.uni+"\n"+ "Average Scope: "+CillaPlugin.AS+"\n"+"Abstractness Factor: "+CillaPlugin.abstFactor+"\n"+"Total Number of IDs in CSS Rules: "+CillaPlugin.id+"\n"+"Total Number of Classes in CSS Rules: "+CillaPlugin.clas+"\n"+"Total Number of Elements in CSS Rules: "+CillaPlugin.element+"\n"+"Average Number of IDs used in one CSS Rule: "+CillaPlugin.averageid+"\n"+"Average Number of Classes used in one CSS Rule: "+CillaPlugin.averageclas+"\n"+"Average Number of Elements used in one CSS Rule: "+CillaPlugin.averageelement;
+                 "\n"+"The median of number of properties used in one CSS rule in this web site: "+ String.valueOf(CillaPlugin.Median)+"\n"+"The minimum number of properties in one CSS rule: "+String.valueOf(CillaPlugin.min)+"\n"+"The maximum number of properties used in one CSS rule: "+String.valueOf(CillaPlugin.max)+"\n"+"The average number of selector types used in one CSS selector: "+CillaPlugin.meanSelector+"\n"+"The median of selector types used in one CSS selector: "+CillaPlugin.medianSelector+"\n"+"The minimum number of selector types in one CSS selector: "+CillaPlugin.minSelector+"\n"+"The maximum number of selector types in one CSS selector: "+CillaPlugin.maxSelector+"\n"+ "Universality: "+CillaPlugin.uni+"\n"+ "Average Scope: "+CillaPlugin.AS+"\n"+"Abstractness Factor: "+CillaPlugin.abstFactor+"\n"+"Total Number of IDs in CSS Selectors: "+CillaPlugin.id+"\n"+"Total Number of Classes in CSS Selectors: "+CillaPlugin.clas+"\n"+"Total Number of Elements in CSS Selectors: "+CillaPlugin.element+"\n"+"Average Number of IDs used in one CSS Selector: "+CillaPlugin.averageid+"\n"+"Average Number of Classes used in one CSS Selector: "+CillaPlugin.averageclas+"\n"+"Average Number of Elements used in one CSS Selector: "+CillaPlugin.averageelement;
                  statisticsMsg= s;
 
                  statisticsMsg = statisticsMsg.replace("\n", "<br><br> ");
@@ -589,6 +590,7 @@ List<MSelector> inappfont = rule.checkFontSize();
                                                                         }
                                                                         
                                                                 }
+                     
 if(!CillaPlugin.allEmbeddedRules.isEmpty() && CillaPlugin.allEmbeddedRules.contains(rule.getRule().toString())){
 	
             	 embeddedRules.append("CSS rule: " + rule.getRule().getCssText()
@@ -597,9 +599,9 @@ if(!CillaPlugin.allEmbeddedRules.isEmpty() && CillaPlugin.allEmbeddedRules.conta
        + rule.getLocator().getLineNumber() + "<br>");
         	 embeddedRules.append(" Selector: " + rule.getRuleSelector().toString()
                       + "<br><br>");
-            	
+        	
             }
-            
+           
 List<MSelector> dangSelectorss = rule.getDangerousSelectors();
 if(dangSelectorss.size()>0){
  for (MSelector sel : dangSelectorss){
@@ -859,7 +861,7 @@ context.put("dangerousselectorColor", DangerousHighlight);
                                                                               
                                                                                
                                                                            }
-                                                                           
+                                                                          
                                                                            if(CillaPlugin.allEmbeddedRules.contains(rule.getRule().toString()) && null != rule.getLocator()){
                                                                                colorMap8 = new HashMap<Integer, HighlightColor>();
                                                                                q++;
@@ -871,6 +873,7 @@ context.put("dangerousselectorColor", DangerousHighlight);
                                                                              
                                                                              
                                                                          }
+                                                                         
                                                                            if(!rule.getDangerousSelectors().isEmpty() && null != rule.getLocator()){
                                                                                colorMap9 = new HashMap<Integer, HighlightColor>();
                                                                                r++;

@@ -290,6 +290,9 @@ highlightMap.put(HighlightColor.DANGEROUS, DangerousHighlight);
                  File f = new File("C:/Users/Golnaz/cilla/CsslintReports/output"+CillaPlugin.outputNum+".txt");
                  //File f = new File("D:/Output.txt");
                  FileInputStream fin = new FileInputStream(f);
+         if (!f.exists()) {
+                f.createNewFile();
+             }
                  byte[] buffer = new byte[(int) f.length()];
                  new DataInputStream(fin).readFully(buffer);
                  fin.close();

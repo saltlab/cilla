@@ -41,6 +41,7 @@ import com.crawljax.plugins.cilla.analysis.MCssRule;
 import com.crawljax.plugins.cilla.analysis.MProperty;
 import com.crawljax.plugins.cilla.analysis.MSelector;
 import com.crawljax.plugins.cilla.analysis.MatchedElements;
+import com.crawljax.plugins.cilla.examples.CillaRunner;
 import com.crawljax.plugins.cilla.util.CSSDOMHelper;
 import com.crawljax.plugins.cilla.util.CssParser;
 import com.crawljax.plugins.cilla.visualizer.CillaVisualizer;
@@ -94,6 +95,8 @@ public static double element;
 public static double averageid = 0;
 public static double averageclas = 0;
 public static double averageelement = 0;
+List<Integer> numElementsDomStates = new ArrayList<Integer>();
+List<Integer> numDescendantsDomStates = new ArrayList<Integer>();
 
         public void onNewState(CrawlerContext context, StateVertex newState) {
                 // if the external CSS files are not parsed yet, do so
@@ -103,9 +106,39 @@ public static double averageelement = 0;
                 checkCssOnDom(newState);
 
                 checkClassDefinitions(newState);
-
+                storeNumElementsOfEachDomState(newState);
+             //   storeNumDescendantsEachDomState(newState);
+               
         }
 
+        private void storeNumDescendantsEachDomState(StateVertex state){
+        	
+        	 for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()) {
+        	try {
+				numDescendantsDomStates.add(CssAnalyzer.getNumDescendants(state.getDocument(),
+				        entry.getValue()));
+			} catch (NodeSelectorException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        	 }
+        }
+      private void storeNumElementsOfEachDomState(StateVertex state){
+    	  
+    	  Document dom;
+		try {
+			dom = state.getDocument();
+			 numElementsDomStates.add(CSSDOMHelper.numElementsDocumentTree(dom));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	 
+    	  
+        }
         private void checkClassDefinitions(StateVertex state) {
                 LOGGER.info("Checking CSS class definitions...");
                 try {
@@ -410,13 +443,38 @@ countEmbeddedRules+= rules.get(k).getSelectors().size();
    }
 
         public void averageScope() throws Exception{
-            
+        	int totalTags = 0;
+        	for(int i = 0; i< numElementsDomStates.size(); i++){
+        		totalTags += numElementsDomStates.get(i);
+        		
+        		System.out.println("he"+numElementsDomStates.get(i));
+        	}
+        	numElementsDomStates.removeAll(numElementsDomStates);
+        	/*
+        	double totalDescendants = 0;
+        	for(int i = 0; i< numDescendantsDomStates.size(); i++){
+        		totalDescendants += numDescendantsDomStates.get(i);
+        	}
+        	*/
+      
+        	if(totalCssSelectors != 0) {       
+                AS = CssAnalyzer.totaldescendants/(totalCssSelectors*totalTags);
+        }
+       	
+        /*	
+            boolean included = false;
             int sum2= 0 ;
+            int count;
+            int count1;
             int numberoffilenames = 0;
            for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()) {
                    String filename = new String();
                     filename = entry.getKey();
+                   
                     numberoffilenames++;
+                    if(filename.equals(CillaRunner.urlScope+"/")){
+                    	included = true;
+                    }
            }
            int[] total = new int[numberoffilenames];
            int i = 0;
@@ -425,8 +483,8 @@ countEmbeddedRules+= rules.get(k).getSelectors().size();
                    
                    String filename = new String();
                     filename = entry.getKey();
-                    int count = 0;
-                           int count1 = 0;
+                   count = 0;
+                           count1 = 0;
                            
                            
                             //Set URL
@@ -456,15 +514,41 @@ countEmbeddedRules+= rules.get(k).getSelectors().size();
                            
                            
                             }
-            for(int j = 0; j< total.length;j++){
-                    sum2+= total[j];
-                   
-            }
+           for(int j = 0; j< total.length;j++){
+               sum2+= total[j];
+              
+       }
+        
+   int countinurl = 0;   
+   count = 0;
+   count1 = 0;
+   if(included == false){
+           URL url = new URL(CillaRunner.urlScope);
+           URLConnection spoof = url.openConnection();
+          
+           //Spoof the connection so we look like a web browser
+           spoof.setRequestProperty( "User-Agent", "Mozilla/4.0 (compatible; MSIE 5.5; Windows NT 5.0; H010818)" );
+           BufferedReader in = new BufferedReader(new InputStreamReader(spoof.getInputStream()));
+           String strLine = "";
+          
+           //Loop through every line in the source
+           while ((strLine = in.readLine()) != null){
+          
+           //Prints each line to the console
+           System.out.println(strLine);
+           count = strLine.length()-strLine.replace("</", " ").length();
+           count1 = strLine.length()-strLine.replace("/>", " ").length();
+           countinurl += count+count1;
+           }
            // number of elements in the document tree
-           System.out.println("All Tags "+sum2);
-   if(totalCssSelectors != 0) {       
-           AS = CssAnalyzer.totaldescendants/(totalCssSelectors*sum2);
+          
    }
+   System.out.println("AllTags"+" "+sum2+countinurl);
+   */
+  // if(totalCssSelectors != 0) {       
+     //      AS = CssAnalyzer.totaldescendants/(totalCssSelectors*(sum2+countinurl));
+  // }
+   
            }
         public void abstractnessFactor(){
             
@@ -577,9 +661,9 @@ fop1.write(10);
        e.printStackTrace();
        }
        */
- VisualizerServlet cl = new VisualizerServlet();
-cl.addCssLint();           
-outputNum++;
+// VisualizerServlet cl = new VisualizerServlet();
+//cl.addCssLint();           
+//outputNum++;
     //  }
       /*
               catch (IOException e) {

@@ -22,10 +22,12 @@ import com.crawljax.plugins.cilla.CillaPlugin;
 import com.crawljax.util.XPathHelper;
 
 public class CssAnalyzer {
-public static int[][] s;
+//public static int[][] s;
 public static double totaldescendants;
-public static double[] descendantArray;
-int j = 0;
+//public static double[] descendantArray;
+//int j = 0;
+
+
         private static final Logger LOGGER = Logger.getLogger(CssAnalyzer.class.getName());
 
         public static List<MCssRule> checkCssSelectorRulesOnDom(String stateName, Document dom,
@@ -45,9 +47,9 @@ int j = 0;
 int[] numberOfChildren = new int[result.size()];
 int i = 0;
                                 for (Node node : result) {
- System.out.println("hello");
-System.out.println(node.getChildNodes());
-System.out.println(node.getChildNodes().getLength());
+ //System.out.println("hello");
+//System.out.println(node.getChildNodes());
+//System.out.println(node.getChildNodes().getLength());
 numberOfChildren[i] = node.getChildNodes().getLength();
 i++;
 
@@ -132,5 +134,38 @@ totaldescendants += sum;
 
                 return duplicates;
         }
+        
+   public static int getNumDescendants(Document dom, List<MCssRule> mRules) throws NodeSelectorException{
+	   
+  
+int sumChildren = 0;
+
+	   for (MCssRule mRule : mRules) {
+           List<MSelector> selectors = mRule.getSelectors();
+           
+           for (MSelector selec : selectors) {
+
+                   String cssSelector = selec.getCssSelector();
+
+                   NodeSelector selector = new DOMNodeSelector(dom);
+                   Set<Node> result = selector.querySelectorAll(cssSelector);
+  int[] numberOfChildren = new int[result.size()];
+  int i = 0;                  
+                   for (Node node : result) {
+                	   numberOfChildren[i] = node.getChildNodes().getLength();
+                	   i++;
+                	   
+                   }
+                   
+                   for(int m = 0; m< numberOfChildren.length;m++){
+                   sumChildren += numberOfChildren[m];
+
+                   }
+           }
+
+           }
+	   return sumChildren;
+	   }
+   
 
 }

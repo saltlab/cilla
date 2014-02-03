@@ -16,29 +16,32 @@ public class CillaRunner {
         private static final int waitAfterReload = 400;
 
 //private static final String INDEX = "http://www.ece.ubc.ca/~amesbah/exp";
- private static final String INDEX = "http://www.baidu.com";
+ private static final String INDEX = "http://www.gokartrecords.com";
         
      
         
 public static String name;        
 public static long startTime;
 public static String b;
+public static String urlScope;
     public static void main(String[] args) {
+    	
+  
           /*
-                String[] urlArray = new String[10];
+                String[] urlArray = new String[100];
                         urlArray = GetUrls.getArray("src//main//resources//WebsitesUnderStudy.txt", 10);
-                        for (int i = 0 ; i < 10; i++) {
+                        for (int i = 0 ; i < 20; i++) {
                                 getName(urlArray[i]);
                                 startTime = System.currentTimeMillis();
-                
+                                urlScope = urlArray[i];
                 
                                 b = urlArray[i].replaceAll("http://", "");
-                    */ 
-                
-          b = INDEX.replaceAll("http://", "");
-                
+                   */
+        
+        b = INDEX.replaceAll("http://", "");
+      //   urlScope = INDEX;        
 
-            CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(INDEX);
+           CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(INDEX);
 //CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(urlArray[i]);
 
                 builder.crawlRules().insertRandomDataInInputForms(false);
@@ -58,7 +61,7 @@ builder.crawlRules().click("input");
 
 builder.setMaximumStates(50);
 
-                builder.setMaximumRunTime(60, TimeUnit.SECONDS);
+                builder.setMaximumRunTime(1500, TimeUnit.SECONDS);
 
 
                 builder.setBrowserConfig(new BrowserConfiguration(BrowserType.firefox, 1));
@@ -69,7 +72,7 @@ builder.setMaximumStates(50);
                 crawljax.call();
 
         }
- //}
+// }
     
     private static void getName(String URLstring) {
             String initialization = "", resticting = "";
@@ -86,6 +89,8 @@ builder.setMaximumStates(50);
                     second = URLstring.indexOf(".co");
             else if (initialization.contains(".ly"))
                     second = URLstring.indexOf(".ly");
+            else if (initialization.contains(".net"))
+                second = URLstring.indexOf(".net");
             else if (initialization.contains(".se"))
                     second = URLstring.indexOf(".se");
             else

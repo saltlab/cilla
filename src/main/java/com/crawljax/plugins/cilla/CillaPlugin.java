@@ -73,7 +73,9 @@ public static Map<String, List<MCssRule>> embeddedcssRules1 = new HashMap<String
         private int ineffectivePropsSize;
         private int totalCssRulesSize;
         
+public static String[] visualFilename;        
 public static int outputNum = 1;
+public static int outputNum1;
 public static double Mean = 0;
 public static double Median = 0;
 public static int min = 0;
@@ -557,18 +559,26 @@ countEmbeddedRules+= rules.get(k).getSelectors().size();
     }
 public void writecssintoFileCssLint(){
 	
+	outputNum1 = 1;
 	new File("C:/Users/Golnaz/cilla/CsslintReports").mkdirs();
 	  FileOutputStream fop =null;
-      
+	  
+	  for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()) {
+		  visualFilename = new String[cssRules.entrySet().size()+1]; 
+	  }
+    
       for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()) {
-              
+    	  String filename = new String();
+    	  filename = entry.getKey();
+    	
+    	visualFilename[outputNum1] = filename;
               for (MCssRule mrule : entry.getValue()) {
                     
                       
                               File file;
                               try{
                                       
-                                      file = new File("C:/Users/Golnaz/cssfile"+outputNum+".css");
+                                      file = new File("C:/Users/Golnaz/cssfile"+outputNum+outputNum1+".css");
                                       fop = new FileOutputStream(file, true);
                                       if (!file.exists()) {
                                                               file.createNewFile();
@@ -592,15 +602,15 @@ public void writecssintoFileCssLint(){
                                       }
                       
               }
-                      
+             outputNum1++;         
       } 
      
       Runtime rt = Runtime.getRuntime();
       
       try {
-              
+             for(int i = 1; i< outputNum1; i++) {
               FileOutputStream fop1 =null;
-               String[] command = {"java","-jar", "js.jar", "csslint-rhino.js", "cssfile"+outputNum+".css"};
+               String[] command = {"java","-jar", "js.jar", "csslint-rhino.js", "cssfile"+outputNum+i+".css"};
        ProcessBuilder probuilder = new ProcessBuilder( command );
        //You can set up your work directory
        probuilder.directory(new File("C:/Users/Golnaz"));
@@ -619,7 +629,7 @@ public void writecssintoFileCssLint(){
        File file1;
                               try{
                                       
-                                      file1 = new File("C:/Users/Golnaz/cilla/CsslintReports/output"+outputNum+".txt");
+                                      file1 = new File("C:/Users/Golnaz/cilla/CsslintReports/output"+outputNum+i+".txt");
                                       
                                       fop1 = new FileOutputStream(file1, true);
                                       
@@ -661,10 +671,11 @@ fop1.write(10);
        // TODO Auto-generated catch block
        e.printStackTrace();
        }
-      
+             }
  VisualizerServlet cl = new VisualizerServlet();
 cl.addCssLint();           
 outputNum++;
+
       }
       
               catch (IOException e) {

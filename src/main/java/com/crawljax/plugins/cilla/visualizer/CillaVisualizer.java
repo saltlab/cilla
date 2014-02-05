@@ -24,7 +24,7 @@ public class CillaVisualizer implements VisualizerPlugin {
                 
 //CSS Validation
 vs.addValidation(url);
-//vs.addCssLint();
+vs.addCssLint();
 vs.addStatistics();
 
                 

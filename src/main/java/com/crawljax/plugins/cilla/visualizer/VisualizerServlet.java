@@ -281,11 +281,82 @@ highlightMap.put(HighlightColor.DANGEROUS, DangerousHighlight);
                  }
 
  public void addCssLint(){
+	 
+	 Map<String, Map<String, String>> fileMap = new HashMap<String, Map<String, String>>();
+	 String unmatchedStr;
+	 for(int i = 1; i< CillaPlugin.outputNum1; i++){
+	 String filename = CillaPlugin.visualFilename[i];
+	 Map<String, String> analysisMap = new HashMap<String, String>();
+	 
+	    try {
+            
+        File f = new File("C:/Users/Golnaz/cilla/CsslintReports/output"+CillaPlugin.outputNum+i+".txt");
+            //File f = new File("D:/Output.txt");
+            FileInputStream fin = new FileInputStream(f);
+    if (!f.exists()) {
+           f.createNewFile();
+        }
+            byte[] buffer = new byte[(int) f.length()];
+            new DataInputStream(fin).readFully(buffer);
+            fin.close();
+            String s = new String(buffer, "UTF-8");
+            //System.out.println(s);
+           
+           
+            unmatchedStr = s;
+            unmatchedStr = unmatchedStr.replace("\n", "<br> ");
+	
+	 analysisMap.put("", unmatchedStr);
+	 fileMap.put(filename, analysisMap);
+	  VelocityContext context = new VelocityContext();
+      context.put("filemap", fileMap);
+      String template;
+      try {
+              template = getTemplateAsString(cssLintTemplate.getName());
+              FileWriter writer = new FileWriter(cssLintHTML);
+              
+              ve.evaluate(context, writer, "CSS-Lint", template);
+              writer.flush();
+              writer.close();
+
+      } catch (IOException e) {
+              e.printStackTrace();
+      }
+	    } catch (IOException e) {
+            e.printStackTrace();
+            }
+	 
+	
+	 }
+	 /*
+	 Map<String, Map<String, String>> fileMap = new HashMap<String, Map<String, String>>();
+	 String filename = "hello";
+	 Map<String, String> analysisMap = new HashMap<String, String>();
+	 String unmatchedStr = "Bye";
+	 analysisMap.put("Test", unmatchedStr);
+	 fileMap.put(filename, analysisMap);
+	  VelocityContext context = new VelocityContext();
+      context.put("filemap", fileMap);
+	 String template;
+     try {
+             template = getTemplateAsString(cssLintTemplate.getName());
+             FileWriter writer = new FileWriter(cssLintHTML);
+             
+             ve.evaluate(context, writer, "CSS-Lint", template);
+             writer.flush();
+             writer.close();
+
+     } catch (IOException e) {
+             e.printStackTrace();
+     }
+	*/
+	 /*
   //crawledAddress = url;
   VelocityContext context = new VelocityContext();
   String template;
   String cssLintMsg;
                  try {
+                
                  template = getTemplateAsString(cssLintTemplate.getName());
 
                  File f = new File("C:/Users/Golnaz/cilla/CsslintReports/output"+CillaPlugin.outputNum+".txt");
@@ -315,12 +386,12 @@ highlightMap.put(HighlightColor.DANGEROUS, DangerousHighlight);
                  ve.evaluate(context, writer, "CSS Lint", template);
                  writer.flush();
                  writer.close();
-
+                
                  } catch (IOException e) {
                  e.printStackTrace();
                  }
-                
-                
+                 
+              */
                 }
 
  

@@ -16,7 +16,7 @@ public class CillaRunner {
         private static final int waitAfterReload = 400;
 
 //private static final String INDEX = "http://www.ece.ubc.ca/~amesbah/exp";
- private static final String INDEX = "http://www.gokartrecords.com";
+ private static final String INDEX = "http://www.google.com";
         
      
         
@@ -61,7 +61,7 @@ builder.crawlRules().click("input");
 
 builder.setMaximumStates(50);
 
-                builder.setMaximumRunTime(1500, TimeUnit.SECONDS);
+                builder.setMaximumRunTime(60, TimeUnit.SECONDS);
 
 
                 builder.setBrowserConfig(new BrowserConfiguration(BrowserType.firefox, 1));

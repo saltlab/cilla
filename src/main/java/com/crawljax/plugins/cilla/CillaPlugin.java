@@ -347,6 +347,7 @@ countEmbeddedRules+= rules.get(k).getSelectors().size();
            h = new int[totalCssSelectors];
             for(int p = 0;p<allSelectors.size();p++){
             String s = allSelectors.get(p).getSpecificity().toString();
+ System.out.println("Spec"+" "+allSelectors.get(p)+" "+allSelectors.get(p).getSpecificity());
             int l = Integer.parseInt(s.substring(1, 2));
             int m = Integer.parseInt(s.substring(4, 5));
             int n = Integer.parseInt(s.substring(7, 8));
@@ -593,7 +594,7 @@ public void writecssintoFileCssLint(){
               }
                       
       } 
-     /* 
+     
       Runtime rt = Runtime.getRuntime();
       
       try {
@@ -660,17 +661,17 @@ fop1.write(10);
        // TODO Auto-generated catch block
        e.printStackTrace();
        }
-       */
-// VisualizerServlet cl = new VisualizerServlet();
-//cl.addCssLint();           
-//outputNum++;
-    //  }
-      /*
+      
+ VisualizerServlet cl = new VisualizerServlet();
+cl.addCssLint();           
+outputNum++;
+      }
+      
               catch (IOException e) {
               // TODO Auto-generated catch block
               e.printStackTrace();
       }
-      */
+      
 }
 
 

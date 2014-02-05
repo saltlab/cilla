@@ -91,7 +91,7 @@ public class SpecificityCalculator {
         public Specificity getSpecificity(String selector) {
                 
                 //me
-                
+             /*   
                 int count1 = 0; //class
                 int count2 = 0; //id
                 
@@ -150,9 +150,9 @@ public class SpecificityCalculator {
                         }
                 return getSpecificity();
         }
-        
+        */
                 //Mesbah
-        /*        
+                
                 String[] parts = selector.split(" ");
                 for (String part : parts) {
                         // CLASS: DIV.news or .news
@@ -182,6 +182,6 @@ public class SpecificityCalculator {
                 return getSpecificity();
                 
         }
-        */
+        
 
 }

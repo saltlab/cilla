@@ -22,6 +22,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.swing.JTable;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -328,19 +329,47 @@ highlightMap.put(HighlightColor.DANGEROUS, DangerousHighlight);
    VelocityContext context = new VelocityContext();
    String template;
    String statisticsMsg;
+   
+   
                  try {
                  template = getTemplateAsString(statisticsTemplate.getName());
                 
-                 String s = "The average number of properties used in one CSS rule in this web site: "+ String.valueOf(CillaPlugin.Mean)+
-                 "\n"+"The median of number of properties used in one CSS rule in this web site: "+ String.valueOf(CillaPlugin.Median)+"\n"+"The minimum number of properties in one CSS rule: "+String.valueOf(CillaPlugin.min)+"\n"+"The maximum number of properties used in one CSS rule: "+String.valueOf(CillaPlugin.max)+"\n"+"The average number of selector types used in one CSS selector: "+CillaPlugin.meanSelector+"\n"+"The median of selector types used in one CSS selector: "+CillaPlugin.medianSelector+"\n"+"The minimum number of selector types in one CSS selector: "+CillaPlugin.minSelector+"\n"+"The maximum number of selector types in one CSS selector: "+CillaPlugin.maxSelector+"\n"+ "Universality: "+CillaPlugin.uni+"\n"+ "Average Scope: "+CillaPlugin.AS+"\n"+"Abstractness Factor: "+CillaPlugin.abstFactor+"\n"+"Total Number of IDs in CSS Selectors: "+CillaPlugin.id+"\n"+"Total Number of Classes in CSS Selectors: "+CillaPlugin.clas+"\n"+"Total Number of Elements in CSS Selectors: "+CillaPlugin.element+"\n"+"Average Number of IDs used in one CSS Selector: "+CillaPlugin.averageid+"\n"+"Average Number of Classes used in one CSS Selector: "+CillaPlugin.averageclas+"\n"+"Average Number of Elements used in one CSS Selector: "+CillaPlugin.averageelement;
-                 statisticsMsg= s;
-
-                 statisticsMsg = statisticsMsg.replace("\n", "<br><br> ");
-                
-                
-                 context.put("summary", statisticsMsg);
-                
-                 context.put("date", dateString);
+             
+               
+ String table = "table"+"tr"+"td"+"Measuring Number of Properties in One CSS Rule"+"\n"+"\td"+"td"+""+"\td"+"\tr"+"tr"+"td"+"Min"+"\n"+"\td"+"td"+(CillaPlugin.min)+
+		 "\n"+"\td"+"\tr"+"tr"+"td"+"Mean"+"\n"+"\td"+"td"+(double)Math.round((CillaPlugin.Mean) * 100) / 100+
+		 "\n"+"\td"+"\tr"+"tr"+"td"+"Median"+"\n"+"\td"+"td"+(CillaPlugin.Median)+
+		 "\n"+"\td"+"\tr"+"tr"+"td"+"Max"+"\n"+"\td"+"td"+(CillaPlugin.max)+
+		 "\n"+"\td"+"\tr"+"tr"+"td"+"\b"+"Measuring Number of Selector Types in One CSS Rule"+
+		 "\n"+"\td"+"td"+""+"\td"+"\tr"+"tr"+"td"+"Min"+"\n"+"\td"+"td"+(CillaPlugin.minSelector)+
+		 "\n"+"\td"+"\tr"+"tr"+"td"+"Mean"+"\n"+"\td"+"td"+(double)Math.round((CillaPlugin.meanSelector) * 100) / 100+
+		 "\n"+"\td"+"\tr"+"tr"+"td"+"Median"+"\n"+"\td"+"td"+(CillaPlugin.medianSelector)+
+		 "\n"+"\td"+"\tr"+"tr"+"td"+"Max"+"\n"+"\td"+"td"+(CillaPlugin.maxSelector)+
+		 "\n"+"\td"+"\tr"+"tr"+"td"+"\b"+"Measuring CSS Code Quality"+
+		 "\n"+"\td"+"td"+""+"\td"+"\tr"+"tr"+"td"+"Universality"+"\n"+"\td"+"td"+(double)Math.round((CillaPlugin.uni) * 100) / 100+
+		 "\n"+"\td"+"\tr"+"tr"+"td"+"Average Scope"+"\n"+"\td"+"td"+(double)Math.round((CillaPlugin.AS) * 100) / 100+
+		 "\n"+"\td"+"\tr"+"tr"+"td"+"*Abs"+"\n"+"\td"+"td"+(double)Math.round((CillaPlugin.abstFactor) * 100) / 100+
+		 "\n"+"\td"+"\tr"+"tr"+"td"+"\b"+"Number of IDs"+"\n"+"\td"+"td"+""+"\td"+"\tr"+"tr"+"td"+"Total"+"\n"+"\td"+"td"+CillaPlugin.id+
+		 "\n"+"\td"+"\tr"+"tr"+"td"+"Average (Total/NumOfSelectors)"+"\n"+"\td"+"td"+(double)Math.round((CillaPlugin.averageid) * 100) / 100+
+		 "\n"+"\td"+"\tr"+"tr"+"td"+"\b"+"Number of Classes"+"\n"+"\td"+"td"+""+"\td"+"\tr"+"td"+"Total"+"\n"+"\td"+"td"+CillaPlugin.clas+
+		 "\n"+"\td"+"\tr"+"tr"+"td"+"Average (Total/NumOfSelectors)"+"\n"+"\td"+"td"+(double)Math.round((CillaPlugin.averageclas) * 100) / 100+
+		 "\n"+"\td"+"\tr"+"tr"+"td"+"\b"+"Number of Elements"+"\n"+"\td"+"td"+""+"\td"+"tr"+"td"+"Total"+"\n"+"\td"+"td"+CillaPlugin.element+
+		 "\n"+"\td"+"\tr"+"tr"+"td"+"Average (Total/NumOfSelectors)"+"\n"+"\td"+"td"+(double)Math.round((CillaPlugin.averageelement) * 100) / 100+"\n"+"\td"+"\tr"+"\table"+"\n"+"*Abs = Abstractness Factor";
+         statisticsMsg = table;
+         statisticsMsg = statisticsMsg.replace("table", "<table>");
+         statisticsMsg = statisticsMsg.replace("\table", "</table> ");
+		 statisticsMsg = statisticsMsg.replace("tr", "<tr>");
+         statisticsMsg = statisticsMsg.replace("\tr", "</tr>");
+         statisticsMsg = statisticsMsg.replace("td", "<td>");
+         statisticsMsg = statisticsMsg.replace("\td", "</td>");
+         statisticsMsg = statisticsMsg.replace("\n", "<hr>");
+         statisticsMsg = statisticsMsg.replace("\b", "<br><br>");
+     
+         
+                 
+   context.put("summary", statisticsMsg);
+  
+         context.put("date", dateString);
                 
                  FileWriter writer = new FileWriter(statisticsHTML);
 

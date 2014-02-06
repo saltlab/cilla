@@ -26,8 +26,8 @@ public static String b;
 public static String urlScope;
     public static void main(String[] args) {
     	
- 
-         
+
+        
                 String[] urlArray = new String[100];
                         urlArray = GetUrls.getArray("src//main//resources//WebsitesUnderStudy.txt", 10);
                         for (int i = 0 ; i < 20; i++) {
@@ -36,12 +36,12 @@ public static String urlScope;
                                 urlScope = urlArray[i];
                 
                                 b = urlArray[i].replaceAll("http://", "");
-                  
-        
+                 
+       
     //   b = INDEX.replaceAll("http://", "");
       //   urlScope = INDEX;        
 
-     //     CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(INDEX);
+   //     CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(INDEX);
 CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(urlArray[i]);
 
                 builder.crawlRules().insertRandomDataInInputForms(false);

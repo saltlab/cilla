@@ -57,7 +57,7 @@ public static int totalCssSelectors = 0;
         private static final Logger LOGGER = Logger.getLogger(CillaPlugin.class.getName());
 
         private Map<String, List<MCssRule>> cssRules = new HashMap<String, List<MCssRule>>();
-public static Map<String, List<MCssRule>> embeddedcssRules1 = new HashMap<String, List<MCssRule>>();
+public Map<String, List<MCssRule>> embeddedcssRules1 = new HashMap<String, List<MCssRule>>();
         public static final Set<String> cssEffectiveRuntime = new HashSet<String>();
 
         final SetMultimap<String, ElementWithClass> elementsWithNoClassDef = HashMultimap.create();
@@ -1169,7 +1169,7 @@ output.append(dangerousSelectors.toString());
                 return ineffectivePropsSize;
         }
         
-        
+   
         private int getReactiveImportant(StringBuffer buffer){
         	LOGGER.info("Reporting CSS Rules with reactive !important...");
         	buffer.append("========== CSS RULES with REACTIVE !important ==========\n");
@@ -1447,6 +1447,6 @@ output.append(dangerousSelectors.toString());
         	                
         	        }
 
-        	
+       
 
 }

@@ -22,10 +22,11 @@ import com.steadystate.css.userdata.UserDataConstants;
 
 public class MCssRule {
 
-        private CSSRule rule;
+	
+        public CSSRule rule;
        private List<MSelector> selectors;
         
-        private String ruleSelector;
+        public String ruleSelector;
 
         private static Set<String> ignorePseudoClasses = new HashSet<String>(Arrays.asList(":link",
          ":visited", ":hover", ":focus", ":active", ":target", ":lang", ":enabled",
@@ -201,7 +202,7 @@ public class MCssRule {
                 return ruleSelector;
         }
         
-        
+   
 public List<MSelector> getTooSpecificSelectors(){
 SpecificityCalculator sc = new SpecificityCalculator();
 

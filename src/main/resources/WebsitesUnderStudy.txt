@@ -1,3 +1,2 @@
-http://www.ece.ubc.ca/~amesbah/exp
 http://www.google.com
-http://www.facebook.com
+http://www.ece.ubc.ca/~amesbah/exp

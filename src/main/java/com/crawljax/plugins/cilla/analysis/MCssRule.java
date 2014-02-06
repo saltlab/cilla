@@ -23,10 +23,10 @@ import com.steadystate.css.userdata.UserDataConstants;
 public class MCssRule {
 
 	
-        public CSSRule rule;
+        private CSSRule rule;
        private List<MSelector> selectors;
         
-        public String ruleSelector;
+        private String ruleSelector;
 
         private static Set<String> ignorePseudoClasses = new HashSet<String>(Arrays.asList(":link",
          ":visited", ":hover", ":focus", ":active", ":target", ":lang", ":enabled",

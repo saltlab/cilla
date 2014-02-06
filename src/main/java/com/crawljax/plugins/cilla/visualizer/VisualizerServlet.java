@@ -283,7 +283,7 @@ highlightMap.put(HighlightColor.DANGEROUS, DangerousHighlight);
  public void addCssLint(){
 	 
 	 Map<String, Map<String, String>> fileMap = new HashMap<String, Map<String, String>>();
-	 String unmatchedStr;
+	 String lintStr;
 	 for(int i = 1; i< CillaPlugin.outputNum1; i++){
 	 String filename = CillaPlugin.visualFilename[i];
 	 Map<String, String> analysisMap = new HashMap<String, String>();
@@ -303,10 +303,10 @@ highlightMap.put(HighlightColor.DANGEROUS, DangerousHighlight);
             //System.out.println(s);
            
            
-            unmatchedStr = s;
-            unmatchedStr = unmatchedStr.replace("\n", "<br> ");
+            lintStr = s;
+            lintStr = lintStr.replace("\n", "<br> ");
 	
-	 analysisMap.put("", unmatchedStr);
+	 analysisMap.put("", lintStr);
 	 fileMap.put(filename, analysisMap);
 	  VelocityContext context = new VelocityContext();
       context.put("filemap", fileMap);

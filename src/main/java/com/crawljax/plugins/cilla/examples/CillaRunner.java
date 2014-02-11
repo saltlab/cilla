@@ -2,46 +2,53 @@ package com.crawljax.plugins.cilla.examples;
 
 import java.util.concurrent.TimeUnit;
 
+
+
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
+
 import com.crawljax.core.CrawljaxRunner;
 import com.crawljax.core.configuration.BrowserConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
+
+
 import com.crawljax.plugins.cilla.CillaPlugin;
 
 
-public class CillaRunner {
 
+
+public class CillaRunner {
+	
         private static final int waitAfterEvent = 400;
         private static final int waitAfterReload = 400;
 
 //private static final String INDEX = "http://www.ece.ubc.ca/~amesbah/exp";
-// private static final String INDEX = "http://www.google.com";
+//private static final String INDEX = "http://www.facebook.com";
         
      
         
 public static String name;        
 public static long startTime;
 public static String b;
-public static String urlScope;
+
     public static void main(String[] args) {
     	
-
+    	
+    	
         
                 String[] urlArray = new String[100];
                         urlArray = GetUrls.getArray("src//main//resources//WebsitesUnderStudy.txt", 10);
                         for (int i = 0 ; i < 20; i++) {
                                 getName(urlArray[i]);
                                 startTime = System.currentTimeMillis();
-                                urlScope = urlArray[i];
+                               
                 
                                 b = urlArray[i].replaceAll("http://", "");
-                 
-       
-    //   b = INDEX.replaceAll("http://", "");
-      //   urlScope = INDEX;        
+     
+   //  b = INDEX.replaceAll("http://", "");
+           
 
-   //     CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(INDEX);
+     // CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(INDEX);
 CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(urlArray[i]);
 
                 builder.crawlRules().insertRandomDataInInputForms(false);
@@ -67,12 +74,12 @@ builder.setMaximumStates(50);
                 builder.setBrowserConfig(new BrowserConfiguration(BrowserType.firefox, 1));
 
                 builder.addPlugin(new CillaPlugin());
-
+            	
                 CrawljaxRunner crawljax = new CrawljaxRunner(builder.build());
                 crawljax.call();
-
+             
         }
- }
+}
     
     private static void getName(String URLstring) {
             String initialization = "", resticting = "";

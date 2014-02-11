@@ -18,14 +18,11 @@ import se.fishtank.css.selectors.NodeSelector;
 import se.fishtank.css.selectors.NodeSelectorException;
 import se.fishtank.css.selectors.dom.DOMNodeSelector;
 
-import com.crawljax.plugins.cilla.CillaPlugin;
 import com.crawljax.util.XPathHelper;
 
+import org.w3c.dom.traversal.TreeWalker;
+
 public class CssAnalyzer {
-//public static int[][] s;
-public static double totaldescendants;
-//public static double[] descendantArray;
-//int j = 0;
 
 
         private static final Logger LOGGER = Logger.getLogger(CssAnalyzer.class.getName());
@@ -33,26 +30,22 @@ public static double totaldescendants;
         public static List<MCssRule> checkCssSelectorRulesOnDom(String stateName, Document dom,
          List<MCssRule> mRules) throws NodeSelectorException {
   
-  
 
                 for (MCssRule mRule : mRules) {
                         List<MSelector> selectors = mRule.getSelectors();
-                        
+                         
                         for (MSelector selec : selectors) {
 
                                 String cssSelector = selec.getCssSelector();
 
                                 NodeSelector selector = new DOMNodeSelector(dom);
                                 Set<Node> result = selector.querySelectorAll(cssSelector);
-int[] numberOfChildren = new int[result.size()];
-int i = 0;
-                                for (Node node : result) {
- //System.out.println("hello");
-//System.out.println(node.getChildNodes());
-//System.out.println(node.getChildNodes().getLength());
-numberOfChildren[i] = node.getChildNodes().getLength();
-i++;
+                               
 
+
+                                for (Node node : result) {
+ 
+ 
  
                                         if (node instanceof Document) {
                                                 LOGGER.debug("CSS rule returns the whole document!!!");
@@ -62,28 +55,29 @@ i++;
                                                 selec.addMatchedElement(ew);
                                                 MatchedElements.setMatchedElement(ew, selec);
                                         }
+                                        
+  
+   
+
                                 }
-   int sum = 0;
-for(int m = 0; m< numberOfChildren.length;m++){
-	sum+= numberOfChildren[m];
-	
-}
-
-totaldescendants += sum;
-
-
+                               
+    
+                              
                         }
                   
-
+                       
                 }
-                
-    
-    //totaldescendants: number of elements in scope of selectors
-
+                            
+             
                 return mRules;
- 
+               
         }
 
+        
+        
+
+        
+     
         public static List<MCssRule> checkCssRulesOnDom(String stateName, Document dom,
          List<MCssRule> mRules) {
 
@@ -135,37 +129,6 @@ totaldescendants += sum;
                 return duplicates;
         }
         
-   public static int getNumDescendants(Document dom, List<MCssRule> mRules) throws NodeSelectorException{
-	   
   
-int sumChildren = 0;
-
-	   for (MCssRule mRule : mRules) {
-           List<MSelector> selectors = mRule.getSelectors();
-           
-           for (MSelector selec : selectors) {
-
-                   String cssSelector = selec.getCssSelector();
-
-                   NodeSelector selector = new DOMNodeSelector(dom);
-                   Set<Node> result = selector.querySelectorAll(cssSelector);
-  int[] numberOfChildren = new int[result.size()];
-  int i = 0;                  
-                   for (Node node : result) {
-                	   numberOfChildren[i] = node.getChildNodes().getLength();
-                	   i++;
-                	   
-                   }
-                   
-                   for(int m = 0; m< numberOfChildren.length;m++){
-                   sumChildren += numberOfChildren[m];
-
-                   }
-           }
-
-           }
-	   return sumChildren;
-	   }
-   
 
 }

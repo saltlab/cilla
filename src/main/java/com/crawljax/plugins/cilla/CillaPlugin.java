@@ -37,6 +37,7 @@ import com.crawljax.core.plugin.PostCrawlingPlugin;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.plugins.cilla.analysis.CssAnalyzer;
 import com.crawljax.plugins.cilla.analysis.ElementWithClass;
+import com.crawljax.plugins.cilla.analysis.ElementWrapper;
 import com.crawljax.plugins.cilla.analysis.MCssRule;
 import com.crawljax.plugins.cilla.analysis.MProperty;
 import com.crawljax.plugins.cilla.analysis.MSelector;
@@ -49,14 +50,22 @@ import com.crawljax.plugins.cilla.visualizer.VisualizerServlet;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import se.fishtank.css.selectors.NodeSelector;
+import se.fishtank.css.selectors.NodeSelectorException;
+import se.fishtank.css.selectors.dom.DOMNodeSelector;
 public class CillaPlugin implements OnNewStatePlugin, PostCrawlingPlugin {
-	
+
 public static int totalCssRules = 0;
 public static int totalCssSelectors = 0;
 
         private static final Logger LOGGER = Logger.getLogger(CillaPlugin.class.getName());
 
         private Map<String, List<MCssRule>> cssRules = new HashMap<String, List<MCssRule>>();
+        
 public Map<String, List<MCssRule>> embeddedcssRules1 = new HashMap<String, List<MCssRule>>();
         public static final Set<String> cssEffectiveRuntime = new HashSet<String>();
 
@@ -72,8 +81,8 @@ public Map<String, List<MCssRule>> embeddedcssRules1 = new HashMap<String, List<
         private int cssLOC;
         private int ineffectivePropsSize;
         private int totalCssRulesSize;
-        
-public static String[] visualFilename;        
+         
+public static String[] visualFilename;
 public static int outputNum = 1;
 public static int outputNum1;
 public static double Mean = 0;
@@ -98,49 +107,138 @@ public static double averageid = 0;
 public static double averageclas = 0;
 public static double averageelement = 0;
 List<Integer> numElementsDomStates = new ArrayList<Integer>();
-List<Integer> numDescendantsDomStates = new ArrayList<Integer>();
 
+
+List<Integer> totalSelectorsEachDomState = new ArrayList<Integer>();
+List<Double> universalityArray = new ArrayList<Double>();
+List<Double> nodeThemselves = new ArrayList<Double>();
+double uni1 = 0;
+double totaldescendants;
+List<Double> numDescendantsDomStates = new ArrayList<Double>();
+List<Node> finalChildren;
+int count = 0;
         public void onNewState(CrawlerContext context, StateVertex newState) {
+        	
+        	count++;
                 // if the external CSS files are not parsed yet, do so
                 parseCssRules(context, newState);
 
                 // now we have all the CSS rules neatly parsed in "rules"
                 checkCssOnDom(newState);
-
+ 
                 checkClassDefinitions(newState);
                 storeNumElementsOfEachDomState(newState);
-             //   storeNumDescendantsEachDomState(newState);
+                getTotalSelectorsEachDomState();
+			
+				
                
         }
 
-        private void storeNumDescendantsEachDomState(StateVertex state){
-        	
-        	 for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()) {
-        	try {
-				numDescendantsDomStates.add(CssAnalyzer.getNumDescendants(state.getDocument(),
-				        entry.getValue()));
-			} catch (NodeSelectorException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-        	 }
-        }
+    private void getTotalSelectorsEachDomState(){
+    
+          totalCssSelectors = 0;
+        
+          for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()) {
+                     
+                  for (MCssRule mrule : entry.getValue()) {
+                          totalCssSelectors += mrule.getSelectors().size();
+  
+                  }
+                  
+            
+          }
+          totalSelectorsEachDomState.add(totalCssSelectors);
+         
+    	
+    }
+     
       private void storeNumElementsOfEachDomState(StateVertex state){
-    	  
-    	  Document dom;
-		try {
-			dom = state.getDocument();
-			 numElementsDomStates.add(CSSDOMHelper.numElementsDocumentTree(dom));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    	 
-    	  
+    
+     Document dom;
+try {
+dom = state.getDocument();
+numElementsDomStates.add(CSSDOMHelper.numElementsDocumentTree(dom));
+try {
+	checkCssSelectorRulesOnDom1(state.getName(), dom);
+} catch (NodeSelectorException e) {
+	
+	numDescendantsDomStates.add((double) finalChildren.size());
+	// TODO Auto-generated catch block
+	e.printStackTrace();
+}
+
+} catch (IOException e) {
+// TODO Auto-generated catch block
+e.printStackTrace();
+}
+    
+    
         }
+      
+      public void checkCssSelectorRulesOnDom1(String stateName, Document dom
+              ) throws NodeSelectorException {
+       
+    	finalChildren = new ArrayList<Node>();
+    	int w = 0;
+       List<MCssRule> mRules = null;
+       for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()) {
+       	mRules = CssAnalyzer.checkCssRulesOnDom(stateName, dom, entry.getValue());
+          
+     totaldescendants = 0;
+     
+                     for (MCssRule mRule : mRules) {
+                             List<MSelector> selectors = mRule.getSelectors();
+                              
+                             for (MSelector selec : selectors) {
+
+                                     String cssSelector = selec.getCssSelector();
+
+                                     NodeSelector selector = new DOMNodeSelector(dom);
+                                     Set<Node> result = selector.querySelectorAll(cssSelector);
+                                    
+     
+     NodeList children = null;
+   
+
+   
+     
+
+                                     for (Node node : result) {
+      
+      
+     finalChildren.add(node); 
+                                           
+                                             
+        
+         children = node.getChildNodes();
+       
+          for(int x = 0; x< children.getLength(); x++){
+               	finalChildren.add(children.item(x));
+             	
+                                                         }
+                   for(int x = w; x< finalChildren.size(); x++){
+                    	node = finalChildren.get(x);
+               	children = node.getChildNodes();
+            	for(int y = 0; y< children.getLength(); y++ ){
+              		finalChildren.add(children.item(y));
+                                                                  	}
+                                                                  }
+                            w = finalChildren.size();
+                                                                             
+              
+     
+     		   }
+     	   }
+        }
+       }
+       totaldescendants = finalChildren.size();
+      numDescendantsDomStates.add((double) finalChildren.size());
+               
+        }
+       
+          
+           
+                   
         private void checkClassDefinitions(StateVertex state) {
                 LOGGER.info("Checking CSS class definitions...");
                 try {
@@ -186,17 +284,27 @@ List<Integer> numDescendantsDomStates = new ArrayList<Integer>();
         private void checkCssOnDom(StateVertex state) {
                 LOGGER.info("Checking CSS on DOM...");
                 // check the rules on the current DOM state.
+        
                 try {
+           	
                         for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()) {
+                        	
                                 CssAnalyzer.checkCssSelectorRulesOnDom(state.getName(), state.getDocument(),
                                  entry.getValue());
+
+                               
+      
                         }
-  
+         
+ 
+                   
+
                 } catch (IOException e) {
                         LOGGER.error(e.getMessage(), e);
                 } catch (NodeSelectorException e) {
                         LOGGER.error(e.getMessage(), e);
                 }
+               
         }
 
         private int countLines(String cssText) {
@@ -221,6 +329,9 @@ List<Integer> numDescendantsDomStates = new ArrayList<Integer>();
 
         private void parseCssRules(CrawlerContext context, StateVertex state) {
                 String url = context.getBrowser().getCurrentUrl();
+int num1 = 0;
+int num2 = 0;
+double num3 = 0;
 
                 try {
                         final Document dom = state.getDocument();
@@ -233,9 +344,69 @@ List<Integer> numDescendantsDomStates = new ArrayList<Integer>();
                                         String cssContent = CSSDOMHelper.getURLContent(cssUrl);
                                         cssLOC += countLines(cssContent);
                                         List<MCssRule> rules = CssParser.getMCSSRules(cssContent);
+                                       
                                         if (rules != null && rules.size() > 0) {
-                                                cssRules.put(cssUrl, rules);
-                                        }
+ for(int i = 0; i< rules.size(); i++){
+	 num1 += rules.get(i).getSelectors().size();
+	 
+	 
+ }
+
+                                        	cssRules.put(cssUrl, rules);
+                                     	
+   List<MSelector> selectorsinDom = new ArrayList<MSelector>();  
+   int r = 0;
+   int[] g;
+ for(int i = 0; i< rules.size(); i++){
+	 selectorsinDom.addAll(rules.get(i).getSelectors());
+	
+ }
+ g = new int[selectorsinDom.size()];
+ for(int i = 0; i< rules.size(); i++){
+	 String s = selectorsinDom.get(i).getSpecificity().toString();
+	 
+	            int l = Integer.parseInt(s.substring(1, 2));
+	            int m = Integer.parseInt(s.substring(4, 5));
+	            int n = Integer.parseInt(s.substring(7, 8));
+	            int o = Integer.parseInt(s.substring(10, 11));
+	            int t = l+m+n+o;
+	            g[r]= t;
+	            r++;
+	           
+ 
+ }
+ for(int y = 0; y<g.length;y++){
+     int a = Integer.parseInt(selectorsinDom.get(y).getSpecificity().toString().substring(10, 11));
+     // checks simple element selector
+             if(g[y] == 1 && a == 1){
+                     num3++;
+                    
+             }
+ }
+ // checks combined selectors in which the last simple selector is element
+ for(int j0=0; j0<selectorsinDom.size();j0++){
+     
+  String[] parts2 = selectorsinDom.get(j0).toString().split("XPath");
+  
+  
+ String f = parts2[0].replace("Selector:", "");
+
+ String[] parts3 = f.split(" ");
+ int k = parts3.length-1;
+ while(parts3[k].isEmpty()){
+         k--;
+ }
+ 
+             if(!parts3[k].isEmpty() && !parts3[k].contains(".") && !parts3[k].contains("#") && g[j0]!=1){
+         num3++;
+ 
+ 
+   
+             }
+}
+ 
+
+                                        }       
                                 }
                         }
 
@@ -245,54 +416,102 @@ List<Integer> numDescendantsDomStates = new ArrayList<Integer>();
                                 cssLOC += countLines(embeddedRules);
 
                                 List<MCssRule> rules = CssParser.getMCSSRules(embeddedRules);
-                                /*
- for(int k = 0; k<rules.size();k++){                               
-countEmbeddedRules+= rules.get(k).getSelectors().size(); 
- }
- */
+                               
+                               
  countEmbeddedRules+= rules.size();
- /*
- int countImport = 0;
- for(int k = 0; k<rules.size();k++){
-	 if(rules.get(k).getRule().toString().contains("import")){
-		 countImport++;
-	 }
- }
- countEmbeddedRules = countEmbeddedRules - countImport;
- */
+
                                 if (rules != null && rules.size() > 0) {
                                         cssRules.put(url, rules);
-                                        
- embeddedcssRules1.put(url, rules); 
+                                         
+   embeddedcssRules1.put(url, rules); 
+   for(int i = 0; i< rules.size(); i++){
+		 num2 += rules.get(i).getSelectors().size();
+		 
+	 }
+   
+   List<MSelector> selectorsinDom = new ArrayList<MSelector>();  
+   int r = 0;
+   int[] g;
+ for(int i = 0; i< rules.size(); i++){
+	 selectorsinDom.addAll(rules.get(i).getSelectors());
+	
+ }
+ g = new int[selectorsinDom.size()];
+ for(int i = 0; i< selectorsinDom.size(); i++){
+	 String s = selectorsinDom.get(i).getSpecificity().toString();
+	 
+	            int l = Integer.parseInt(s.substring(1, 2));
+	            int m = Integer.parseInt(s.substring(4, 5));
+	            int n = Integer.parseInt(s.substring(7, 8));
+	            int o = Integer.parseInt(s.substring(10, 11));
+	            int t = l+m+n+o;
+	            g[r]= t;
+	            r++;
+	           
+ 
+ }
+ for(int y = 0; y<g.length;y++){
+     int a = Integer.parseInt(selectorsinDom.get(y).getSpecificity().toString().substring(10, 11));
+     // checks simple element selector
+             if(g[y] == 1 && a == 1){
+                     num3++;
+                    
+             }
+ }
+ // checks combined selectors in which the last simple selector is element
+ for(int j0=0; j0<selectorsinDom.size();j0++){
+     
+  String[] parts2 = selectorsinDom.get(j0).toString().split("XPath");
+  
+  
+ String f = parts2[0].replace("Selector:", "");
+
+ String[] parts3 = f.split(" ");
+ int k = parts3.length-1;
+ while(parts3[k].isEmpty()){
+         k--;
+ }
+ 
+             if(!parts3[k].isEmpty() && !parts3[k].contains(".") && !parts3[k].contains("#") && g[j0]!=1){
+         num3++;
+ 
+ 
+   
+             }
+}
+ 
                                 }
                         }
 
                 } catch (IOException e) {
                         LOGGER.error(e.getMessage(), e);
                 }
+  int summation = num1+num2; 
+  if(summation != 0){
+  uni1 = num3/summation;
+  }
+  
+  
+  universalityArray.add(uni1);
+  
 
         }
 
         
         public void getEmbeddedRules(){
             
-        	allEmbeddedRules = new ArrayList<String>();
-        	                
-        	                for (Map.Entry<String, List<MCssRule>> entry : embeddedcssRules1.entrySet()) {
-        	                           for (MCssRule mrule : entry.getValue()){
-        	                        	   /*
-        	                                   if(mrule.getRule().toString().contains("import")){
-        	                                           continue;
-        	                                   }
-        	                                   else{
-        	                                   */
-        	                                   allEmbeddedRules.add(mrule.getRule().toString());
-        	                                 //  }
-        	                           }
-        	                          
-        	                   }
-        	                
-        	        }
+         allEmbeddedRules = new ArrayList<String>();
+        
+         for (Map.Entry<String, List<MCssRule>> entry : embeddedcssRules1.entrySet()) {
+         for (MCssRule mrule : entry.getValue()){
+      
+         allEmbeddedRules.add(mrule.getRule().toString());
+       
+         }
+        
+         }
+        
+         }
         
         public void determineThreshold(){
             
@@ -349,7 +568,7 @@ countEmbeddedRules+= rules.get(k).getSelectors().size();
            h = new int[totalCssSelectors];
             for(int p = 0;p<allSelectors.size();p++){
             String s = allSelectors.get(p).getSpecificity().toString();
- System.out.println("Spec"+" "+allSelectors.get(p)+" "+allSelectors.get(p).getSpecificity());
+ 
             int l = Integer.parseInt(s.substring(1, 2));
             int m = Integer.parseInt(s.substring(4, 5));
             int n = Integer.parseInt(s.substring(7, 8));
@@ -405,152 +624,38 @@ countEmbeddedRules+= rules.get(k).getSelectors().size();
    }
         
         public void universality(){
-        	if(totalCssSelectors !=0){
-            double countElements = 0;
-            for(int y = 0; y<h.length;y++){
-            int a = Integer.parseInt(allSelectors.get(y).getSpecificity().toString().substring(10, 11));
-            // checks simple element selector
-                    if(h[y] == 1 && a == 1){
-                            countElements++;
-                           
-                    }
-                   
-            }
-           // checks combined selectors in which the last simple selector is element
-            for(int j0=0; j0<allSelectors.size();j0++){
-                
-             String[] parts2 = allSelectors.get(j0).toString().split("XPath");
-             
-             
-            String f = parts2[0].replace("Selector:", "");
-           
-            String[] parts3 = f.split(" ");
-            int k = parts3.length-1;
-            while(parts3[k].isEmpty()){
-                    k--;
-            }
-            
-                        if(!parts3[k].isEmpty() && !parts3[k].contains(".") && !parts3[k].contains("#") && h[j0]!=1){
-                    countElements++;
-            
-            
-              
-                        }
-         }
-
-         uni = countElements/totalCssSelectors;
-           
+        	double summ = 0;
+        	for(int i = 0; i< universalityArray.size(); i++){
+        	summ+= universalityArray.get(i);	
         	}
-
+        	if(universalityArray.size()!=0){
+        	uni = summ / universalityArray.size();
+        	}
+        	
+        
        
    }
 
         public void averageScope() throws Exception{
-        	int totalTags = 0;
-        	for(int i = 0; i< numElementsDomStates.size(); i++){
-        		totalTags += numElementsDomStates.get(i);
-        		
-        		System.out.println("he"+numElementsDomStates.get(i));
-        	}
-        	numElementsDomStates.removeAll(numElementsDomStates);
-        	/*
-        	double totalDescendants = 0;
-        	for(int i = 0; i< numDescendantsDomStates.size(); i++){
-        		totalDescendants += numDescendantsDomStates.get(i);
-        	}
-        	*/
-      
-        	if(totalCssSelectors != 0) {       
-                AS = CssAnalyzer.totaldescendants/(totalCssSelectors*totalTags);
-        }
-       	
-        /*	
-            boolean included = false;
-            int sum2= 0 ;
-            int count;
-            int count1;
-            int numberoffilenames = 0;
-           for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()) {
-                   String filename = new String();
-                    filename = entry.getKey();
-                   
-                    numberoffilenames++;
-                    if(filename.equals(CillaRunner.urlScope+"/")){
-                    	included = true;
-                    }
-           }
-           int[] total = new int[numberoffilenames];
-           int i = 0;
-           System.out.println("total length"+total.length);
-           for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()) {
-                   
-                   String filename = new String();
-                    filename = entry.getKey();
-                   count = 0;
-                           count1 = 0;
-                           
-                           
-                            //Set URL
-                            URL url = new URL(filename);
-                            URLConnection spoof = url.openConnection();
-                           
-                            //Spoof the connection so we look like a web browser
-                            spoof.setRequestProperty( "User-Agent", "Mozilla/4.0 (compatible; MSIE 5.5; Windows NT 5.0; H010818)" );
-                            BufferedReader in = new BufferedReader(new InputStreamReader(spoof.getInputStream()));
-                            String strLine = "";
-                           
-                            //Loop through every line in the source
-                            while ((strLine = in.readLine()) != null){
-                           
-                            //Prints each line to the console
-                            System.out.println(strLine);
-                            count = strLine.length()-strLine.replace("</", " ").length();
-                            count1 = strLine.length()-strLine.replace("/>", " ").length();
-                            total[i] = total[i]+ count+count1;
-                           
-                            }
-                           
-                            System.out.println("number of tags"+total[i]);
-                            i++;
-                            System.out.println("End of page.");
-                           
-                           
-                           
-                            }
-           for(int j = 0; j< total.length;j++){
-               sum2+= total[j];
-              
-       }
+        	double ASPerPage = 0;
+        	double sumASPerPage = 0;
+        	
+
+        	 
+         for(int i = 0; i< numElementsDomStates.size(); i++){
+    
+        	 if(numElementsDomStates.get(i)!=0 && totalSelectorsEachDomState.get(i)!=0){
+        ASPerPage = (numDescendantsDomStates.get(i))/(numElementsDomStates.get(i)*totalSelectorsEachDomState.get(i));
+        sumASPerPage += ASPerPage;
         
-   int countinurl = 0;   
-   count = 0;
-   count1 = 0;
-   if(included == false){
-           URL url = new URL(CillaRunner.urlScope);
-           URLConnection spoof = url.openConnection();
-          
-           //Spoof the connection so we look like a web browser
-           spoof.setRequestProperty( "User-Agent", "Mozilla/4.0 (compatible; MSIE 5.5; Windows NT 5.0; H010818)" );
-           BufferedReader in = new BufferedReader(new InputStreamReader(spoof.getInputStream()));
-           String strLine = "";
-          
-           //Loop through every line in the source
-           while ((strLine = in.readLine()) != null){
-          
-           //Prints each line to the console
-           System.out.println(strLine);
-           count = strLine.length()-strLine.replace("</", " ").length();
-           count1 = strLine.length()-strLine.replace("/>", " ").length();
-           countinurl += count+count1;
-           }
-           // number of elements in the document tree
-          
-   }
-   System.out.println("AllTags"+" "+sum2+countinurl);
-   */
-  // if(totalCssSelectors != 0) {       
-     //      AS = CssAnalyzer.totaldescendants/(totalCssSelectors*(sum2+countinurl));
-  // }
+        	 }
+        	 }
+        	 
+        	 AS = sumASPerPage/numDescendantsDomStates.size();
+        
+        
+         
+
    
            }
         public void abstractnessFactor(){
@@ -558,20 +663,20 @@ countEmbeddedRules+= rules.get(k).getSelectors().size();
             abstFactor = Math.min(uni, AS);
     }
 public void writecssintoFileCssLint(){
-	
-	outputNum1 = 1;
-	new File("C:/Users/Golnaz/cilla/CsslintReports").mkdirs();
-	  FileOutputStream fop =null;
-	  
-	  for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()) {
-		  visualFilename = new String[cssRules.entrySet().size()+1]; 
-	  }
+
+outputNum1 = 1;
+new File("C:/Users/Golnaz/cilla/CsslintReports").mkdirs();
+FileOutputStream fop =null;
+
+for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()) {
+visualFilename = new String[cssRules.entrySet().size()+1];
+}
     
       for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()) {
-    	  String filename = new String();
-    	  filename = entry.getKey();
-    	
-    	visualFilename[outputNum1] = filename;
+     String filename = new String();
+     filename = entry.getKey();
+    
+     visualFilename[outputNum1] = filename;
               for (MCssRule mrule : entry.getValue()) {
                     
                       
@@ -602,8 +707,8 @@ public void writecssintoFileCssLint(){
                                       }
                       
               }
-             outputNum1++;         
-      } 
+             outputNum1++;
+      }
      
       Runtime rt = Runtime.getRuntime();
       
@@ -673,7 +778,7 @@ fop1.write(10);
        }
              }
  VisualizerServlet cl = new VisualizerServlet();
-cl.addCssLint();           
+cl.addCssLint();
 outputNum++;
 
       }
@@ -688,16 +793,22 @@ outputNum++;
 
         @Override
         public void postCrawling(CrawlSession session, ExitStatus exitReason) {
-
+        	
+        	
+        	
                 totalCssRules = 0;
                 totalCssSelectors = 0;
+             
                 for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()) {
                         totalCssRules += entry.getValue().size();
+  
                         for (MCssRule mrule : entry.getValue()) {
                                 totalCssSelectors += mrule.getSelectors().size();
-
+        
                         }
+                  
                 }
+
 getEmbeddedRules();
 determineThreshold();
 countCharacteristics();
@@ -709,8 +820,8 @@ try {
     e1.printStackTrace();
 }
 abstractnessFactor();
-CssAnalyzer.totaldescendants = 0;
-writecssintoFileCssLint();
+
+//writecssintoFileCssLint();
                 StringBuffer output = new StringBuffer();
                 StringBuffer bufferUnused = new StringBuffer();
                 StringBuffer bufferUsed = new StringBuffer();
@@ -795,8 +906,8 @@ output.append(" -> Rules with Dangerous Selectors: "+ danSel +"\n");
 
 
                 /*
-                 * This is where the com.crawljax.plugins.cilla.visualizer gets called.
-                 */
+* This is where the com.crawljax.plugins.cilla.visualizer gets called.
+*/
                 String tmpStr = new String();
                 tmpStr = output.toString().replace("\n", "<br>");
                 String url = session.getConfig().getUrl().toString();
@@ -830,6 +941,8 @@ output.append(dangerousSelectors.toString());
                 } catch (IOException e) {
                         LOGGER.error(e.getMessage(), e);
                 }
+
+//getTotalSelectorsEachDomState();
 
         }
 
@@ -1112,10 +1225,10 @@ output.append(dangerousSelectors.toString());
 
                         for (MCssRule mrule : entry.getValue()) {
                                 /*
-                                 * for(MSelector selec: mrule.getSelectors()){ totalCssRulesSize+=selec.getSize(); }
-                                 *
-                                 * } }
-                                 */
+* for(MSelector selec: mrule.getSelectors()){ totalCssRulesSize+=selec.getSize(); }
+*
+* } }
+*/
                                 totalCssRulesSize +=
                                  mrule.getRule().getCssText().trim().replace("{", "").replace("}", "")
                                  .replace(",", "").replace(" ", "").getBytes().length;
@@ -1171,281 +1284,281 @@ output.append(dangerousSelectors.toString());
         
    
         private int getReactiveImportant(StringBuffer buffer){
-        	LOGGER.info("Reporting CSS Rules with reactive !important...");
-        	buffer.append("========== CSS RULES with REACTIVE !important ==========\n");
-        	//SpecificityCalculator sc = new SpecificityCalculator();
-        	int counter = 0;
-        	        for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()){
-        	        List<MCssRule> rules = entry.getValue();
-        	        buffer.append("== RULES WITH REACTIVE !IMPORTANT IN: " + entry.getKey() + "\n");
-        	        for (MCssRule rule : rules){
-        	                                
-        	                //sc.reset();
-        	                List<MSelector> selectors = rule.getReactiveImportant();
-        	                counter += selectors.size();
-        	                if (selectors.size() > 0) { //more than 3 !important is used
-        	                buffer.append("!important used: ");
-        	                buffer.append("CSS rule: " + rule.getRule().getCssText() + "\n");
-        	                buffer.append("at line: " + rule.getLocator().getLineNumber() + "\n");
+         LOGGER.info("Reporting CSS Rules with reactive !important...");
+         buffer.append("========== CSS RULES with REACTIVE !important ==========\n");
+         //SpecificityCalculator sc = new SpecificityCalculator();
+         int counter = 0;
+         for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()){
+         List<MCssRule> rules = entry.getValue();
+         buffer.append("== RULES WITH REACTIVE !IMPORTANT IN: " + entry.getKey() + "\n");
+         for (MCssRule rule : rules){
+        
+         //sc.reset();
+         List<MSelector> selectors = rule.getReactiveImportant();
+         counter += selectors.size();
+         if (selectors.size() > 0) { //more than 3 !important is used
+         buffer.append("!important used: ");
+         buffer.append("CSS rule: " + rule.getRule().getCssText() + "\n");
+         buffer.append("at line: " + rule.getLocator().getLineNumber() + "\n");
 
-        	                for (MSelector selector : selectors) {
-        	                                // ineffectivePropsSize+=selector.getSize();
-        	                                buffer.append(selector.toString() + "\n");
-        	                                        }
-        	                                }
-        	                                
+         for (MSelector selector : selectors) {
+         // ineffectivePropsSize+=selector.getSize();
+         buffer.append(selector.toString() + "\n");
+         }
+         }
+        
 
-        	                        }
-        	                }
-        	                                        return counter;
-        	                
-        	                }
+         }
+         }
+         return counter;
+        
+         }
 
-        	private int getLazyRules(StringBuffer buffer){
-        	LOGGER.info("Reporting Lazy CSS Rules...");
-        	buffer.append("========== LAZY CSS RULES ==========\n");
-        	int counter = 0;
-        	for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()){
-        	                List<MCssRule> rules = entry.getValue();
-        	                buffer.append("== LAZY RULES IN: " + entry.getKey() + "\n");
-        	                        for (MCssRule rule : rules){
-        	                                
-        	                                
-        	                                List<MSelector> selectors = rule.getLazyRules();
-        	                                counter += selectors.size();
-        	                                if (selectors.size() > 0) {
-        	                                        buffer.append("Lazy: ");
-        	                                        buffer.append("CSS rule: " + rule.getRule().getCssText() + "\n");
-        	                                        buffer.append("at line: " + rule.getLocator().getLineNumber() + "\n");
+         private int getLazyRules(StringBuffer buffer){
+         LOGGER.info("Reporting Lazy CSS Rules...");
+         buffer.append("========== LAZY CSS RULES ==========\n");
+         int counter = 0;
+         for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()){
+         List<MCssRule> rules = entry.getValue();
+         buffer.append("== LAZY RULES IN: " + entry.getKey() + "\n");
+         for (MCssRule rule : rules){
+        
+        
+         List<MSelector> selectors = rule.getLazyRules();
+         counter += selectors.size();
+         if (selectors.size() > 0) {
+         buffer.append("Lazy: ");
+         buffer.append("CSS rule: " + rule.getRule().getCssText() + "\n");
+         buffer.append("at line: " + rule.getLocator().getLineNumber() + "\n");
 
-        	                                        for (MSelector selector : selectors) {
-        	                                                // ineffectivePropsSize+=selector.getSize();
-        	                                                buffer.append(selector.toString() + "\n");
-        	                                        }
-        	                                }
+         for (MSelector selector : selectors) {
+         // ineffectivePropsSize+=selector.getSize();
+         buffer.append(selector.toString() + "\n");
+         }
+         }
 
-        	                        }
-        	                }
-        	                                        return counter;
-        	                
-        	                }
-        	private int getTooLongRules(StringBuffer buffer){
-        	LOGGER.info("Reporting Too Long CSS Rules...");
-        	buffer.append("========== TOO LONG CSS RULES ==========\n");
-        	int counter = 0;
-        	        for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()){
-        	                        List<MCssRule> rules = entry.getValue();
-        	                        buffer.append("== TOO LONG RULES IN: " + entry.getKey() + "\n");
-        	                        for (MCssRule rule : rules){
-        	                                
-        	                                
-        	                                List<MSelector> selectors = rule.getTooLongRules();
-        	                                counter += selectors.size();
-        	                                if (selectors.size() > 0) {
-        	                                        buffer.append("Long: ");
-        	                                        buffer.append("CSS rule: " + rule.getRule().getCssText() + "\n");
-        	                                        buffer.append("at line: " + rule.getLocator().getLineNumber() + "\n");
+         }
+         }
+         return counter;
+        
+         }
+         private int getTooLongRules(StringBuffer buffer){
+         LOGGER.info("Reporting Too Long CSS Rules...");
+         buffer.append("========== TOO LONG CSS RULES ==========\n");
+         int counter = 0;
+         for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()){
+         List<MCssRule> rules = entry.getValue();
+         buffer.append("== TOO LONG RULES IN: " + entry.getKey() + "\n");
+         for (MCssRule rule : rules){
+        
+        
+         List<MSelector> selectors = rule.getTooLongRules();
+         counter += selectors.size();
+         if (selectors.size() > 0) {
+         buffer.append("Long: ");
+         buffer.append("CSS rule: " + rule.getRule().getCssText() + "\n");
+         buffer.append("at line: " + rule.getLocator().getLineNumber() + "\n");
 
-        	                                        for (MSelector selector : selectors) {
-        	                                                // ineffectivePropsSize+=selector.getSize();
-        	                                                buffer.append(selector.toString() + "\n");
-        	                                        }
-        	                                }
+         for (MSelector selector : selectors) {
+         // ineffectivePropsSize+=selector.getSize();
+         buffer.append(selector.toString() + "\n");
+         }
+         }
 
-        	                        }
-        	                }
-        	                                        return counter;
-        	                
-        	                }
+         }
+         }
+         return counter;
+        
+         }
 
-        	private int getEmptyCatch(StringBuffer buffer){
-        	        LOGGER.info("Reporting CSS Rules with Empty Catch...");
-        	        buffer.append("========== CSS RULES with EMPTY CATCH ==========\n");
-        	        int counter = 0;
-        	        for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()){
-        	                        List<MCssRule> rules = entry.getValue();
-        	                        buffer.append("== RULES with EMPTY CATCH IN: " + entry.getKey() + "\n");
-        	                        for (MCssRule rule : rules){
-        	                                
-        	                                
-        	                                List<MSelector> selectors = rule.getEmptyCatch();
-        	                                counter += selectors.size();
-        	                                if (selectors.size() > 0) {
-        	                                        buffer.append("Empty Catch: ");
-        	                                        buffer.append("CSS rule: " + rule.getRule().getCssText() + "\n");
-        	                                        buffer.append("at line: " + rule.getLocator().getLineNumber() + "\n");
+         private int getEmptyCatch(StringBuffer buffer){
+         LOGGER.info("Reporting CSS Rules with Empty Catch...");
+         buffer.append("========== CSS RULES with EMPTY CATCH ==========\n");
+         int counter = 0;
+         for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()){
+         List<MCssRule> rules = entry.getValue();
+         buffer.append("== RULES with EMPTY CATCH IN: " + entry.getKey() + "\n");
+         for (MCssRule rule : rules){
+        
+        
+         List<MSelector> selectors = rule.getEmptyCatch();
+         counter += selectors.size();
+         if (selectors.size() > 0) {
+         buffer.append("Empty Catch: ");
+         buffer.append("CSS rule: " + rule.getRule().getCssText() + "\n");
+         buffer.append("at line: " + rule.getLocator().getLineNumber() + "\n");
 
-        	                                        for (MSelector selector : selectors) {
-        	                                                // ineffectivePropsSize+=selector.getSize();
-        	                                                buffer.append(selector.toString() + "\n");
-        	                                        }
-        	                                }
+         for (MSelector selector : selectors) {
+         // ineffectivePropsSize+=selector.getSize();
+         buffer.append(selector.toString() + "\n");
+         }
+         }
 
-        	                        }
-        	                }
-        	                                        return counter;
-        	                
-        	                }
+         }
+         }
+         return counter;
+        
+         }
 
-        	private int getUndoingStyle(StringBuffer buffer){
-        	LOGGER.info("Reporting CSS Rules with Overriding Properties...");
-        	buffer.append("========== CSS RULES with OVERRIDING PROPERTIES ==========\n");
-        	int counter = 0;
-        	for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()){
-        	                        List<MCssRule> rules = entry.getValue();
-        	                        buffer.append("== RULES with OVERRIDING PROPERTIES IN: " + entry.getKey() + "\n");
-        	                        for (MCssRule rule : rules){
-        	                                
-        	                                
-        	                                List<MSelector> selectors = rule.getUndoingStyle();
-        	                                counter += selectors.size();
-        	                                if (selectors.size() > 0) {
-        	                                        buffer.append("Overriding: ");
-        	                                        buffer.append("CSS rule: " + rule.getRule().getCssText() + "\n");
-        	                                        buffer.append("at line: " + rule.getLocator().getLineNumber() + "\n");
+         private int getUndoingStyle(StringBuffer buffer){
+         LOGGER.info("Reporting CSS Rules with Overriding Properties...");
+         buffer.append("========== CSS RULES with OVERRIDING PROPERTIES ==========\n");
+         int counter = 0;
+         for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()){
+         List<MCssRule> rules = entry.getValue();
+         buffer.append("== RULES with OVERRIDING PROPERTIES IN: " + entry.getKey() + "\n");
+         for (MCssRule rule : rules){
+        
+        
+         List<MSelector> selectors = rule.getUndoingStyle();
+         counter += selectors.size();
+         if (selectors.size() > 0) {
+         buffer.append("Overriding: ");
+         buffer.append("CSS rule: " + rule.getRule().getCssText() + "\n");
+         buffer.append("at line: " + rule.getLocator().getLineNumber() + "\n");
 
-        	                                        for (MSelector selector : selectors) {
-        	                                                // ineffectivePropsSize+=selector.getSize();
-        	                                                buffer.append(selector.toString() + "\n");
-        	                                        }
-        	                                }
+         for (MSelector selector : selectors) {
+         // ineffectivePropsSize+=selector.getSize();
+         buffer.append(selector.toString() + "\n");
+         }
+         }
 
-        	                        }
-        	                }
-        	                                        return counter;
-        	                
-        	                }
+         }
+         }
+         return counter;
+        
+         }
 
-        	private int getIdWithClassOrElement(StringBuffer buffer){
-        	LOGGER.info("Reporting Selectors with ID and at Least One Class or Element...");
-        	buffer.append("========== Selectors with ID and at Least One Class or Element ==========\n");
-        	int counter = 0;
-        	        for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()){
-        	                        List<MCssRule> rules = entry.getValue();
-        	                        buffer.append("== ID+ RULES IN: " + entry.getKey() + "\n");
-        	                        for (MCssRule rule : rules){
-        	                                
-        	                                
-        	                                List<MSelector> selectors = rule.getIdWithClassOrElement();
-        	                                counter += selectors.size();
-        	                                if (selectors.size() > 0) {
-        	                                        buffer.append("ID+: ");
-        	                                        buffer.append("CSS rule: " + rule.getRule().getCssText() + "\n");
-        	                                        buffer.append("at line: " + rule.getLocator().getLineNumber() + "\n");
+         private int getIdWithClassOrElement(StringBuffer buffer){
+         LOGGER.info("Reporting Selectors with ID and at Least One Class or Element...");
+         buffer.append("========== Selectors with ID and at Least One Class or Element ==========\n");
+         int counter = 0;
+         for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()){
+         List<MCssRule> rules = entry.getValue();
+         buffer.append("== ID+ RULES IN: " + entry.getKey() + "\n");
+         for (MCssRule rule : rules){
+        
+        
+         List<MSelector> selectors = rule.getIdWithClassOrElement();
+         counter += selectors.size();
+         if (selectors.size() > 0) {
+         buffer.append("ID+: ");
+         buffer.append("CSS rule: " + rule.getRule().getCssText() + "\n");
+         buffer.append("at line: " + rule.getLocator().getLineNumber() + "\n");
 
-        	                                        for (MSelector selector : selectors) {
-        	                                                // ineffectivePropsSize+=selector.getSize();
-        	                                                buffer.append(selector.toString() + "\n");
-        	                                        }
-        	                                }
+         for (MSelector selector : selectors) {
+         // ineffectivePropsSize+=selector.getSize();
+         buffer.append(selector.toString() + "\n");
+         }
+         }
 
-        	                        }
-        	                }
-        	                                        return counter;
-        	                
-        	                }
+         }
+         }
+         return counter;
+        
+         }
 
-        	private int getTooSpecificSelectors(StringBuffer buffer){
-        	LOGGER.info("Reporting CSS Rules with Too Specific Selectors...");
-        	buffer.append("========== TOO SPECIFIC CSS RULES ==========\n");
-        	        //SpecificityCalculator sc = new SpecificityCalculator();
-        	        int counter = 0;
-        	        for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()){
-        	                        List<MCssRule> rules = entry.getValue();
-        	                        buffer.append("== TOO SPECIFIC RULES IN: " + entry.getKey() + "\n");
-        	                        for (MCssRule rule : rules){
-        	                                
-        	                                //sc.reset();
-        	                                List<MSelector> selectors = rule.getTooSpecificSelectors();
-        	                                counter += selectors.size();
-        	                                if (selectors.size() > 0) {
-        	                                        buffer.append("Too Specific: ");
-        	                                        buffer.append("CSS rule: " + rule.getRule().getCssText() + "\n");
-        	                                        buffer.append("at line: " + rule.getLocator().getLineNumber() + "\n");
+         private int getTooSpecificSelectors(StringBuffer buffer){
+         LOGGER.info("Reporting CSS Rules with Too Specific Selectors...");
+         buffer.append("========== TOO SPECIFIC CSS RULES ==========\n");
+         //SpecificityCalculator sc = new SpecificityCalculator();
+         int counter = 0;
+         for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()){
+         List<MCssRule> rules = entry.getValue();
+         buffer.append("== TOO SPECIFIC RULES IN: " + entry.getKey() + "\n");
+         for (MCssRule rule : rules){
+        
+         //sc.reset();
+         List<MSelector> selectors = rule.getTooSpecificSelectors();
+         counter += selectors.size();
+         if (selectors.size() > 0) {
+         buffer.append("Too Specific: ");
+         buffer.append("CSS rule: " + rule.getRule().getCssText() + "\n");
+         buffer.append("at line: " + rule.getLocator().getLineNumber() + "\n");
 
-        	                                        for (MSelector selector : selectors) {
-        	                                                // ineffectivePropsSize+=selector.getSize();
-        	                                                buffer.append(selector.toString() + "\n");
-        	                                        }
-        	                                }
+         for (MSelector selector : selectors) {
+         // ineffectivePropsSize+=selector.getSize();
+         buffer.append(selector.toString() + "\n");
+         }
+         }
 
-        	                        }
-        	                }
-        	                                        return counter;
-        	                
-        	                }
+         }
+         }
+         return counter;
+        
+         }
 
-        	private int getInnappFontSize(StringBuffer buffer){
-        	LOGGER.info("Reporting Selectors with Inappropriate Value for Font-size...");
-        	buffer.append("========== Selectors with Font-sie Property with Inappropriate Value ==========\n");
-        	int counter = 0;
-        	        for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()){
-        	                        List<MCssRule> rules = entry.getValue();
-        	                        buffer.append("== Inappropriate Font-size RULES IN: " + entry.getKey() + "\n");
-        	                        for (MCssRule rule : rules){
-        	                                
-        	                                
-        	                                List<MSelector> selectors = rule.checkFontSize();
-        	                                counter += selectors.size();
-        	                                if (selectors.size() > 0) {
-        	                                        buffer.append("Inappropriate Font-size: ");
-        	                                        buffer.append("CSS rule: " + rule.getRule().getCssText() + "\n");
-        	                                        buffer.append("at line: " + rule.getLocator().getLineNumber() + "\n");
+         private int getInnappFontSize(StringBuffer buffer){
+         LOGGER.info("Reporting Selectors with Inappropriate Value for Font-size...");
+         buffer.append("========== Selectors with Font-sie Property with Inappropriate Value ==========\n");
+         int counter = 0;
+         for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()){
+         List<MCssRule> rules = entry.getValue();
+         buffer.append("== Inappropriate Font-size RULES IN: " + entry.getKey() + "\n");
+         for (MCssRule rule : rules){
+        
+        
+         List<MSelector> selectors = rule.checkFontSize();
+         counter += selectors.size();
+         if (selectors.size() > 0) {
+         buffer.append("Inappropriate Font-size: ");
+         buffer.append("CSS rule: " + rule.getRule().getCssText() + "\n");
+         buffer.append("at line: " + rule.getLocator().getLineNumber() + "\n");
 
-        	                                        for (MSelector selector : selectors) {
-        	                                                // ineffectivePropsSize+=selector.getSize();
-        	                                                buffer.append(selector.toString() + "\n");
-        	                                        }
-        	                                }
+         for (MSelector selector : selectors) {
+         // ineffectivePropsSize+=selector.getSize();
+         buffer.append(selector.toString() + "\n");
+         }
+         }
 
-        	                        }
-        	                }
-        	                                        return counter;
-        	                
-        	                
-        	        }
+         }
+         }
+         return counter;
+        
+        
+         }
 
-        	public int getNumEmbeddedRules(StringBuffer buffer){
-        	        
-        	LOGGER.info("Reporting Embedded CSS Rules...");
-        	buffer.append("========== EMBEDDED CSS RULES ==========\n");
-        	        
-        	     int counter = allEmbeddedRules.size();
-        	        
-        	                
-        	       return counter;
-        	                
-        	                }
+         public int getNumEmbeddedRules(StringBuffer buffer){
+        
+         LOGGER.info("Reporting Embedded CSS Rules...");
+         buffer.append("========== EMBEDDED CSS RULES ==========\n");
+        
+         int counter = allEmbeddedRules.size();
+        
+        
+         return counter;
+        
+         }
 
-        	private int getDangerousSelectors(StringBuffer buffer){
-        	LOGGER.info("Reporting Dangerous Selectors...");
-        	buffer.append("========== Dangerous Selectors ==========\n");
-        	int counter = 0;
-        	        for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()){
-        	                        List<MCssRule> rules = entry.getValue();
-        	                        buffer.append("== RULES WITH DANGEROUS SELECTORS IN: " + entry.getKey() + "\n");
-        	                        for (MCssRule rule : rules){
-        	                                
-        	                                
-        	                                List<MSelector> selectors = rule.getDangerousSelectors();
-        	                                counter += selectors.size();
-        	                                if (selectors.size() > 0) {
-        	                                        buffer.append("Dangerous Selectors: ");
-        	                                        buffer.append("CSS rule: " + rule.getRule().getCssText() + "\n");
-        	                                        buffer.append("at line: " + rule.getLocator().getLineNumber() + "\n");
+         private int getDangerousSelectors(StringBuffer buffer){
+         LOGGER.info("Reporting Dangerous Selectors...");
+         buffer.append("========== Dangerous Selectors ==========\n");
+         int counter = 0;
+         for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()){
+         List<MCssRule> rules = entry.getValue();
+         buffer.append("== RULES WITH DANGEROUS SELECTORS IN: " + entry.getKey() + "\n");
+         for (MCssRule rule : rules){
+        
+        
+         List<MSelector> selectors = rule.getDangerousSelectors();
+         counter += selectors.size();
+         if (selectors.size() > 0) {
+         buffer.append("Dangerous Selectors: ");
+         buffer.append("CSS rule: " + rule.getRule().getCssText() + "\n");
+         buffer.append("at line: " + rule.getLocator().getLineNumber() + "\n");
 
-        	                                        for (MSelector selector : selectors) {
-        	                                                // ineffectivePropsSize+=selector.getSize();
-        	                                                buffer.append(selector.toString() + "\n");
-        	                                        }
-        	                                }
+         for (MSelector selector : selectors) {
+         // ineffectivePropsSize+=selector.getSize();
+         buffer.append(selector.toString() + "\n");
+         }
+         }
 
-        	                        }
-        	                }
-        	                                        return counter;
-        	                
-        	                
-        	        }
+         }
+         }
+         return counter;
+        
+        
+         }
 
        
 

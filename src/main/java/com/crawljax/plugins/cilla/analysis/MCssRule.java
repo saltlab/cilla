@@ -44,12 +44,14 @@ public class MCssRule {
          * @param rule
          * the CSS rule.
          */
+        
+        
         public MCssRule(CSSRule rule) {
 
                 this.rule = rule;
                 selectors = new ArrayList<MSelector>();
                 setSelectors();
-                
+               
         }
 
         public CSSRule getRule() {
@@ -202,7 +204,10 @@ public class MCssRule {
                 return ruleSelector;
         }
         
-   
+        
+        
+        
+  
 public List<MSelector> getTooSpecificSelectors(){
 SpecificityCalculator sc = new SpecificityCalculator();
 
@@ -213,22 +218,26 @@ List<MSelector> tooSpecific = new ArrayList<MSelector>();
 
         String s = sc.getSpecificity(selector.getCssSelector()).toString();
         int a = Integer.parseInt(s.substring(1, 2));
+      
         int b = Integer.parseInt(s.substring(4, 5));
+     
         int c = Integer.parseInt(s.substring(7, 8));
+        
         int d = Integer.parseInt(s.substring(10, 11));
+        
         String e = s.substring(1, 2);
         String f = s.substring(4, 5);
         String g = s.substring(7, 8);
         String h = s.substring(10, 11);
         int i = Integer.parseInt(e+f+g+h);
                                                 
-                                                if(a+b+c+d>1 && !selector.isIgnore()){
+                                                if(a+b+c+d>5 && !selector.isIgnore()){
                                                         tooSpecific.add(selector);
                                                 }
-                                                if( i> 122 && !selector.isIgnore()){
-                                                        tooSpecific.add(selector);
+                                            //    if( i> 122 && !selector.isIgnore()){
+                                             //           tooSpecific.add(selector);
                                                         
-                                                }
+                                //                }
                                 
                                         }
                                         
@@ -454,4 +463,5 @@ public List<MSelector> getDangerousSelectors(){
     }
 return dangerousSelectors;	
 }
+
 }

@@ -417,9 +417,9 @@ highlightMap.put(HighlightColor.DANGEROUS, DangerousHighlight);
 		 "\n"+"\td"+"\tr"+"tr"+"td"+"Median"+"\n"+"\td"+"td"+(CillaPlugin.medianSelector)+
 		 "\n"+"\td"+"\tr"+"tr"+"td"+"Max"+"\n"+"\td"+"td"+(CillaPlugin.maxSelector)+
 		 "\n"+"\td"+"\tr"+"tr"+"td"+"\b"+"Measuring CSS Code Quality"+
-		 "\n"+"\td"+"td"+""+"\td"+"\tr"+"tr"+"td"+"Universality"+"\n"+"\td"+"td"+(double)Math.round((CillaPlugin.uni) * 100) / 100+
-		 "\n"+"\td"+"\tr"+"tr"+"td"+"Average Scope"+"\n"+"\td"+"td"+(double)Math.round((CillaPlugin.AS) * 100) / 100+
-		 "\n"+"\td"+"\tr"+"tr"+"td"+"*Abs"+"\n"+"\td"+"td"+(double)Math.round((CillaPlugin.abstFactor) * 100) / 100+
+		 "\n"+"\td"+"td"+""+"\td"+"\tr"+"tr"+"td"+"Universality"+"\n"+"\td"+"td"+CillaPlugin.uni+
+		 "\n"+"\td"+"\tr"+"tr"+"td"+"Average Scope"+"\n"+"\td"+"td"+CillaPlugin.AS+
+		 "\n"+"\td"+"\tr"+"tr"+"td"+"*Abs"+"\n"+"\td"+"td"+CillaPlugin.abstFactor+
 		 "\n"+"\td"+"\tr"+"tr"+"td"+"\b"+"Number of IDs"+"\n"+"\td"+"td"+""+"\td"+"\tr"+"tr"+"td"+"Total"+"\n"+"\td"+"td"+CillaPlugin.id+
 		 "\n"+"\td"+"\tr"+"tr"+"td"+"Average (Total/NumOfSelectors)"+"\n"+"\td"+"td"+(double)Math.round((CillaPlugin.averageid) * 100) / 100+
 		 "\n"+"\td"+"\tr"+"tr"+"td"+"\b"+"Number of Classes"+"\n"+"\td"+"td"+""+"\td"+"\tr"+"td"+"Total"+"\n"+"\td"+"td"+CillaPlugin.clas+

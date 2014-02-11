@@ -45,6 +45,7 @@ import com.crawljax.plugins.cilla.analysis.MatchedElements;
 import com.crawljax.plugins.cilla.examples.CillaRunner;
 import com.crawljax.plugins.cilla.util.CSSDOMHelper;
 import com.crawljax.plugins.cilla.util.CssParser;
+import com.crawljax.plugins.cilla.visualizer.AdditionalVisualization;
 import com.crawljax.plugins.cilla.visualizer.CillaVisualizer;
 import com.crawljax.plugins.cilla.visualizer.VisualizerServlet;
 import com.google.common.collect.HashMultimap;
@@ -777,8 +778,9 @@ fop1.write(10);
        e.printStackTrace();
        }
              }
- VisualizerServlet cl = new VisualizerServlet();
-cl.addCssLint();
+             AdditionalVisualization av = new AdditionalVisualization();
+             av.addCssLint();
+ 
 outputNum++;
 
       }
@@ -821,7 +823,7 @@ try {
 }
 abstractnessFactor();
 
-//writecssintoFileCssLint();
+writecssintoFileCssLint();
                 StringBuffer output = new StringBuffer();
                 StringBuffer bufferUnused = new StringBuffer();
                 StringBuffer bufferUsed = new StringBuffer();

@@ -61,9 +61,7 @@ public class VisualizerServlet extends VelocityViewServlet {
         private final File cssAnalysisHTML;
         private final File htmlAnalysisHTML;
         
-private final File cssValidationHTML;
-private final File cssLintHTML;
-private final File statisticsHTML;
+
 
         private final File outputFolder = new File("output");
 
@@ -72,9 +70,6 @@ private final File statisticsHTML;
         private Template htmlAnalysisTemplate;
 
         
-private Template cssValidationTemplate;
-private Template cssLintTemplate;
-private Template statisticsTemplate;
 
 
         private enum HighlightColor {
@@ -100,11 +95,11 @@ private final String DangerousHighlight = "FF6699";
 
         private Map<String, Map<String, Map<Integer, HighlightColor>>> unsortedMap;
 
-        private String dateString;
+        protected String dateString;
         private String folderString;
-        private String outputDir;
-        private String crawledAddress;
-        private VelocityEngine ve;
+        protected String outputDir;
+        protected String crawledAddress;
+        protected VelocityEngine ve;
 
         public VisualizerServlet() {
 
@@ -145,9 +140,7 @@ highlightMap.put(HighlightColor.DANGEROUS, DangerousHighlight);
                 cssAnalysisHTML = new File(outputDir + "/css-analysis.html");
                 htmlAnalysisHTML = new File(outputDir + "/html-analysis.html");
                 
- cssValidationHTML = new File(outputDir + "/css-validation.html");
- cssLintHTML = new File(outputDir + "/css-lint.html");
- statisticsHTML= new File(outputDir + "/statistics.html");
+
 
                 try {
                         Velocity.init();
@@ -161,10 +154,6 @@ highlightMap.put(HighlightColor.DANGEROUS, DangerousHighlight);
                         // htmlAnalysisTemplate = ve.getTemplate("html-analysis.vm");
                         
                         
-                        
-   cssValidationTemplate = ve.getTemplate("validation.vm");
-   cssLintTemplate = ve.getTemplate("lint.vm");
-   statisticsTemplate = ve.getTemplate("statistics.vm");
                         Files.write(Resources.toString(
                          VisualizerServlet.class.getResource("/visualizer.css"), Charsets.UTF_8),
                          new File(outputPath + "/visualizer.css"), Charsets.UTF_8);
@@ -242,220 +231,7 @@ highlightMap.put(HighlightColor.DANGEROUS, DangerousHighlight);
 
         }
         
-        
- public void addValidation(String url){
-            
- crawledAddress = url;
- VelocityContext context = new VelocityContext();
- String template;
- String cssValidationMsg;
-                 try {
-                 template = getTemplateAsString(cssValidationTemplate.getName());
-
-                 //Document doc = Jsoup.connect("http://jigsaw.w3.org/css-validator/validator?uri=http%3A%2F%2Fwww.ece.ubc.ca/~amesbah/exp%2F&warning=2&profile=css2").get();
-                 Document doc = Jsoup.connect("http://jigsaw.w3.org/css-validator/validator?uri=http%3A%2F%2F"+CillaRunner.b+"%2F&warning=2&profile=css2").get();
-                
-                
-                 Elements table = doc.select("tr");
-                
-
-                 cssValidationMsg = table.toString();
-                
-                 cssValidationMsg = cssValidationMsg.replace("\n", "<br> ");
-                
-                
-                 context.put("summary", cssValidationMsg);
-                 context.put("url", url);
-                 context.put("date", dateString);
-                
-                 FileWriter writer = new FileWriter(cssValidationHTML);
-
-                 ve.evaluate(context, writer, "CSS Validation", template);
-                 writer.flush();
-                 writer.close();
-
-                 } catch (IOException e) {
-                 e.printStackTrace();
-                 }
-                
-                 }
-
- public void addCssLint(){
-	 
-	 Map<String, Map<String, String>> fileMap = new HashMap<String, Map<String, String>>();
-	 String lintStr;
-	 for(int i = 1; i< CillaPlugin.outputNum1; i++){
-	 String filename = CillaPlugin.visualFilename[i];
-	 Map<String, String> analysisMap = new HashMap<String, String>();
-	 
-	    try {
-            
-        File f = new File("C:/Users/Golnaz/cilla/CsslintReports/output"+CillaPlugin.outputNum+i+".txt");
-            //File f = new File("D:/Output.txt");
-            FileInputStream fin = new FileInputStream(f);
-    if (!f.exists()) {
-           f.createNewFile();
-        }
-            byte[] buffer = new byte[(int) f.length()];
-            new DataInputStream(fin).readFully(buffer);
-            fin.close();
-            String s = new String(buffer, "UTF-8");
-            //System.out.println(s);
-           
-           
-            lintStr = s;
-            lintStr = lintStr.replace("\n", "<br> ");
-	
-	 analysisMap.put("", lintStr);
-	 fileMap.put(filename, analysisMap);
-	  VelocityContext context = new VelocityContext();
-      context.put("filemap", fileMap);
-      String template;
-      try {
-              template = getTemplateAsString(cssLintTemplate.getName());
-              FileWriter writer = new FileWriter(cssLintHTML);
-              
-              ve.evaluate(context, writer, "CSS-Lint", template);
-              writer.flush();
-              writer.close();
-
-      } catch (IOException e) {
-              e.printStackTrace();
-      }
-	    } catch (IOException e) {
-            e.printStackTrace();
-            }
-	 
-	
-	 }
-	 /*
-	 Map<String, Map<String, String>> fileMap = new HashMap<String, Map<String, String>>();
-	 String filename = "hello";
-	 Map<String, String> analysisMap = new HashMap<String, String>();
-	 String unmatchedStr = "Bye";
-	 analysisMap.put("Test", unmatchedStr);
-	 fileMap.put(filename, analysisMap);
-	  VelocityContext context = new VelocityContext();
-      context.put("filemap", fileMap);
-	 String template;
-     try {
-             template = getTemplateAsString(cssLintTemplate.getName());
-             FileWriter writer = new FileWriter(cssLintHTML);
-             
-             ve.evaluate(context, writer, "CSS-Lint", template);
-             writer.flush();
-             writer.close();
-
-     } catch (IOException e) {
-             e.printStackTrace();
-     }
-	*/
-	 /*
-  //crawledAddress = url;
-  VelocityContext context = new VelocityContext();
-  String template;
-  String cssLintMsg;
-                 try {
-                
-                 template = getTemplateAsString(cssLintTemplate.getName());
-
-                 File f = new File("C:/Users/Golnaz/cilla/CsslintReports/output"+CillaPlugin.outputNum+".txt");
-                 //File f = new File("D:/Output.txt");
-                 FileInputStream fin = new FileInputStream(f);
-         if (!f.exists()) {
-                f.createNewFile();
-             }
-                 byte[] buffer = new byte[(int) f.length()];
-                 new DataInputStream(fin).readFully(buffer);
-                 fin.close();
-                 String s = new String(buffer, "UTF-8");
-                 //System.out.println(s);
-                
-                
-                 cssLintMsg = s;
-                 cssLintMsg = cssLintMsg.replace("\n", "<br> ");
-                
-                
-                
-                 context.put("summary", cssLintMsg);
-                 //context.put("url", url);
-                 context.put("date", dateString);
-                
-                 FileWriter writer = new FileWriter(cssLintHTML);
-
-                 ve.evaluate(context, writer, "CSS Lint", template);
-                 writer.flush();
-                 writer.close();
-                
-                 } catch (IOException e) {
-                 e.printStackTrace();
-                 }
-                 
-              */
-                }
-
  
-  public void addStatistics(){
-
-   VelocityContext context = new VelocityContext();
-   String template;
-   String statisticsMsg;
-   
-   
-                 try {
-                 template = getTemplateAsString(statisticsTemplate.getName());
-                
-             
-               
- String table = "table"+"tr"+"td"+"Measuring Number of Properties in One CSS Rule"+"\n"+"\td"+"td"+""+"\td"+"\tr"+"tr"+"td"+"Min"+"\n"+"\td"+"td"+(CillaPlugin.min)+
-		 "\n"+"\td"+"\tr"+"tr"+"td"+"Mean"+"\n"+"\td"+"td"+(double)Math.round((CillaPlugin.Mean) * 100) / 100+
-		 "\n"+"\td"+"\tr"+"tr"+"td"+"Median"+"\n"+"\td"+"td"+(CillaPlugin.Median)+
-		 "\n"+"\td"+"\tr"+"tr"+"td"+"Max"+"\n"+"\td"+"td"+(CillaPlugin.max)+
-		 "\n"+"\td"+"\tr"+"tr"+"td"+"\b"+"Measuring Number of Selector Types in One CSS Rule"+
-		 "\n"+"\td"+"td"+""+"\td"+"\tr"+"tr"+"td"+"Min"+"\n"+"\td"+"td"+(CillaPlugin.minSelector)+
-		 "\n"+"\td"+"\tr"+"tr"+"td"+"Mean"+"\n"+"\td"+"td"+(double)Math.round((CillaPlugin.meanSelector) * 100) / 100+
-		 "\n"+"\td"+"\tr"+"tr"+"td"+"Median"+"\n"+"\td"+"td"+(CillaPlugin.medianSelector)+
-		 "\n"+"\td"+"\tr"+"tr"+"td"+"Max"+"\n"+"\td"+"td"+(CillaPlugin.maxSelector)+
-		 "\n"+"\td"+"\tr"+"tr"+"td"+"\b"+"Measuring CSS Code Quality"+
-		 "\n"+"\td"+"td"+""+"\td"+"\tr"+"tr"+"td"+"Universality"+"\n"+"\td"+"td"+CillaPlugin.uni+
-		 "\n"+"\td"+"\tr"+"tr"+"td"+"Average Scope"+"\n"+"\td"+"td"+CillaPlugin.AS+
-		 "\n"+"\td"+"\tr"+"tr"+"td"+"*Abs"+"\n"+"\td"+"td"+CillaPlugin.abstFactor+
-		 "\n"+"\td"+"\tr"+"tr"+"td"+"\b"+"Number of IDs"+"\n"+"\td"+"td"+""+"\td"+"\tr"+"tr"+"td"+"Total"+"\n"+"\td"+"td"+CillaPlugin.id+
-		 "\n"+"\td"+"\tr"+"tr"+"td"+"Average (Total/NumOfSelectors)"+"\n"+"\td"+"td"+(double)Math.round((CillaPlugin.averageid) * 100) / 100+
-		 "\n"+"\td"+"\tr"+"tr"+"td"+"\b"+"Number of Classes"+"\n"+"\td"+"td"+""+"\td"+"\tr"+"td"+"Total"+"\n"+"\td"+"td"+CillaPlugin.clas+
-		 "\n"+"\td"+"\tr"+"tr"+"td"+"Average (Total/NumOfSelectors)"+"\n"+"\td"+"td"+(double)Math.round((CillaPlugin.averageclas) * 100) / 100+
-		 "\n"+"\td"+"\tr"+"tr"+"td"+"\b"+"Number of Elements"+"\n"+"\td"+"td"+""+"\td"+"tr"+"td"+"Total"+"\n"+"\td"+"td"+CillaPlugin.element+
-		 "\n"+"\td"+"\tr"+"tr"+"td"+"Average (Total/NumOfSelectors)"+"\n"+"\td"+"td"+(double)Math.round((CillaPlugin.averageelement) * 100) / 100+"\n"+"\td"+"\tr"+"\table"+"\n"+"*Abs = Abstractness Factor";
-         statisticsMsg = table;
-         statisticsMsg = statisticsMsg.replace("table", "<table>");
-         statisticsMsg = statisticsMsg.replace("\table", "</table> ");
-		 statisticsMsg = statisticsMsg.replace("tr", "<tr>");
-         statisticsMsg = statisticsMsg.replace("\tr", "</tr>");
-         statisticsMsg = statisticsMsg.replace("td", "<td>");
-         statisticsMsg = statisticsMsg.replace("\td", "</td>");
-         statisticsMsg = statisticsMsg.replace("\n", "<hr>");
-         statisticsMsg = statisticsMsg.replace("\b", "<br><br>");
-     
-         
-                 
-   context.put("summary", statisticsMsg);
-  
-         context.put("date", dateString);
-                
-                 FileWriter writer = new FileWriter(statisticsHTML);
-
-                 ve.evaluate(context, writer, "Statistics", template);
-                 writer.flush();
-                 writer.close();
-
-                 } catch (IOException e) {
-                 e.printStackTrace();
-                 }
-                
-                
-                }
-
-
 
         public void addSortedOutput(Map<String, List<MCssRule>> cssRules,
          SetMultimap<String, ElementWithClass> elementsWithNoClassDef) {
@@ -1144,7 +920,7 @@ context.put("dangerousselectorColor", DangerousHighlight);
 * @throws IOException
 * On error.
 */
-        private static String getTemplateAsString(String fname) throws IOException {
+        protected static String getTemplateAsString(String fname) throws IOException {
                 // in .jar file
                 String fnameJar = getFileNameInPath(fname);
                 InputStream inStream = VisualizerServlet.class.getResourceAsStream("/" + fnameJar);

@@ -18,14 +18,15 @@ public class CillaVisualizer implements VisualizerPlugin {
                 
                 // Call the Visualizer Servlet
                 VisualizerServlet vs = new VisualizerServlet();
+AdditionalVisualization av = new AdditionalVisualization();                
                 vs.addSummary(url, summary);
                 vs.constructRuleMap(cssRules);
                 vs.addSortedOutput(cssRules, elementsWithNoClassDef);
                 
-//CSS Validation
-vs.addValidation(url);
-vs.addCssLint();
-vs.addStatistics();
+
+av.addValidation(url);
+av.addStatistics();
+
 
                 
                 // Call the open com.crawljax.plugins.cilla to open to welcome page

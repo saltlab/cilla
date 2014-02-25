@@ -258,7 +258,7 @@ StringBuffer dangSelectors;
                 // Look through the files and format the sorted output
                 for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()) {
                        Map<String, String> analysisMap = new HashMap<String, String>();
-                	
+                
                         List<MCssRule> rules = entry.getValue();
 
                         // Get the file name
@@ -472,58 +472,57 @@ List<MSelector> inappfont = rule.checkFontSize();
                      
                      
 if(!CillaPlugin.allEmbeddedRules.isEmpty() && CillaPlugin.allEmbeddedRules.contains(rule.getRule().toString())){
-	 if(rule.getLocator()!=null){
-		 embeddedRules.append("CSS rule: " + rule.getRule().getCssText()
-	                + "<br>");
-	   	
-		 embeddedRules.append("at line: "
-	+ rule.getLocator().getLineNumber() + "<br>");
-	   
+if(rule.getLocator()!=null){
+embeddedRules.append("CSS rule: " + rule.getRule().getCssText()
++ "<br>");
 
-		 embeddedRules.append(" Selector: " + rule.getRuleSelector().toString()
-	             + "<br><br>");
-	   	
-		 
-	 }
-	 else{
-		 embeddedRules.append("CSS rule: " + rule.getRule().toString()
-	                + "<br><br>");
-	 }
-	/*
-	if(rule.getRule().toString().contains("@media")){
-		 embeddedRules.append("CSS rule: " + rule.getRule().toString()
-                 + "<br><br>");
-		 if(rule.getLocator()!=null){
-        	 embeddedRules.append("at line: "
-       + rule.getLocator().getLineNumber() + "<br><br>");
-            	 }
-		
-	}
-	else{
-		if(rule.getRule().toString().contains("@import")){
-			 embeddedRules.append("CSS rule: " + rule.getRule().toString()
-	                + "<br><br>");
-			 if(rule.getLocator()!=null){
-	       	 embeddedRules.append("at line: "
-	      + rule.getLocator().getLineNumber() + "<br><br>");
-	           	 }
-		}
-		else{
-		embeddedRules.append("CSS rule: " + rule.getRule().getCssText()
-                + "<br>");
-   	 if(rule.getLocator()!=null){
-	 embeddedRules.append("at line: "
+embeddedRules.append("at line: "
 + rule.getLocator().getLineNumber() + "<br>");
-   	 }
 
-	 embeddedRules.append(" Selector: " + rule.getRuleSelector().toString()
-             + "<br><br>");
-   	}
-	}
-	*/
+
+embeddedRules.append(" Selector: " + rule.getRuleSelector().toString()
++ "<br><br>");
+
+
+}
+else{
+embeddedRules.append("CSS rule: " + rule.getRule().toString()
++ "<br><br>");
+}
+/*
+if(rule.getRule().toString().contains("@media")){
+embeddedRules.append("CSS rule: " + rule.getRule().toString()
++ "<br><br>");
+if(rule.getLocator()!=null){
+embeddedRules.append("at line: "
++ rule.getLocator().getLineNumber() + "<br><br>");
+}
+}
+else{
+if(rule.getRule().toString().contains("@import")){
+embeddedRules.append("CSS rule: " + rule.getRule().toString()
++ "<br><br>");
+if(rule.getLocator()!=null){
+embeddedRules.append("at line: "
++ rule.getLocator().getLineNumber() + "<br><br>");
+}
+}
+else{
+embeddedRules.append("CSS rule: " + rule.getRule().getCssText()
++ "<br>");
+if(rule.getLocator()!=null){
+embeddedRules.append("at line: "
++ rule.getLocator().getLineNumber() + "<br>");
 }
 
-            	 
+embeddedRules.append(" Selector: " + rule.getRuleSelector().toString()
++ "<br><br>");
+}
+}
+*/
+}
+
+            
 
             
            
@@ -535,7 +534,7 @@ if(dangSelectorss.size()>0){
              dangSelectors.append("at line: "
                + rule.getLocator().getLineNumber() + "<br>");
              dangSelectors.append(" Selector: " + sel.getCssSelector()
-                         + "<br><br>"); 
+                         + "<br><br>");
  }
 }
   
@@ -608,7 +607,7 @@ analysisMap.put("Selectors with ID and at Least One Class or Element", idWithStr
 analysisMap.put("Rules with !important in their Declaration", reactiveStr);
 analysisMap.put("Rules with Inappropriate Font-size Value", inappFontStr);
 analysisMap.put("Embedded Rules", embeddedRulesStr);
-analysisMap.put("Rules with Dangerous Selectors", dangSelectorsStr);		
+analysisMap.put("Rules with Dangerous Selectors", dangSelectorsStr);	
                         fileMap.put(filename, analysisMap);
 
                 } // for entry set

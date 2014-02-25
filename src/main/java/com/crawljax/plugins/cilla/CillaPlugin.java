@@ -84,8 +84,10 @@ public Map<String, List<MCssRule>> embeddedcssRules1 = new HashMap<String, List<
         private int totalCssRulesSize;
          
 public static String[] visualFilename;
+
 public static int outputNum = 1;
 public static int outputNum1;
+
 public static double Mean = 0;
 public static double Median = 0;
 public static int min = 0;
@@ -119,8 +121,8 @@ List<Double> numDescendantsDomStates = new ArrayList<Double>();
 List<Node> finalChildren;
 int count = 0;
         public void onNewState(CrawlerContext context, StateVertex newState) {
-        	
-        	count++;
+        
+         count++;
                 // if the external CSS files are not parsed yet, do so
                 parseCssRules(context, newState);
 
@@ -130,8 +132,8 @@ int count = 0;
                 checkClassDefinitions(newState);
                 storeNumElementsOfEachDomState(newState);
                 getTotalSelectorsEachDomState();
-			
-				
+
+
                
         }
 
@@ -150,7 +152,7 @@ int count = 0;
           }
           totalSelectorsEachDomState.add(totalCssSelectors);
          
-    	
+    
     }
      
       private void storeNumElementsOfEachDomState(StateVertex state){
@@ -160,12 +162,12 @@ try {
 dom = state.getDocument();
 numElementsDomStates.add(CSSDOMHelper.numElementsDocumentTree(dom));
 try {
-	checkCssSelectorRulesOnDom1(state.getName(), dom);
+checkCssSelectorRulesOnDom1(state.getName(), dom);
 } catch (NodeSelectorException e) {
-	
-	numDescendantsDomStates.add((double) finalChildren.size());
-	// TODO Auto-generated catch block
-	e.printStackTrace();
+
+numDescendantsDomStates.add((double) finalChildren.size());
+// TODO Auto-generated catch block
+e.printStackTrace();
 }
 
 } catch (IOException e) {
@@ -179,11 +181,11 @@ e.printStackTrace();
       public void checkCssSelectorRulesOnDom1(String stateName, Document dom
               ) throws NodeSelectorException {
        
-    	finalChildren = new ArrayList<Node>();
-    	int w = 0;
+     finalChildren = new ArrayList<Node>();
+     int w = 0;
        List<MCssRule> mRules = null;
        for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()) {
-       	mRules = CssAnalyzer.checkCssRulesOnDom(stateName, dom, entry.getValue());
+        mRules = CssAnalyzer.checkCssRulesOnDom(stateName, dom, entry.getValue());
           
      totaldescendants = 0;
      
@@ -207,29 +209,29 @@ e.printStackTrace();
                                      for (Node node : result) {
       
       
-     finalChildren.add(node); 
+     finalChildren.add(node);
                                            
                                              
         
          children = node.getChildNodes();
        
           for(int x = 0; x< children.getLength(); x++){
-               	finalChildren.add(children.item(x));
-             	
+                finalChildren.add(children.item(x));
+             
                                                          }
                    for(int x = w; x< finalChildren.size(); x++){
-                    	node = finalChildren.get(x);
-               	children = node.getChildNodes();
-            	for(int y = 0; y< children.getLength(); y++ ){
-              		finalChildren.add(children.item(y));
-                                                                  	}
+                     node = finalChildren.get(x);
+                children = node.getChildNodes();
+             for(int y = 0; y< children.getLength(); y++ ){
+               finalChildren.add(children.item(y));
+                                                                   }
                                                                   }
                             w = finalChildren.size();
                                                                              
               
      
-     		   }
-     	   }
+      }
+      }
         }
        }
        totaldescendants = finalChildren.size();
@@ -287,9 +289,9 @@ e.printStackTrace();
                 // check the rules on the current DOM state.
         
                 try {
-           	
+           
                         for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()) {
-                        	
+                        
                                 CssAnalyzer.checkCssSelectorRulesOnDom(state.getName(), state.getDocument(),
                                  entry.getValue());
 
@@ -348,32 +350,32 @@ double num3 = 0;
                                        
                                         if (rules != null && rules.size() > 0) {
  for(int i = 0; i< rules.size(); i++){
-	 num1 += rules.get(i).getSelectors().size();
-	 
-	 
+num1 += rules.get(i).getSelectors().size();
+
+
  }
 
-                                        	cssRules.put(cssUrl, rules);
-                                     	
-   List<MSelector> selectorsinDom = new ArrayList<MSelector>();  
+                                         cssRules.put(cssUrl, rules);
+                                     
+   List<MSelector> selectorsinDom = new ArrayList<MSelector>();
    int r = 0;
    int[] g;
  for(int i = 0; i< rules.size(); i++){
-	 selectorsinDom.addAll(rules.get(i).getSelectors());
-	
+selectorsinDom.addAll(rules.get(i).getSelectors());
+
  }
  g = new int[selectorsinDom.size()];
  for(int i = 0; i< rules.size(); i++){
-	 String s = selectorsinDom.get(i).getSpecificity().toString();
-	 
-	            int l = Integer.parseInt(s.substring(1, 2));
-	            int m = Integer.parseInt(s.substring(4, 5));
-	            int n = Integer.parseInt(s.substring(7, 8));
-	            int o = Integer.parseInt(s.substring(10, 11));
-	            int t = l+m+n+o;
-	            g[r]= t;
-	            r++;
-	           
+String s = selectorsinDom.get(i).getSpecificity().toString();
+
+int l = Integer.parseInt(s.substring(1, 2));
+int m = Integer.parseInt(s.substring(4, 5));
+int n = Integer.parseInt(s.substring(7, 8));
+int o = Integer.parseInt(s.substring(10, 11));
+int t = l+m+n+o;
+g[r]= t;
+r++;
+
  
  }
  for(int y = 0; y<g.length;y++){
@@ -407,7 +409,7 @@ double num3 = 0;
 }
  
 
-                                        }       
+                                        }
                                 }
                         }
 
@@ -424,31 +426,31 @@ double num3 = 0;
                                 if (rules != null && rules.size() > 0) {
                                         cssRules.put(url, rules);
                                          
-   embeddedcssRules1.put(url, rules); 
+   embeddedcssRules1.put(url, rules);
    for(int i = 0; i< rules.size(); i++){
-		 num2 += rules.get(i).getSelectors().size();
-		 
-	 }
+num2 += rules.get(i).getSelectors().size();
+
+}
    
-   List<MSelector> selectorsinDom = new ArrayList<MSelector>();  
+   List<MSelector> selectorsinDom = new ArrayList<MSelector>();
    int r = 0;
    int[] g;
  for(int i = 0; i< rules.size(); i++){
-	 selectorsinDom.addAll(rules.get(i).getSelectors());
-	
+selectorsinDom.addAll(rules.get(i).getSelectors());
+
  }
  g = new int[selectorsinDom.size()];
  for(int i = 0; i< selectorsinDom.size(); i++){
-	 String s = selectorsinDom.get(i).getSpecificity().toString();
-	 
-	            int l = Integer.parseInt(s.substring(1, 2));
-	            int m = Integer.parseInt(s.substring(4, 5));
-	            int n = Integer.parseInt(s.substring(7, 8));
-	            int o = Integer.parseInt(s.substring(10, 11));
-	            int t = l+m+n+o;
-	            g[r]= t;
-	            r++;
-	           
+String s = selectorsinDom.get(i).getSpecificity().toString();
+
+int l = Integer.parseInt(s.substring(1, 2));
+int m = Integer.parseInt(s.substring(4, 5));
+int n = Integer.parseInt(s.substring(7, 8));
+int o = Integer.parseInt(s.substring(10, 11));
+int t = l+m+n+o;
+g[r]= t;
+r++;
+
  
  }
  for(int y = 0; y<g.length;y++){
@@ -487,7 +489,7 @@ double num3 = 0;
                 } catch (IOException e) {
                         LOGGER.error(e.getMessage(), e);
                 }
-  int summation = num1+num2; 
+  int summation = num1+num2;
   if(summation != 0){
   uni1 = num3/summation;
   }
@@ -513,7 +515,7 @@ double num3 = 0;
          }
         
          }
-        
+       
         public void determineThreshold(){
             
             allSelectors=new ArrayList<MSelector>();
@@ -623,36 +625,37 @@ double num3 = 0;
            averageelement = element / totalCssSelectors;
             }
    }
+       
         
         public void universality(){
-        	double summ = 0;
-        	for(int i = 0; i< universalityArray.size(); i++){
-        	summ+= universalityArray.get(i);	
-        	}
-        	if(universalityArray.size()!=0){
-        	uni = summ / universalityArray.size();
-        	}
-        	
+         double summ = 0;
+         for(int i = 0; i< universalityArray.size(); i++){
+         summ+= universalityArray.get(i);	
+         }
+         if(universalityArray.size()!=0){
+         uni = summ / universalityArray.size();
+         }
+        
         
        
    }
 
         public void averageScope() throws Exception{
-        	double ASPerPage = 0;
-        	double sumASPerPage = 0;
-        	
+         double ASPerPage = 0;
+         double sumASPerPage = 0;
+        
 
-        	 
+        
          for(int i = 0; i< numElementsDomStates.size(); i++){
     
-        	 if(numElementsDomStates.get(i)!=0 && totalSelectorsEachDomState.get(i)!=0){
+         if(numElementsDomStates.get(i)!=0 && totalSelectorsEachDomState.get(i)!=0){
         ASPerPage = (numDescendantsDomStates.get(i))/(numElementsDomStates.get(i)*totalSelectorsEachDomState.get(i));
         sumASPerPage += ASPerPage;
         
-        	 }
-        	 }
-        	 
-        	 AS = sumASPerPage/numDescendantsDomStates.size();
+         }
+         }
+        
+         AS = sumASPerPage/numDescendantsDomStates.size();
         
         
          
@@ -666,11 +669,15 @@ double num3 = 0;
 public void writecssintoFileCssLint(){
 
 outputNum1 = 1;
+
 new File("C:/Users/Golnaz/cilla/CsslintReports").mkdirs();
+
 FileOutputStream fop =null;
+
 
 for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()) {
 visualFilename = new String[cssRules.entrySet().size()+1];
+
 }
     
       for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()) {
@@ -678,10 +685,12 @@ visualFilename = new String[cssRules.entrySet().size()+1];
      filename = entry.getKey();
     
      visualFilename[outputNum1] = filename;
+     
               for (MCssRule mrule : entry.getValue()) {
                     
                       
                               File file;
+                             
                               try{
                                       
                                       file = new File("C:/Users/Golnaz/cssfile"+outputNum+outputNum1+".css");
@@ -717,6 +726,7 @@ visualFilename = new String[cssRules.entrySet().size()+1];
              for(int i = 1; i< outputNum1; i++) {
               FileOutputStream fop1 =null;
                String[] command = {"java","-jar", "js.jar", "csslint-rhino.js", "cssfile"+outputNum+i+".css"};
+                  
        ProcessBuilder probuilder = new ProcessBuilder( command );
        //You can set up your work directory
        probuilder.directory(new File("C:/Users/Golnaz"));
@@ -777,9 +787,12 @@ fop1.write(10);
        // TODO Auto-generated catch block
        e.printStackTrace();
        }
+                      
+
              }
              AdditionalVisualization av = new AdditionalVisualization();
              av.addCssLint();
+           //av.addCssCss();
  
 outputNum++;
 
@@ -792,12 +805,101 @@ outputNum++;
       
 }
 
+public void getCssCssReport(){
+	
+	//outputNum = 1;
+	new File("D:/CssCssReports").mkdirs();
+	
+	
+	
+	     
+	     // Runtime rt = Runtime.getRuntime();
+	      
+	      try {
+	             for(int i = 1; i< outputNum1; i++) {
+	              FileOutputStream fop1 =null;
+	              String[] command = {"C:/Ruby193/bin/csscss.bat", "-n", "1","-v", "C:/Users/Golnaz/cssfile"+(outputNum-1)+i+".css"};
+	              Process p = Runtime.getRuntime().exec(command);
+	       InputStream is = p.getInputStream();
+	       InputStreamReader isr = new InputStreamReader(is);
+	       BufferedReader br = new BufferedReader(isr);
+	       String line;
+	       System.out.printf("Output of running %s is:\n", Arrays.toString(command));
+	       while ((line = br.readLine()) != null) {
+	      
+	       // System.out.println(line);
+	       File file1;
+	                              try{
+	                                      
+	                                      file1 = new File("D:/CssCssReports/output"+(outputNum-1)+i+".txt");
+	                                      
+	                                      fop1 = new FileOutputStream(file1, true);
+	                                      
+	                                      if (!file1.exists()) {
+	                                                              file1.createNewFile();
+	                                                      }
+	                                       byte[] contentInBytes = line.getBytes();
+	                                      
+	                                      
+	                                      
+	                                      
+	fop1.write(contentInBytes);
+	// go to next line
+	fop1.write(13);
+	fop1.write(10);
+	                                      fop1.flush();
+	                                      fop1.close();
+	                                      
+	                              } catch (IOException e) {
+	                                      e.printStackTrace();
+	                                      } finally {
+	                                      try {
+	                                              if (fop1 != null) {
+	                                                      fop1.close();
+	                                              }
+	                                      } catch (IOException e) {
+	                                              e.printStackTrace();
+	                                      }
+	                                      }
+	                      
+	       }
+
+
+	       //Wait to get exit value
+	       try {
+	       int exitValue = p.waitFor();
+	       System.out.println("\n\nExit Value is " + exitValue);
+	       } catch (InterruptedException e) {
+	       // TODO Auto-generated catch block
+	       e.printStackTrace();
+	       }
+	                      
+
+	             }
+	             AdditionalVisualization av = new AdditionalVisualization();
+	            
+	            av.addCssCss();
+	 
+	//outputNum++;
+
+	      }
+	      
+          catch (IOException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+  }
+  
+	
+}
+
+
+
 
         @Override
         public void postCrawling(CrawlSession session, ExitStatus exitReason) {
-        	
-        	
-        	
+        
+        
+        
                 totalCssRules = 0;
                 totalCssSelectors = 0;
              
@@ -812,6 +914,8 @@ outputNum++;
                 }
 
 getEmbeddedRules();
+
+
 determineThreshold();
 countCharacteristics();
 universality();
@@ -824,6 +928,7 @@ try {
 abstractnessFactor();
 
 writecssintoFileCssLint();
+getCssCssReport();
                 StringBuffer output = new StringBuffer();
                 StringBuffer bufferUnused = new StringBuffer();
                 StringBuffer bufferUsed = new StringBuffer();
@@ -1561,7 +1666,5 @@ output.append(dangerousSelectors.toString());
         
         
          }
-
-       
 
 }

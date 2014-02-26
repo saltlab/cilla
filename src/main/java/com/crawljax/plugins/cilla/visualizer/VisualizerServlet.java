@@ -73,7 +73,7 @@ public class VisualizerServlet extends VelocityViewServlet {
 
 
         private enum HighlightColor {
-                NONE, UNMATCHED, INEFFECTIVE, EFFECTIVE, LAZY, LONG, TOOSPECIFIC, TOOSPECIFIC2, EMPTYCAT, UNDSTY, IDPLUS, REACTIMPO, INAPPFONT, EMBEDDED, DANGEROUS, INVALIDSYNTAX
+                NONE, UNMATCHED, INEFFECTIVE, EFFECTIVE, LAZY, LONG, TOOSPECIFIC, TOOSPECIFIC2, EMPTYCAT, UNDSTY, IDPLUS, REACTIMPO, INAPPFONT, EMBEDDED, DANGEROUS, INVALIDSYNTAX, NONEVALUE
         }
 
         private Map<HighlightColor, String> highlightMap;
@@ -94,6 +94,7 @@ private final String InappfontHighlight = "#00FFFF";
 private final String EmbeddedHighlight = "#00FF00";
 private final String DangerousHighlight = "FF6699";
 private final String InvalidSyntaxHighlight = "#FF0000";
+private final String NoneValueHighlight = "990033";
 
         private Map<String, Map<String, Map<Integer, HighlightColor>>> unsortedMap;
 
@@ -135,6 +136,7 @@ highlightMap.put(HighlightColor.INAPPFONT, InappfontHighlight);
 highlightMap.put(HighlightColor.EMBEDDED, EmbeddedHighlight);
 highlightMap.put(HighlightColor.DANGEROUS, DangerousHighlight);
 highlightMap.put(HighlightColor.INVALIDSYNTAX, InvalidSyntaxHighlight);
+highlightMap.put(HighlightColor.NONEVALUE, NoneValueHighlight);
 
 
                 outputDir = outputFolder.getAbsolutePath() + folderString;
@@ -261,6 +263,7 @@ StringBuffer inappFontSize;
 StringBuffer embeddedRules;
 StringBuffer dangSelectors;
 StringBuffer invalidSyntax;
+StringBuffer noneValue;
                 // Look through the files and format the sorted output
                 for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()) {
                        Map<String, String> analysisMap = new HashMap<String, String>();
@@ -288,6 +291,7 @@ inappFontSize = new StringBuffer();
 embeddedRules = new StringBuffer();
 dangSelectors = new StringBuffer();
 invalidSyntax = new StringBuffer();
+noneValue = new StringBuffer();
 
                         // Loop through the rules
                         for (MCssRule rule : rules) {
@@ -576,6 +580,20 @@ if(invalidSyntaxSelectors.size()>0){
 	                         + "<br><br>");
 	 }
 	}
+
+List<MSelector> noneValueSelectors = rule.getUndoingStyleNone();
+
+if(noneValueSelectors.size()>0){
+	
+	 for (MSelector sel : noneValueSelectors){
+		 noneValue.append("CSS rule: " + rule.getRule().getCssText()
+	                          + "<br>");
+		 noneValue.append("at line: "
+	               + rule.getLocator().getLineNumber() + "<br>");
+		 noneValue.append(" Selector: " + sel.getCssSelector()
+	                         + "<br><br>");
+	 }
+	}
                         } // for rules
                         
 
@@ -633,6 +651,8 @@ String dangSelectorsStr = dangSelectors.toString().replaceAll("#", "&#35");
 dangSelectorsStr = dangSelectorsStr.replaceAll("\\*", "&#42");
 String invalidSyntaxStr = invalidSyntax.toString().replaceAll("#", "&#35");
 invalidSyntaxStr = invalidSyntaxStr.replaceAll("\\*", "&#42");
+String noneValueStr = noneValue.toString().replaceAll("#", "&#35");
+noneValueStr = noneValueStr.replaceAll("\\*", "&#42");
 
                         analysisMap.put("Unmatched CSS Rules", unmatchedStr);
                         analysisMap.put("Matched & Ineffective CSS Rules", ineffectiveStr);
@@ -652,6 +672,7 @@ analysisMap.put("Rules with Inappropriate Font-size Value", inappFontStr);
 analysisMap.put("Embedded Rules", embeddedRulesStr);
 analysisMap.put("Rules with Dangerous Selectors", dangSelectorsStr);
 analysisMap.put("Selectors with Invalid Syntax", invalidSyntaxStr);
+analysisMap.put("Rules with None Value", noneValueStr);
 
                         fileMap.put(filename, analysisMap);
 
@@ -689,6 +710,7 @@ context.put("inappfontColor", InappfontHighlight);
 context.put("embeddedruleColor", EmbeddedHighlight);
 context.put("dangerousselectorColor", DangerousHighlight);
 context.put("invalidSyntaxSelectorColor", InvalidSyntaxHighlight);
+context.put("noneValueColor", NoneValueHighlight);
 
                 String template;
                 try {
@@ -708,7 +730,7 @@ context.put("invalidSyntaxSelectorColor", InvalidSyntaxHighlight);
                 int line;
                 String parsedRule;
                 String filename;
-                int i = 0; int j = 0; int k = 0; int l = 0; int m = 0; int n = 0; int o = 0; int p =0; int q = 0; int r = 0; int s = 0; int t = 0;
+                int i = 0; int j = 0; int k = 0; int l = 0; int m = 0; int n = 0; int o = 0; int p =0; int q = 0; int r = 0; int s = 0; int t = 0; int u = 0;
                 unsortedMap = new HashMap<String, Map<String, Map<Integer, HighlightColor>>>();
                 Map<String, Map<Integer, HighlightColor>> ruleMap;
                 Map<Integer, HighlightColor> colorMap;
@@ -723,6 +745,7 @@ context.put("invalidSyntaxSelectorColor", InvalidSyntaxHighlight);
                 Map<Integer, HighlightColor> colorMap9;
                 Map<Integer, HighlightColor> colorMap10;
                 Map<Integer, HighlightColor> colorMap11;
+                Map<Integer, HighlightColor> colorMap12;
              
                 try {
                         for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()) {
@@ -881,7 +904,15 @@ context.put("invalidSyntaxSelectorColor", InvalidSyntaxHighlight);
                                                                             
                                                                              
                                                                          }
+                                                                           
+                                                                           if(!rule.getUndoingStyleNone().isEmpty() && null != rule.getLocator()){
+                                                                               colorMap12 = new HashMap<Integer, HighlightColor>();
+                                                                               u++;
+                                                                               colorMap12.put(line, HighlightColor.NONEVALUE);
+                                                                              
+                                                                             ruleMap.put(" "+"Selector with None Value Number "+u+" "+parsedRule, colorMap12);
                                                }
+                                        }
                                                
                                             
                                         

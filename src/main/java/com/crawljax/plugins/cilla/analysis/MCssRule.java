@@ -229,8 +229,7 @@ List<MSelector> tooSpecific = new ArrayList<MSelector>();
                                                 
                                                 if(b+c+d> 4 && !selector.isIgnore()){
                                                         tooSpecific.add(selector);
-                                                        System.out.println("selec"+selector.getCssSelector());
-                                                        System.out.println("a:"+a+"b:"+b+"c:"+c+"d:"+d);
+                                                        
                                                 }
                                             //    if( i> 122 && !selector.isIgnore()){
                                              //           tooSpecific.add(selector);
@@ -368,6 +367,38 @@ List<MSelector> undoing = new ArrayList<MSelector>();
                                 
                         return undoing;
                 }
+
+public List<MSelector> getUndoingStyleNone(){
+    List<MSelector> undoingNone = new ArrayList<MSelector>();
+    for (MSelector selector : this.selectors){
+                            
+                            CSSStyleDeclaration styleDeclaration = null;
+                    
+
+                            if (this.rule instanceof CSSStyleRule) {
+                                    CSSStyleRule styleRule = (CSSStyleRule) rule;
+                                    styleDeclaration = styleRule.getStyle();
+                                    for (int i = 0; i < styleDeclaration.getLength(); i++) {
+                                            String property = styleDeclaration.item(i);
+                                           
+                                                    String value = styleDeclaration.getPropertyValue(property);
+                                                    if(value.equalsIgnoreCase("none") || value.equals("0")){
+                                                            undoingNone.add(selector);
+                                                            
+                                                    }
+                                                    
+                                                  
+                                                    }
+                                            }
+                                            
+                            }
+                            
+                    
+                    return undoingNone;
+                    
+            }
+
+
 
 public List<MSelector> checkFontSize(){
         List<MSelector> inappfontsize = new ArrayList<MSelector>();

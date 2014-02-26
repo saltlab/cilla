@@ -132,6 +132,7 @@
         <tr>
         <td style="background-color: $dangerousselectorColor"><p> Rules with Dangerous Selectors </p></td>
         <td style="background-color: $invalidSyntaxSelectorColor"><p> Selectors with Invalid Syntax </p></td>
+        <td style="background-color: $noneValueColor"><p> Selectors with "None" Value (Undoing Style) </p></td>
         </tr>
         </table>
         <br>

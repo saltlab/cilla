@@ -967,6 +967,8 @@ StringBuffer dangerousSelectors = new StringBuffer();
 int danSel = getDangerousSelectors(dangerousSelectors);
 StringBuffer invalidSelectors = new StringBuffer();
 int invalidSyn = getInvalidSelectors(invalidSelectors);
+StringBuffer undoNone = new StringBuffer();
+int undoingWithNone = getUndoingStyleNone(undoNone);
 
 
                 StringBuffer ineffectiveBuffer = new StringBuffer();
@@ -1018,6 +1020,7 @@ output.append(" -> Selectors with Inappropriate Font-size Value for their Proper
 output.append(" -> Embedded Rules: "+ countEmbeddedRules +"\n");
 output.append(" -> Rules with Dangerous Selectors: "+ danSel +"\n");
 output.append(" -> Rules with Invalid Selectors: "+ invalidSyn +"\n");
+output.append(" -> Rules with None Value: "+ undoingWithNone +"\n");
 
 
                 /*
@@ -1051,7 +1054,7 @@ output.append(inappFontSize.toString());
 output.append(embeddedRules.toString());
 output.append(dangerousSelectors.toString());
 output.append(invalidSelectors.toString());
-
+output.append(undoNone.toString());
 
                try {
                         FileUtils.writeStringToFile(outputFile, output.toString());
@@ -1547,6 +1550,34 @@ output.append(invalidSelectors.toString());
         
          }
 
+         private int getUndoingStyleNone(StringBuffer buffer){
+             LOGGER.info("Reporting CSS Rules with None Value...");
+             buffer.append("========== CSS RULES with NONE VALUE ==========\n");
+             int counter = 0;
+             for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()){
+             List<MCssRule> rules = entry.getValue();
+             buffer.append("== RULES with NONE VALUE IN: " + entry.getKey() + "\n");
+             for (MCssRule rule : rules){
+            
+            
+             List<MSelector> selectors = rule.getUndoingStyleNone();
+             counter += selectors.size();
+             if (selectors.size() > 0) {
+             buffer.append("None Value: ");
+             buffer.append("CSS rule: " + rule.getRule().getCssText() + "\n");
+             buffer.append("at line: " + rule.getLocator().getLineNumber() + "\n");
+
+             for (MSelector selector : selectors) {
+             // ineffectivePropsSize+=selector.getSize();
+             buffer.append(selector.toString() + "\n");
+             }
+             }
+
+             }
+             }
+             return counter;
+            
+             }
          private int getIdWithClassOrElement(StringBuffer buffer){
          LOGGER.info("Reporting Selectors with ID and at Least One Class or Element...");
          buffer.append("========== Selectors with ID and at Least One Class or Element ==========\n");

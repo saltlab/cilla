@@ -157,7 +157,7 @@ public class SpecificityCalculator {
                 
                 String[] parts = selector.split(" ");
                 for (String part : parts) {
-                	 if(part.isEmpty() || part.length() == 0){
+                	 if(part.isEmpty() || part.length() == 0 || part.equals(">")||part.equals("~")||part.equals("+")){
                          continue;
                  }
                  else{

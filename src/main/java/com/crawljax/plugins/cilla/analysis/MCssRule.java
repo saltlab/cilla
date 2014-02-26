@@ -227,7 +227,7 @@ List<MSelector> tooSpecific = new ArrayList<MSelector>();
         
        
                                                 
-                                                if(a+b+c+d> 4 && !selector.isIgnore()){
+                                                if(b+c+d> 4 && !selector.isIgnore()){
                                                         tooSpecific.add(selector);
                                                         System.out.println("selec"+selector.getCssSelector());
                                                         System.out.println("a:"+a+"b:"+b+"c:"+c+"d:"+d);

@@ -806,90 +806,90 @@ outputNum++;
 }
 
 public void getCssCssReport(){
-	
-	//outputNum = 1;
-	new File("D:/CssCssReports").mkdirs();
-	
-	
-	
-	     
-	     // Runtime rt = Runtime.getRuntime();
-	      
-	      try {
-	             for(int i = 1; i< outputNum1; i++) {
-	              FileOutputStream fop1 =null;
-	              String[] command = {"C:/Ruby193/bin/csscss.bat", "-n", "1","-v", "C:/Users/Golnaz/cssfile"+(outputNum-1)+i+".css"};
-	              Process p = Runtime.getRuntime().exec(command);
-	       InputStream is = p.getInputStream();
-	       InputStreamReader isr = new InputStreamReader(is);
-	       BufferedReader br = new BufferedReader(isr);
-	       String line;
-	       System.out.printf("Output of running %s is:\n", Arrays.toString(command));
-	       while ((line = br.readLine()) != null) {
-	      
-	       // System.out.println(line);
-	       File file1;
-	                              try{
-	                                      
-	                                      file1 = new File("D:/CssCssReports/output"+(outputNum-1)+i+".txt");
-	                                      
-	                                      fop1 = new FileOutputStream(file1, true);
-	                                      
-	                                      if (!file1.exists()) {
-	                                                              file1.createNewFile();
-	                                                      }
-	                                       byte[] contentInBytes = line.getBytes();
-	                                      
-	                                      
-	                                      
-	                                      
-	fop1.write(contentInBytes);
-	// go to next line
-	fop1.write(13);
-	fop1.write(10);
-	                                      fop1.flush();
-	                                      fop1.close();
-	                                      
-	                              } catch (IOException e) {
-	                                      e.printStackTrace();
-	                                      } finally {
-	                                      try {
-	                                              if (fop1 != null) {
-	                                                      fop1.close();
-	                                              }
-	                                      } catch (IOException e) {
-	                                              e.printStackTrace();
-	                                      }
-	                                      }
-	                      
-	       }
+
+//outputNum = 1;
+new File("D:/CssCssReports").mkdirs();
 
 
-	       //Wait to get exit value
-	       try {
-	       int exitValue = p.waitFor();
-	       System.out.println("\n\nExit Value is " + exitValue);
-	       } catch (InterruptedException e) {
-	       // TODO Auto-generated catch block
-	       e.printStackTrace();
-	       }
-	                      
 
-	             }
-	             AdditionalVisualization av = new AdditionalVisualization();
-	            
-	            av.addCssCss();
-	 
-	//outputNum++;
 
-	      }
-	      
+// Runtime rt = Runtime.getRuntime();
+
+try {
+for(int i = 1; i< outputNum1; i++) {
+FileOutputStream fop1 =null;
+String[] command = {"C:/Ruby193/bin/csscss.bat", "-n", "1","-v", "C:/Users/Golnaz/cssfile"+(outputNum-1)+i+".css"};
+Process p = Runtime.getRuntime().exec(command);
+InputStream is = p.getInputStream();
+InputStreamReader isr = new InputStreamReader(is);
+BufferedReader br = new BufferedReader(isr);
+String line;
+System.out.printf("Output of running %s is:\n", Arrays.toString(command));
+while ((line = br.readLine()) != null) {
+
+// System.out.println(line);
+File file1;
+try{
+
+file1 = new File("D:/CssCssReports/output"+(outputNum-1)+i+".txt");
+
+fop1 = new FileOutputStream(file1, true);
+
+if (!file1.exists()) {
+file1.createNewFile();
+}
+byte[] contentInBytes = line.getBytes();
+
+
+
+
+fop1.write(contentInBytes);
+// go to next line
+fop1.write(13);
+fop1.write(10);
+fop1.flush();
+fop1.close();
+
+} catch (IOException e) {
+e.printStackTrace();
+} finally {
+try {
+if (fop1 != null) {
+fop1.close();
+}
+} catch (IOException e) {
+e.printStackTrace();
+}
+}
+
+}
+
+
+//Wait to get exit value
+try {
+int exitValue = p.waitFor();
+System.out.println("\n\nExit Value is " + exitValue);
+} catch (InterruptedException e) {
+// TODO Auto-generated catch block
+e.printStackTrace();
+}
+
+
+}
+AdditionalVisualization av = new AdditionalVisualization();
+
+av.addCssCss();
+
+//outputNum++;
+
+}
+
           catch (IOException e) {
           // TODO Auto-generated catch block
           e.printStackTrace();
   }
   
-	
+
 }
 
 
@@ -912,7 +912,8 @@ public void getCssCssReport(){
                         }
                   
                 }
-
+                
+             
 getEmbeddedRules();
 
 
@@ -927,8 +928,8 @@ try {
 }
 abstractnessFactor();
 
-writecssintoFileCssLint();
-getCssCssReport();
+//writecssintoFileCssLint();
+//getCssCssReport();
                 StringBuffer output = new StringBuffer();
                 StringBuffer bufferUnused = new StringBuffer();
                 StringBuffer bufferUsed = new StringBuffer();
@@ -944,6 +945,8 @@ getCssCssReport();
                 
 StringBuffer tooSpecific = new StringBuffer();
 int toospec = getTooSpecificSelectors(tooSpecific);
+StringBuffer tooSpecific2 = new StringBuffer();
+int toospec2 = getTooSpecificSelectors2(tooSpecific2);
 StringBuffer tooLazy = new StringBuffer();
 int toolaz = getLazyRules(tooLazy);
 StringBuffer tooLong = new StringBuffer();
@@ -962,6 +965,9 @@ StringBuffer embeddedRules = new StringBuffer();
 int dsf = getNumEmbeddedRules(embeddedRules);
 StringBuffer dangerousSelectors = new StringBuffer();
 int danSel = getDangerousSelectors(dangerousSelectors);
+StringBuffer invalidSelectors = new StringBuffer();
+int invalidSyn = getInvalidSelectors(invalidSelectors);
+
 
                 StringBuffer ineffectiveBuffer = new StringBuffer();
                 int ineffectiveInt = getIneffectiveSelectorsBasedOnProps(ineffectiveBuffer);
@@ -1000,7 +1006,8 @@ int danSel = getDangerousSelectors(dangerousSelectors);
                 
 // prints number of css smells in the summary tab
 output.append("CSS SMELLS: " + "\n");
-output.append(" -> Rules with Too Specific Selectors: "+ toospec+ "\n");
+output.append(" -> Rules with Too Specific Selectors Type I: "+ toospec+ "\n");
+output.append(" -> Rules with Too Specific Selectors Type II: "+ toospec2+ "\n");
 output.append(" -> Lazy Rules: "+ toolaz+ "\n");
 output.append(" -> Too Long Rules: "+ toolog+ "\n");
 output.append(" -> Rules with Empty Catch: "+ emptycat+ "\n");
@@ -1010,6 +1017,7 @@ output.append(" -> Total Number of !important used in the code(Reactiveness): "+
 output.append(" -> Selectors with Inappropriate Font-size Value for their Properties: "+ inappfo + "\n");
 output.append(" -> Embedded Rules: "+ countEmbeddedRules +"\n");
 output.append(" -> Rules with Dangerous Selectors: "+ danSel +"\n");
+output.append(" -> Rules with Invalid Selectors: "+ invalidSyn +"\n");
 
 
                 /*
@@ -1032,6 +1040,7 @@ output.append(" -> Rules with Dangerous Selectors: "+ danSel +"\n");
 
                 
 output.append(tooSpecific.toString());
+output.append(tooSpecific2.toString());
 output.append(tooLazy.toString());
 output.append(tooLong.toString());
 output.append(emptyCatch.toString());
@@ -1041,6 +1050,8 @@ output.append(reactiveImportant.toString());
 output.append(inappFontSize.toString());
 output.append(embeddedRules.toString());
 output.append(dangerousSelectors.toString());
+output.append(invalidSelectors.toString());
+
 
                try {
                         FileUtils.writeStringToFile(outputFile, output.toString());
@@ -1566,20 +1577,20 @@ output.append(dangerousSelectors.toString());
          }
 
          private int getTooSpecificSelectors(StringBuffer buffer){
-         LOGGER.info("Reporting CSS Rules with Too Specific Selectors...");
-         buffer.append("========== TOO SPECIFIC CSS RULES ==========\n");
+         LOGGER.info("Reporting CSS Rules with Too Specific Selectors Type I...");
+         buffer.append("========== TOO SPECIFIC CSS RULES TYPE I ==========\n");
          //SpecificityCalculator sc = new SpecificityCalculator();
          int counter = 0;
          for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()){
          List<MCssRule> rules = entry.getValue();
-         buffer.append("== TOO SPECIFIC RULES IN: " + entry.getKey() + "\n");
+         buffer.append("== TOO SPECIFIC RULES TYPE I IN: " + entry.getKey() + "\n");
          for (MCssRule rule : rules){
         
          //sc.reset();
          List<MSelector> selectors = rule.getTooSpecificSelectors();
          counter += selectors.size();
          if (selectors.size() > 0) {
-         buffer.append("Too Specific: ");
+         buffer.append("Too Specific Type I: ");
          buffer.append("CSS rule: " + rule.getRule().getCssText() + "\n");
          buffer.append("at line: " + rule.getLocator().getLineNumber() + "\n");
 
@@ -1594,6 +1605,37 @@ output.append(dangerousSelectors.toString());
          return counter;
         
          }
+         
+         private int getTooSpecificSelectors2(StringBuffer buffer){
+             LOGGER.info("Reporting CSS Rules with Too Specific Selectors Type II...");
+             buffer.append("========== TOO SPECIFIC CSS RULES TYPE II ==========\n");
+             //SpecificityCalculator sc = new SpecificityCalculator();
+             int counter = 0;
+             for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()){
+             List<MCssRule> rules = entry.getValue();
+             buffer.append("== TOO SPECIFIC RULES TYPE II IN: " + entry.getKey() + "\n");
+             for (MCssRule rule : rules){
+            
+             //sc.reset();
+             List<MSelector> selectors = rule.getTooSpecificSelectors2();
+             counter += selectors.size();
+             if (selectors.size() > 0) {
+             buffer.append("Too Specific Type II: ");
+             buffer.append("CSS rule: " + rule.getRule().getCssText() + "\n");
+             buffer.append("at line: " + rule.getLocator().getLineNumber() + "\n");
+
+             for (MSelector selector : selectors) {
+             // ineffectivePropsSize+=selector.getSize();
+             buffer.append(selector.toString() + "\n");
+             }
+             }
+
+             }
+             }
+             return counter;
+            
+             }
+
 
          private int getInnappFontSize(StringBuffer buffer){
          LOGGER.info("Reporting Selectors with Inappropriate Value for Font-size...");
@@ -1666,5 +1708,35 @@ output.append(dangerousSelectors.toString());
         
         
          }
+         // Invalid Syntax
+         private int getInvalidSelectors(StringBuffer buffer){
+             LOGGER.info("Reporting Selectors with Invalid Syntax...");
+             buffer.append("========== Invalid Selectors ==========\n");
+             int counter = 0;
+             for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()){
+             List<MCssRule> rules = entry.getValue();
+             buffer.append("== RULES WITH INVALID SELECTORS IN: " + entry.getKey() + "\n");
+             for (MCssRule rule : rules){
+            
+            
+             List<MSelector> selectors = rule.getSelectorsWithInvalidSyntax();
+             counter += selectors.size();
+             if (selectors.size() > 0) {
+             buffer.append("Invalid Selectors: ");
+             buffer.append("CSS rule: " + rule.getRule().getCssText() + "\n");
+             buffer.append("at line: " + rule.getLocator().getLineNumber() + "\n");
+
+             for (MSelector selector : selectors) {
+             // ineffectivePropsSize+=selector.getSize();
+             buffer.append(selector.toString() + "\n");
+             }
+             }
+
+             }
+             }
+             return counter;
+            
+            
+             }
 
 }

@@ -73,7 +73,7 @@ public class VisualizerServlet extends VelocityViewServlet {
 
 
         private enum HighlightColor {
-                NONE, UNMATCHED, INEFFECTIVE, EFFECTIVE, LAZY, LONG, TOOSPECIFIC, EMPTYCAT, UNDSTY, IDPLUS, REACTIMPO, INAPPFONT, EMBEDDED, DANGEROUS
+                NONE, UNMATCHED, INEFFECTIVE, EFFECTIVE, LAZY, LONG, TOOSPECIFIC, TOOSPECIFIC2, EMPTYCAT, UNDSTY, IDPLUS, REACTIMPO, INAPPFONT, EMBEDDED, DANGEROUS, INVALIDSYNTAX
         }
 
         private Map<HighlightColor, String> highlightMap;
@@ -85,6 +85,7 @@ public class VisualizerServlet extends VelocityViewServlet {
 private final String LazyHighlight = "FFFF33";
 private final String LongHighlight = "FF33FF";
 private final String ToospecificHighlight = "CCFF00";
+private final String ToospecificHighlight2 = "FF9933";
 private final String EmptycatHighlight = "CC9900";
 private final String UndstyHighlight = "99FF00";
 private final String IdplusHighlight = "6699CC";
@@ -92,6 +93,7 @@ private final String ReactimpoHighlight = "#B8B8B8 ";
 private final String InappfontHighlight = "#00FFFF";
 private final String EmbeddedHighlight = "#00FF00";
 private final String DangerousHighlight = "FF6699";
+private final String InvalidSyntaxHighlight = "#FF0000";
 
         private Map<String, Map<String, Map<Integer, HighlightColor>>> unsortedMap;
 
@@ -124,6 +126,7 @@ private final String DangerousHighlight = "FF6699";
 highlightMap.put(HighlightColor.LAZY, LazyHighlight);
 highlightMap.put(HighlightColor.LONG, LongHighlight);
 highlightMap.put(HighlightColor.TOOSPECIFIC, ToospecificHighlight);
+highlightMap.put(HighlightColor.TOOSPECIFIC2, ToospecificHighlight2);
 highlightMap.put(HighlightColor.EMPTYCAT, EmptycatHighlight);
 highlightMap.put(HighlightColor.UNDSTY, UndstyHighlight);
 highlightMap.put(HighlightColor.IDPLUS, IdplusHighlight);
@@ -131,6 +134,7 @@ highlightMap.put(HighlightColor.REACTIMPO, ReactimpoHighlight);
 highlightMap.put(HighlightColor.INAPPFONT, InappfontHighlight);
 highlightMap.put(HighlightColor.EMBEDDED, EmbeddedHighlight);
 highlightMap.put(HighlightColor.DANGEROUS, DangerousHighlight);
+highlightMap.put(HighlightColor.INVALIDSYNTAX, InvalidSyntaxHighlight);
 
 
                 outputDir = outputFolder.getAbsolutePath() + folderString;
@@ -246,6 +250,7 @@ highlightMap.put(HighlightColor.DANGEROUS, DangerousHighlight);
 
                 
 StringBuffer tooSpecific;
+StringBuffer tooSpecific2;
 StringBuffer tooLazy;
 StringBuffer tooLong;
 StringBuffer emptyCatch;
@@ -255,6 +260,7 @@ StringBuffer reactiveImportant;
 StringBuffer inappFontSize;
 StringBuffer embeddedRules;
 StringBuffer dangSelectors;
+StringBuffer invalidSyntax;
                 // Look through the files and format the sorted output
                 for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()) {
                        Map<String, String> analysisMap = new HashMap<String, String>();
@@ -271,6 +277,7 @@ StringBuffer dangSelectors;
 
                         
 tooSpecific = new StringBuffer();
+tooSpecific2 = new StringBuffer();
 tooLazy = new StringBuffer();
 tooLong = new StringBuffer();
 emptyCatch = new StringBuffer();
@@ -280,6 +287,8 @@ reactiveImportant = new StringBuffer();
 inappFontSize = new StringBuffer();
 embeddedRules = new StringBuffer();
 dangSelectors = new StringBuffer();
+invalidSyntax = new StringBuffer();
+
                         // Loop through the rules
                         for (MCssRule rule : rules) {
 
@@ -344,7 +353,23 @@ dangSelectors = new StringBuffer();
                                      }
                                                                         
                                 }
-
+         
+  List<MSelector> tooSpecificc2 = rule.getTooSpecificSelectors2();
+         if(tooSpecificc2.size()>0){
+          for (MSelector sel : tooSpecificc2){
+                tooSpecific2.append("CSS rule: " + rule.getRule().getCssText()
+                                   + "<br>");
+                      tooSpecific2.append("at line: "
+                        + rule.getLocator().getLineNumber() + "<br>");
+                      tooSpecific2.append(" Selector: " + sel.getCssSelector()
+                                  + "<br><br>");
+     // updateUnsortedMap(filename, rule.getLocator().getLineNumber(), rule
+        // .getRule().getCssText(), HighlightColor.TOOSPECIFIC);
+                                                                                
+                                     }
+                                                                        
+                                }
+        
 List<MSelector> tooLazyy = rule.getLazyRules();
 
                  if(tooLazyy.size()>0){
@@ -538,6 +563,19 @@ if(dangSelectorss.size()>0){
  }
 }
   
+List<MSelector> invalidSyntaxSelectors = rule.getSelectorsWithInvalidSyntax();
+
+if(invalidSyntaxSelectors.size()>0){
+	
+	 for (MSelector sel : invalidSyntaxSelectors){
+		 invalidSyntax.append("CSS rule: " + rule.getRule().getCssText()
+	                          + "<br>");
+		 invalidSyntax.append("at line: "
+	               + rule.getLocator().getLineNumber() + "<br>");
+		 invalidSyntax.append(" Selector: " + sel.getCssSelector()
+	                         + "<br><br>");
+	 }
+	}
                         } // for rules
                         
 
@@ -573,6 +611,8 @@ if(dangSelectorss.size()>0){
                         
 String tooSpecificStr = tooSpecific.toString().replaceAll("#", "&#35");
 tooSpecificStr = tooSpecificStr.replaceAll("\\*", "&#42");
+String tooSpecificStr2 = tooSpecific2.toString().replaceAll("#", "&#35");
+tooSpecificStr2 = tooSpecificStr2.replaceAll("\\*", "&#42");
 String tooLazyStr = tooLazy.toString().replaceAll("#", "&#35");
 tooLazyStr = tooLazyStr.replaceAll("\\*", "&#42");
 String tooLongStr = tooLong.toString().replaceAll("#", "&#35");
@@ -591,6 +631,8 @@ String embeddedRulesStr = embeddedRules.toString().replaceAll("#", "&#35");
 embeddedRulesStr = embeddedRulesStr.replaceAll("\\*", "&#42");
 String dangSelectorsStr = dangSelectors.toString().replaceAll("#", "&#35");
 dangSelectorsStr = dangSelectorsStr.replaceAll("\\*", "&#42");
+String invalidSyntaxStr = invalidSyntax.toString().replaceAll("#", "&#35");
+invalidSyntaxStr = invalidSyntaxStr.replaceAll("\\*", "&#42");
 
                         analysisMap.put("Unmatched CSS Rules", unmatchedStr);
                         analysisMap.put("Matched & Ineffective CSS Rules", ineffectiveStr);
@@ -598,7 +640,8 @@ dangSelectorsStr = dangSelectorsStr.replaceAll("\\*", "&#42");
                         analysisMap.put("Undefined CSS Classes", undefinedStr);
                         
       // prints CSS smells in css analysis tab, sorted.
-analysisMap.put("CSS Rules with Too Specific Selectors", tooSpecificStr);
+analysisMap.put("CSS Rules with Too Specific Selectors Type I", tooSpecificStr);
+analysisMap.put("CSS Rules with Too Specific Selectors Type II", tooSpecificStr2);
 analysisMap.put("Lazy CSS Rules", tooLazyStr);
 analysisMap.put("Too Long CSS Rules", tooLongStr);
 analysisMap.put("CSS Rules with Empty Catch", empCatStr);
@@ -607,7 +650,9 @@ analysisMap.put("Selectors with ID and at Least One Class or Element", idWithStr
 analysisMap.put("Rules with !important in their Declaration", reactiveStr);
 analysisMap.put("Rules with Inappropriate Font-size Value", inappFontStr);
 analysisMap.put("Embedded Rules", embeddedRulesStr);
-analysisMap.put("Rules with Dangerous Selectors", dangSelectorsStr);	
+analysisMap.put("Rules with Dangerous Selectors", dangSelectorsStr);
+analysisMap.put("Selectors with Invalid Syntax", invalidSyntaxStr);
+
                         fileMap.put(filename, analysisMap);
 
                 } // for entry set
@@ -635,6 +680,7 @@ analysisMap.put("Rules with Dangerous Selectors", dangSelectorsStr);
 context.put("lazyColor", LazyHighlight);
 context.put("longColor", LongHighlight);
 context.put("toospecificColor", ToospecificHighlight);
+context.put("toospecificColor2", ToospecificHighlight2);
 context.put("emptycatColor", EmptycatHighlight);
 context.put("undstyColor", UndstyHighlight);
 context.put("idplusColor", IdplusHighlight);
@@ -642,6 +688,7 @@ context.put("reactimpoColor", ReactimpoHighlight);
 context.put("inappfontColor", InappfontHighlight);
 context.put("embeddedruleColor", EmbeddedHighlight);
 context.put("dangerousselectorColor", DangerousHighlight);
+context.put("invalidSyntaxSelectorColor", InvalidSyntaxHighlight);
 
                 String template;
                 try {
@@ -661,7 +708,7 @@ context.put("dangerousselectorColor", DangerousHighlight);
                 int line;
                 String parsedRule;
                 String filename;
-                int i = 0; int j = 0; int k = 0; int l = 0; int m = 0; int n = 0; int o = 0; int p =0; int q = 0; int r = 0;
+                int i = 0; int j = 0; int k = 0; int l = 0; int m = 0; int n = 0; int o = 0; int p =0; int q = 0; int r = 0; int s = 0; int t = 0;
                 unsortedMap = new HashMap<String, Map<String, Map<Integer, HighlightColor>>>();
                 Map<String, Map<Integer, HighlightColor>> ruleMap;
                 Map<Integer, HighlightColor> colorMap;
@@ -674,6 +721,8 @@ context.put("dangerousselectorColor", DangerousHighlight);
                 Map<Integer, HighlightColor> colorMap7;
                 Map<Integer, HighlightColor> colorMap8;
                 Map<Integer, HighlightColor> colorMap9;
+                Map<Integer, HighlightColor> colorMap10;
+                Map<Integer, HighlightColor> colorMap11;
              
                 try {
                         for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()) {
@@ -719,7 +768,7 @@ context.put("dangerousselectorColor", DangerousHighlight);
                                                              k++;
                                                              colorMap2.put(line, HighlightColor.TOOSPECIFIC);
                                                             
-                                                           ruleMap.put(" "+"Too Specific Rule Number "+k+" "+parsedRule, colorMap2);
+                                                           ruleMap.put(" "+"Too Specific Rule Type I Number "+k+" "+parsedRule, colorMap2);
                                                          
                                                            
                                                           
@@ -805,6 +854,29 @@ context.put("dangerousselectorColor", DangerousHighlight);
                                                                               
                                                                              ruleMap.put(" "+"Rule with Dangerous Selector Number "+r+" "+parsedRule, colorMap9);
                                                                             
+                                                                             
+                                                                            
+                                                                             
+                                                                         }
+                                                                           
+                                                                           if(!rule.getSelectorsWithInvalidSyntax().isEmpty() && null != rule.getLocator()){
+                                                                               colorMap10 = new HashMap<Integer, HighlightColor>();
+                                                                               s++;
+                                                                               colorMap10.put(line, HighlightColor.INVALIDSYNTAX);
+                                                                              
+                                                                             ruleMap.put(" "+"Selector with Invalid Syntax Number "+s+" "+parsedRule, colorMap10);
+                                                                            
+                                                                             
+                                                                            
+                                                                             
+                                                                         }
+                                                                           if(!rule.getTooSpecificSelectors2().isEmpty() && null != rule.getLocator()){
+                                                                               colorMap11 = new HashMap<Integer, HighlightColor>();
+                                                                               t++;
+                                                                               colorMap11.put(line, HighlightColor.TOOSPECIFIC2);
+                                                                              
+                                                                             ruleMap.put(" "+"Too Specific Rule Type II Number "+t+" "+parsedRule, colorMap11);
+                                                                           
                                                                              
                                                                             
                                                                              

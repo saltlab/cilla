@@ -225,14 +225,12 @@ List<MSelector> tooSpecific = new ArrayList<MSelector>();
         
         int d = Integer.parseInt(s.substring(10, 11));
         
-        String e = s.substring(1, 2);
-        String f = s.substring(4, 5);
-        String g = s.substring(7, 8);
-        String h = s.substring(10, 11);
-        int i = Integer.parseInt(e+f+g+h);
+       
                                                 
-                                                if(a+b+c+d>5 && !selector.isIgnore()){
+                                                if(a+b+c+d> 4 && !selector.isIgnore()){
                                                         tooSpecific.add(selector);
+                                                        System.out.println("selec"+selector.getCssSelector());
+                                                        System.out.println("a:"+a+"b:"+b+"c:"+c+"d:"+d);
                                                 }
                                             //    if( i> 122 && !selector.isIgnore()){
                                              //           tooSpecific.add(selector);
@@ -243,6 +241,36 @@ List<MSelector> tooSpecific = new ArrayList<MSelector>();
                                         
                                 
                         return tooSpecific;
+                }
+
+public List<MSelector> getTooSpecificSelectors2(){
+SpecificityCalculator sc = new SpecificityCalculator();
+
+List<MSelector> tooSpecific2 = new ArrayList<MSelector>();
+                        
+                for (MSelector selector : this.selectors){
+                        sc.reset();
+
+        String s = sc.getSpecificity(selector.getCssSelector()).toString();
+        int a = Integer.parseInt(s.substring(1, 2));
+      
+        int b = Integer.parseInt(s.substring(4, 5));
+     
+        int c = Integer.parseInt(s.substring(7, 8));
+        
+        int d = Integer.parseInt(s.substring(10, 11));
+        
+       
+                                                
+                                                if((b> 1 || c> 2 || d> 3) && !selector.isIgnore()){
+                                                        tooSpecific2.add(selector);
+                                                }
+                                            
+                                
+                                        }
+                                        
+                                
+                        return tooSpecific2;
                 }
                         
 public List<MSelector> getLazyRules(){
@@ -462,6 +490,57 @@ public List<MSelector> getDangerousSelectors(){
     	
     }
 return dangerousSelectors;	
+}
+
+public List<MSelector> getSelectorsWithInvalidSyntax(){
+	
+	List<MSelector> invalidSyntaxSelectors = new ArrayList<MSelector>();
+	
+	for (MSelector selector : this.selectors){
+		
+		//String s = selector.toString();
+		 String[] parts = selector.getCssSelector().split(" ");
+		 for (String part : parts) {
+			 int numIdSign = 0;
+				int numClassSign = 0; //dot
+			 for(int i = 0; i< part.length(); i++){
+				 if(part.charAt(i) == '#'){
+					 numIdSign++;
+					
+				 }
+				 if(part.charAt(i) == '.'){
+					 numClassSign++;
+					 
+				 }
+			 }
+			 // There must be space between 2 classes, 2 IDs or one class and one ID. 
+			 if(numIdSign > 1 || numClassSign > 1 || numIdSign+numClassSign >1){
+				 invalidSyntaxSelectors.add(selector);
+				 continue;
+			 }
+			 
+		 }
+		 //There must be no space between an element and a class
+		 if(parts.length > 1){
+		 for(int i = 1; i< parts.length; i++){
+			 if(!parts[i].isEmpty()){
+			 if(parts[i].charAt(0) == '.' && !parts[i-1].isEmpty() && (!parts[i-1].contains(".") || !parts[i-1].contains("#"))){
+				 invalidSyntaxSelectors.add(selector);
+				 continue;
+			 }
+			 //There must be no space between an element and an ID
+			 if(parts[i].charAt(0) == '#' && !parts[i-1].isEmpty() && (!parts[i-1].contains(".") || !parts[i-1].contains("#"))){
+				 invalidSyntaxSelectors.add(selector);
+				 continue;
+			 }
+			 }
+		 }
+		 }
+	
+	}
+	
+	return invalidSyntaxSelectors;
+	
 }
 
 }

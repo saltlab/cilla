@@ -91,7 +91,7 @@ public class SpecificityCalculator {
         public Specificity getSpecificity(String selector) {
                 
                 //me
-               
+               /*
                 int count1 = 0; //class
                 int count2 = 0; //id
                 
@@ -115,7 +115,8 @@ public class SpecificityCalculator {
                                 }
                                 this.addClassSelector();
                                 count1++;
-                        } else {
+                        } 
+                        else {
                         
                                 if (part.contains("#")) {
                                         String[] temp = part.split("\\#");
@@ -150,12 +151,16 @@ public class SpecificityCalculator {
                         }
                 return getSpecificity();
         }
-        
-        	/*
+        */
+        	
                 //Mesbah
                 
                 String[] parts = selector.split(" ");
                 for (String part : parts) {
+                	 if(part.isEmpty() || part.length() == 0){
+                         continue;
+                 }
+                 else{
                         // CLASS: DIV.news or .news
                         if (part.contains(".")) {
 
@@ -179,10 +184,12 @@ public class SpecificityCalculator {
                                         this.addElementSelector();
                                 }
                         }
+                
+                }
                 }
                 return getSpecificity();
                 
         }
         
-*/
+
 }

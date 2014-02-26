@@ -23,7 +23,7 @@ public class CillaRunner {
         private static final int waitAfterReload = 400;
 
 //private static final String INDEX = "http://www.ece.ubc.ca/~amesbah/exp";
-//private static final String INDEX = "http://www.google.com";
+private static final String INDEX = "http://www.facebook.com";
         
      
         
@@ -35,7 +35,7 @@ public static String b;
     	
     	
     	
-       
+      /*
                 String[] urlArray = new String[100];
                         urlArray = GetUrls.getArray("src//main//resources//WebsitesUnderStudy.txt", 10);
                         for (int i = 0 ; i < 20; i++) {
@@ -44,12 +44,12 @@ public static String b;
                                
                 
                                 b = urlArray[i].replaceAll("http://", "");
-     
-    // b = INDEX.replaceAll("http://", "");
+    */
+     b = INDEX.replaceAll("http://", "");
            
 
-   // CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(INDEX);
-CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(urlArray[i]);
+   CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(INDEX);
+//CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(urlArray[i]);
 
                 builder.crawlRules().insertRandomDataInInputForms(false);
 
@@ -74,12 +74,12 @@ builder.setMaximumStates(50);
                 builder.setBrowserConfig(new BrowserConfiguration(BrowserType.firefox, 1));
 
                 builder.addPlugin(new CillaPlugin());
-            	
+                
                 CrawljaxRunner crawljax = new CrawljaxRunner(builder.build());
                 crawljax.call();
              
         }
-}
+//}
     
     private static void getName(String URLstring) {
             String initialization = "", resticting = "";

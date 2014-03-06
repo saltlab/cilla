@@ -194,7 +194,7 @@ template = getTemplateAsString(statisticsTemplate.getName());
 
 
 
-String table = "table"+"tr"+"td"+"Measuring Number of Properties in One CSS Rule"+"\n"+"\td"+"td"+""+"\td"+"\tr"+"tr"+"td"+"Min"+"\n"+"\td"+"td"+(CillaPlugin.min)+
+String table = "table"+"tr"+"td"+"Measuring Number of Properties of One CSS Selector"+"\n"+"\td"+"td"+""+"\td"+"\tr"+"tr"+"td"+"Min"+"\n"+"\td"+"td"+(CillaPlugin.min)+
 "\n"+"\td"+"\tr"+"tr"+"td"+"Mean"+"\n"+"\td"+"td"+(double)Math.round((CillaPlugin.Mean) * 100) / 100+
 "\n"+"\td"+"\tr"+"tr"+"td"+"Median"+"\n"+"\td"+"td"+(CillaPlugin.Median)+
 "\n"+"\td"+"\tr"+"tr"+"td"+"Max"+"\n"+"\td"+"td"+(CillaPlugin.max)+

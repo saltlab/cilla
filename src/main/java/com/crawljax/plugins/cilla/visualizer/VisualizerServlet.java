@@ -82,14 +82,14 @@ public class VisualizerServlet extends VelocityViewServlet {
         private final String UnmatchedHighlight = "#ccffff";
         private final String IneffectiveHighlight = "#ffcccc";
         private final String EffectiveHighlight = "#ccffcc";
-private final String LazyHighlight = "FFFF33";
+//private final String LazyHighlight = "FFFF33";
 private final String LongHighlight = "FF33FF";
 private final String ToospecificHighlight = "CCFF00";
 private final String ToospecificHighlight2 = "FF9933";
 private final String EmptycatHighlight = "CC9900";
-private final String UndstyHighlight = "99FF00";
+//private final String UndstyHighlight = "99FF00";
 private final String IdplusHighlight = "6699CC";
-private final String ReactimpoHighlight = "#B8B8B8 ";
+//private final String ReactimpoHighlight = "#B8B8B8 ";
 private final String InappfontHighlight = "#00FFFF";
 private final String EmbeddedHighlight = "#00FF00";
 private final String DangerousHighlight = "FF6699";
@@ -124,14 +124,14 @@ private final String NoneValueHighlight = "990033";
                 highlightMap.put(HighlightColor.UNMATCHED, UnmatchedHighlight);
                 highlightMap.put(HighlightColor.INEFFECTIVE, IneffectiveHighlight);
                 highlightMap.put(HighlightColor.EFFECTIVE, EffectiveHighlight);
-highlightMap.put(HighlightColor.LAZY, LazyHighlight);
+//highlightMap.put(HighlightColor.LAZY, LazyHighlight);
 highlightMap.put(HighlightColor.LONG, LongHighlight);
 highlightMap.put(HighlightColor.TOOSPECIFIC, ToospecificHighlight);
 highlightMap.put(HighlightColor.TOOSPECIFIC2, ToospecificHighlight2);
 highlightMap.put(HighlightColor.EMPTYCAT, EmptycatHighlight);
-highlightMap.put(HighlightColor.UNDSTY, UndstyHighlight);
+//highlightMap.put(HighlightColor.UNDSTY, UndstyHighlight);
 highlightMap.put(HighlightColor.IDPLUS, IdplusHighlight);
-highlightMap.put(HighlightColor.REACTIMPO, ReactimpoHighlight);
+//highlightMap.put(HighlightColor.REACTIMPO, ReactimpoHighlight);
 highlightMap.put(HighlightColor.INAPPFONT, InappfontHighlight);
 highlightMap.put(HighlightColor.EMBEDDED, EmbeddedHighlight);
 highlightMap.put(HighlightColor.DANGEROUS, DangerousHighlight);
@@ -373,7 +373,7 @@ noneValue = new StringBuffer();
                                      }
                                                                         
                                 }
-        
+        /*
 List<MSelector> tooLazyy = rule.getLazyRules();
 
                  if(tooLazyy.size()>0){
@@ -396,7 +396,7 @@ List<MSelector> tooLazyy = rule.getLazyRules();
                                                  }
                                                                         
                                           }
-                 
+                 */
                  
 
 List<MSelector> tooLongg = rule.getTooLongRules();
@@ -431,7 +431,7 @@ List<MSelector> empcat = rule.getEmptyCatch();
                                                        }
                                                                         
                                              }
-
+/*
 List<MSelector> undsty = rule.getEmptyCatch();
                        if(undsty.size()>0){
                          for (MSelector sel : undsty){
@@ -448,7 +448,7 @@ List<MSelector> undsty = rule.getEmptyCatch();
                                                                         }
                                                                         
                                                                 }
-
+*/
 List<MSelector> IDWithh = rule.getIdWithClassOrElement();
               if(IDWithh.size()>0){
                         for (MSelector sel : IDWithh){
@@ -465,7 +465,7 @@ List<MSelector> IDWithh = rule.getIdWithClassOrElement();
                                                                         }
                                                                         
                                                                 }
-
+/*
 List<MSelector> reactive = rule.getReactiveImportant();
                    if(reactive.size()>0){
                        for (MSelector sel : reactive){
@@ -482,7 +482,7 @@ List<MSelector> reactive = rule.getReactiveImportant();
                                                                         }
                                                                         
                                                                 }
-              
+              */
 List<MSelector> inappfont = rule.checkFontSize();
                      if(inappfont.size()>0){
                                        for (MSelector sel : inappfont){
@@ -570,30 +570,30 @@ if(dangSelectorss.size()>0){
 List<MSelector> invalidSyntaxSelectors = rule.getSelectorsWithInvalidSyntax();
 
 if(invalidSyntaxSelectors.size()>0){
-	
-	 for (MSelector sel : invalidSyntaxSelectors){
-		 invalidSyntax.append("CSS rule: " + rule.getRule().getCssText()
-	                          + "<br>");
-		 invalidSyntax.append("at line: "
-	               + rule.getLocator().getLineNumber() + "<br>");
-		 invalidSyntax.append(" Selector: " + sel.getCssSelector()
-	                         + "<br><br>");
-	 }
-	}
+
+for (MSelector sel : invalidSyntaxSelectors){
+invalidSyntax.append("CSS rule: " + rule.getRule().getCssText()
++ "<br>");
+invalidSyntax.append("at line: "
++ rule.getLocator().getLineNumber() + "<br>");
+invalidSyntax.append(" Selector: " + sel.getCssSelector()
++ "<br><br>");
+}
+}
 
 List<MSelector> noneValueSelectors = rule.getUndoingStyleNone();
 
 if(noneValueSelectors.size()>0){
-	
-	 for (MSelector sel : noneValueSelectors){
-		 noneValue.append("CSS rule: " + rule.getRule().getCssText()
-	                          + "<br>");
-		 noneValue.append("at line: "
-	               + rule.getLocator().getLineNumber() + "<br>");
-		 noneValue.append(" Selector: " + sel.getCssSelector()
-	                         + "<br><br>");
-	 }
-	}
+
+for (MSelector sel : noneValueSelectors){
+noneValue.append("CSS rule: " + rule.getRule().getCssText()
++ "<br>");
+noneValue.append("at line: "
++ rule.getLocator().getLineNumber() + "<br>");
+noneValue.append(" Selector: " + sel.getCssSelector()
++ "<br><br>");
+}
+}
                         } // for rules
                         
 
@@ -631,18 +631,18 @@ String tooSpecificStr = tooSpecific.toString().replaceAll("#", "&#35");
 tooSpecificStr = tooSpecificStr.replaceAll("\\*", "&#42");
 String tooSpecificStr2 = tooSpecific2.toString().replaceAll("#", "&#35");
 tooSpecificStr2 = tooSpecificStr2.replaceAll("\\*", "&#42");
-String tooLazyStr = tooLazy.toString().replaceAll("#", "&#35");
-tooLazyStr = tooLazyStr.replaceAll("\\*", "&#42");
+//String tooLazyStr = tooLazy.toString().replaceAll("#", "&#35");
+//tooLazyStr = tooLazyStr.replaceAll("\\*", "&#42");
 String tooLongStr = tooLong.toString().replaceAll("#", "&#35");
 tooLongStr = tooLongStr.replaceAll("\\*", "&#42");
 String empCatStr = emptyCatch.toString().replaceAll("#", "&#35");
 empCatStr = empCatStr.replaceAll("\\*", "&#42");
-String undoStr = undoingStyle.toString().replaceAll("#", "&#35");
-undoStr = undoStr.replaceAll("\\*", "&#42");
+//String undoStr = undoingStyle.toString().replaceAll("#", "&#35");
+//undoStr = undoStr.replaceAll("\\*", "&#42");
 String idWithStr = idWithClassOrElement.toString().replaceAll("#", "&#35");
 idWithStr = idWithStr.replaceAll("\\*", "&#42");
-String reactiveStr = reactiveImportant.toString().replaceAll("#", "&#35");
-reactiveStr = reactiveStr.replaceAll("\\*", "&#42");
+//String reactiveStr = reactiveImportant.toString().replaceAll("#", "&#35");
+//reactiveStr = reactiveStr.replaceAll("\\*", "&#42");
 String inappFontStr = inappFontSize.toString().replaceAll("#", "&#35");
 inappFontStr = inappFontStr.replaceAll("\\*", "&#42");
 String embeddedRulesStr = embeddedRules.toString().replaceAll("#", "&#35");
@@ -662,17 +662,17 @@ noneValueStr = noneValueStr.replaceAll("\\*", "&#42");
       // prints CSS smells in css analysis tab, sorted.
 analysisMap.put("CSS Rules with Too Specific Selectors Type I", tooSpecificStr);
 analysisMap.put("CSS Rules with Too Specific Selectors Type II", tooSpecificStr2);
-analysisMap.put("Lazy CSS Rules", tooLazyStr);
-analysisMap.put("Too Long CSS Rules", tooLongStr);
-analysisMap.put("CSS Rules with Empty Catch", empCatStr);
-analysisMap.put("CSS Rules with Overriding Properties", undoStr);
+//analysisMap.put("Lazy CSS Rules", tooLazyStr);
+analysisMap.put("Too Long", tooLongStr);
+analysisMap.put("Empty Catch", empCatStr);
+//analysisMap.put("CSS Rules with Overriding Properties", undoStr);
 analysisMap.put("Selectors with ID and at Least One Class or Element", idWithStr);
-analysisMap.put("Rules with !important in their Declaration", reactiveStr);
-analysisMap.put("Rules with Inappropriate Font-size Value", inappFontStr);
+//analysisMap.put("Rules with !important in their Declaration", reactiveStr);
+analysisMap.put("Selectors with Inappropriate Font-size Value", inappFontStr);
 analysisMap.put("Embedded Rules", embeddedRulesStr);
 analysisMap.put("Rules with Dangerous Selectors", dangSelectorsStr);
 analysisMap.put("Selectors with Invalid Syntax", invalidSyntaxStr);
-analysisMap.put("Rules with None Value", noneValueStr);
+analysisMap.put("Undoing Style", noneValueStr);
 
                         fileMap.put(filename, analysisMap);
 
@@ -698,14 +698,14 @@ analysisMap.put("Rules with None Value", noneValueStr);
                 context.put("unmatchedColor", UnmatchedHighlight);
                 context.put("ineffectiveColor", IneffectiveHighlight);
                 context.put("effectiveColor", EffectiveHighlight);
-context.put("lazyColor", LazyHighlight);
+//context.put("lazyColor", LazyHighlight);
 context.put("longColor", LongHighlight);
 context.put("toospecificColor", ToospecificHighlight);
 context.put("toospecificColor2", ToospecificHighlight2);
 context.put("emptycatColor", EmptycatHighlight);
-context.put("undstyColor", UndstyHighlight);
+//context.put("undstyColor", UndstyHighlight);
 context.put("idplusColor", IdplusHighlight);
-context.put("reactimpoColor", ReactimpoHighlight);
+//context.put("reactimpoColor", ReactimpoHighlight);
 context.put("inappfontColor", InappfontHighlight);
 context.put("embeddedruleColor", EmbeddedHighlight);
 context.put("dangerousselectorColor", DangerousHighlight);
@@ -761,7 +761,7 @@ context.put("noneValueColor", NoneValueHighlight);
                                                 parsedRule = rule.getRule().getCssText();
                                                 colorMap.put(line, HighlightColor.NONE);
                                                 ruleMap.put(parsedRule, colorMap);
-                                               
+                                               /*
                                                if(!rule.getLazyRules().isEmpty() && null != rule.getLocator()){
                                                      colorMap = new HashMap<Integer, HighlightColor>();
                                                     
@@ -773,7 +773,7 @@ context.put("noneValueColor", NoneValueHighlight);
                                                    
                                                    
                                                }
-                                                
+                                                */
                                                    if(!rule.getTooLongRules().isEmpty() && null != rule.getLocator()){
                                                          colorMap1 = new HashMap<Integer, HighlightColor>();
                                                          j++;
@@ -809,7 +809,7 @@ context.put("noneValueColor", NoneValueHighlight);
                                                                
                                                                
                                                            }
-                                                               
+                                                               /*
                                                                if(!rule.getUndoingStyle().isEmpty() && null != rule.getLocator()){
                                                                      colorMap4 = new HashMap<Integer, HighlightColor>();
                                                                      m++;
@@ -821,7 +821,7 @@ context.put("noneValueColor", NoneValueHighlight);
                                                                    
                                                                   
                                                                }
-                                                                   
+                                                                 */  
                                                                    if(!rule.getIdWithClassOrElement().isEmpty() && null != rule.getLocator()){
                                                                          colorMap5 = new HashMap<Integer, HighlightColor>();
                                                                          n++;
@@ -833,7 +833,7 @@ context.put("noneValueColor", NoneValueHighlight);
                                                                       
                                                                        
                                                                    }
-                                                                       
+                                                                       /*
                                                                        if(!rule.getReactiveImportant().isEmpty() && null != rule.getLocator()){
                                                                              colorMap6 = new HashMap<Integer, HighlightColor>();
                                                                              o++;
@@ -845,7 +845,7 @@ context.put("noneValueColor", NoneValueHighlight);
                                                                            
                                                                            
                                                                        }
-                                                                           
+                                                                          */ 
                                                                            if(!rule.checkFontSize().isEmpty() && null != rule.getLocator()){
                                                                                  colorMap7 = new HashMap<Integer, HighlightColor>();
                                                                                  p++;

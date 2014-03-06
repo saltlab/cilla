@@ -719,7 +719,8 @@ visualFilename = new String[cssRules.entrySet().size()+1];
               }
              outputNum1++;
       }
-     
+      outputNum++;
+/*     
       Runtime rt = Runtime.getRuntime();
       
       try {
@@ -802,7 +803,7 @@ outputNum++;
               // TODO Auto-generated catch block
               e.printStackTrace();
       }
-      
+  */    
 }
 
 public void getCssCssReport(){
@@ -928,7 +929,7 @@ try {
 }
 abstractnessFactor();
 
-//writecssintoFileCssLint();
+writecssintoFileCssLint();
 //getCssCssReport();
                 StringBuffer output = new StringBuffer();
                 StringBuffer bufferUnused = new StringBuffer();
@@ -947,18 +948,18 @@ StringBuffer tooSpecific = new StringBuffer();
 int toospec = getTooSpecificSelectors(tooSpecific);
 StringBuffer tooSpecific2 = new StringBuffer();
 int toospec2 = getTooSpecificSelectors2(tooSpecific2);
-StringBuffer tooLazy = new StringBuffer();
-int toolaz = getLazyRules(tooLazy);
+//StringBuffer tooLazy = new StringBuffer();
+//int toolaz = getLazyRules(tooLazy);
 StringBuffer tooLong = new StringBuffer();
 int toolog = getTooLongRules(tooLong);
 StringBuffer emptyCatch = new StringBuffer();
 int emptycat = getEmptyCatch(emptyCatch);
-StringBuffer undoingStyle = new StringBuffer();
-int undostyle = getUndoingStyle(undoingStyle);
+//StringBuffer undoingStyle = new StringBuffer();
+//int undostyle = getUndoingStyle(undoingStyle);
 StringBuffer idWithClassOrElement = new StringBuffer();
 int idwith = getIdWithClassOrElement(idWithClassOrElement);
-StringBuffer reactiveImportant = new StringBuffer();
-int impo = getReactiveImportant(reactiveImportant);
+//StringBuffer reactiveImportant = new StringBuffer();
+//int impo = getReactiveImportant(reactiveImportant);
 StringBuffer inappFontSize = new StringBuffer();
 int inappfo = getInnappFontSize(inappFontSize);
 StringBuffer embeddedRules = new StringBuffer();
@@ -1008,19 +1009,19 @@ int undoingWithNone = getUndoingStyleNone(undoNone);
                 
 // prints number of css smells in the summary tab
 output.append("CSS SMELLS: " + "\n");
-output.append(" -> Rules with Too Specific Selectors Type I: "+ toospec+ "\n");
-output.append(" -> Rules with Too Specific Selectors Type II: "+ toospec2+ "\n");
-output.append(" -> Lazy Rules: "+ toolaz+ "\n");
-output.append(" -> Too Long Rules: "+ toolog+ "\n");
-output.append(" -> Rules with Empty Catch: "+ emptycat+ "\n");
-output.append(" -> Overriding Properties: "+ undostyle+ "\n");
+output.append(" -> Too Specific Selectors Type I: "+ toospec+ "\n");
+output.append(" -> Too Specific Selectors Type II: "+ toospec2+ "\n");
+//output.append(" -> Lazy Rules: "+ toolaz+ "\n");
+output.append(" -> Selectors with Too Many Properties(Too Long): "+ toolog+ "\n");
+output.append(" -> Empty Catch: "+ emptycat+ "\n");
+//output.append(" -> Overriding Properties: "+ undostyle+ "\n");
 output.append(" -> Selectors with ID and at least one class or element: "+ idwith + "\n");
-output.append(" -> Total Number of !important used in the code(Reactiveness): "+ impo + "\n");
+//output.append(" -> Total Number of !important used in the code(Reactiveness): "+ impo + "\n");
 output.append(" -> Selectors with Inappropriate Font-size Value for their Properties: "+ inappfo + "\n");
 output.append(" -> Embedded Rules: "+ countEmbeddedRules +"\n");
 output.append(" -> Rules with Dangerous Selectors: "+ danSel +"\n");
 output.append(" -> Rules with Invalid Selectors: "+ invalidSyn +"\n");
-output.append(" -> Rules with None Value: "+ undoingWithNone +"\n");
+output.append(" -> Selectors with Value Equal to None or Zero for their Properties: "+ undoingWithNone +"\n");
 
 
                 /*
@@ -1044,12 +1045,12 @@ output.append(" -> Rules with None Value: "+ undoingWithNone +"\n");
                 
 output.append(tooSpecific.toString());
 output.append(tooSpecific2.toString());
-output.append(tooLazy.toString());
+//output.append(tooLazy.toString());
 output.append(tooLong.toString());
 output.append(emptyCatch.toString());
-output.append(undoingStyle.toString());
+//output.append(undoingStyle.toString());
 output.append(idWithClassOrElement.toString());
-output.append(reactiveImportant.toString());
+//output.append(reactiveImportant.toString());
 output.append(inappFontSize.toString());
 output.append(embeddedRules.toString());
 output.append(dangerousSelectors.toString());
@@ -1771,3 +1772,4 @@ output.append(undoNone.toString());
              }
 
 }
+

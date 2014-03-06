@@ -114,26 +114,22 @@
             <td style="background-color: $unmatchedColor"><p> Unmatched </p></td>
             <td style="background-color: $ineffectiveColor"><p> Matched & Ineffective </p></td>
             <td style="background-color: $effectiveColor"><p> Matched & Effective </p></td>
-             <td style="background-color: $lazyColor"><p> Lazy </p></td>
+            <td style="background-color: $dangerousselectorColor"><p> Rules with Dangerous Selectors </p></td>
              <td style="background-color: $longColor"><p> Long </p></td>
              <td style="background-color: $toospecificColor"><p> Too Specific Type I </p></td>
              </tr>
              <tr>
              <td style="background-color: $toospecificColor2"><p> Too Specific Type II </p></td>
              <td style="background-color: $emptycatColor"><p> Empty Catch </p></td>
-             <td style="background-color: $undstyColor"><p> Undoing Style </p></td>
+            <td style="background-color: $invalidSyntaxSelectorColor"><p> Selectors with Invalid Syntax </p></td>
              <td style="background-color: $idplusColor"><p> ID Plus </p></td>
-             <td style="background-color: $reactimpoColor"><p> Reactive Important </p></td>
+            <td style="background-color: $noneValueColor"><p> Selectors with "None" Value (Undoing Style) </p></td>
              <td style="background-color: $inappfontColor"><p> Inappropriate Font Size </p></td>
              <td style="background-color: $embeddedruleColor"><p> Embedded Rule </p></td>
              
              
         </tr>
-        <tr>
-        <td style="background-color: $dangerousselectorColor"><p> Rules with Dangerous Selectors </p></td>
-        <td style="background-color: $invalidSyntaxSelectorColor"><p> Selectors with Invalid Syntax </p></td>
-        <td style="background-color: $noneValueColor"><p> Selectors with "None" Value (Undoing Style) </p></td>
-        </tr>
+        
         </table>
         <br>
         </div>
@@ -166,7 +162,7 @@
         </div>
         </div>
     </div>
-</div> 
+</div>
 </div>
 
  

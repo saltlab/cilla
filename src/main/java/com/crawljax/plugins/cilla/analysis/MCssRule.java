@@ -22,7 +22,7 @@ import com.steadystate.css.userdata.UserDataConstants;
 
 public class MCssRule {
 
-	
+
         private CSSRule rule;
        private List<MSelector> selectors;
         
@@ -33,17 +33,17 @@ public class MCssRule {
          ":disabled", ":checked", ":indeterminate"));
 
         /*
-         * ":nth-child", ":nth-last-child", ":nth-of-type", ":nth-last-of-type", ":first-child",
-         * ":last-child", ":first-of-type", ":last-of-type", ":only-child", ":only-of-type", ":empty",
-         * ":contains", ":not", ":before", ":after", ":first-line", ":first-letter", ":selection")
-         */
+* ":nth-child", ":nth-last-child", ":nth-of-type", ":nth-last-of-type", ":first-child",
+* ":last-child", ":first-of-type", ":last-of-type", ":only-child", ":only-of-type", ":empty",
+* ":contains", ":not", ":before", ":after", ":first-line", ":first-letter", ":selection")
+*/
 
         /**
-         * Constructor.
-         *
-         * @param rule
-         * the CSS rule.
-         */
+* Constructor.
+*
+* @param rule
+* the CSS rule.
+*/
         
         
         public MCssRule(CSSRule rule) {
@@ -107,8 +107,8 @@ public class MCssRule {
         }
 
         /**
-         * @return the CSS Style declaration of this rule.
-         */
+* @return the CSS Style declaration of this rule.
+*/
         public CSSStyleDeclaration getStyleDeclaration() {
                 CSSStyleDeclaration styleDeclaration = null;
 
@@ -157,8 +157,8 @@ public class MCssRule {
         }
 
         /**
-         * @return the selectors that are not matched (not associated DOM elements have been detected).
-         */
+* @return the selectors that are not matched (not associated DOM elements have been detected).
+*/
         public List<MSelector> getUnmatchedSelectors() {
                 List<MSelector> unmatched = new ArrayList<MSelector>();
 
@@ -173,8 +173,8 @@ public class MCssRule {
         }
 
         /**
-         * @return the selectors that are effective (associated DOM elements have been detected).
-         */
+* @return the selectors that are effective (associated DOM elements have been detected).
+*/
         public List<MSelector> getMatchedSelectors() {
                 List<MSelector> effective = new ArrayList<MSelector>();
 
@@ -189,8 +189,8 @@ public class MCssRule {
         }
 
         /**
-         * @return the Locator of this rule (line number, column).
-         */
+* @return the Locator of this rule (line number, column).
+*/
         public Locator getLocator() {
                 if (this.rule instanceof CSSStyleRuleImpl) {
                         return (Locator) ((CSSStyleRuleImpl) this.rule)
@@ -231,10 +231,10 @@ List<MSelector> tooSpecific = new ArrayList<MSelector>();
                                                         tooSpecific.add(selector);
                                                         
                                                 }
-                                            //    if( i> 122 && !selector.isIgnore()){
-                                             //           tooSpecific.add(selector);
+                                            // if( i> 122 && !selector.isIgnore()){
+                                             // tooSpecific.add(selector);
                                                         
-                                //                }
+                                // }
                                 
                                         }
                                         
@@ -280,7 +280,7 @@ List<MSelector> tooLazy = new ArrayList<MSelector>();
                         for (MSelector selector : this.selectors){
                                                 int z = selector.getProperties().size();
                                                 
-                                                if(z < 2 && !selector.isIgnore()){
+                                                if(z ==1 && !selector.isIgnore()){
                                         
                                                         tooLazy.add(selector);
                                                 }
@@ -338,7 +338,7 @@ List<MSelector> undoing = new ArrayList<MSelector>();
                 for (MSelector selector : this.selectors){
                                                 
                                                 CSSStyleDeclaration styleDeclaration = null;
-                                        //        List<MProperty> properties = new ArrayList<MProperty>();
+                                        // List<MProperty> properties = new ArrayList<MProperty>();
 
                                                 if (this.rule instanceof CSSStyleRule) {
                                                         CSSStyleRule styleRule = (CSSStyleRule) rule;
@@ -443,7 +443,7 @@ List<MSelector> idWith = new ArrayList<MSelector>();
                                         sc.reset();
 
                                                 String s = sc.getSpecificity(selector.getCssSelector()).toString();
-                                        //        int a = Integer.parseInt(s.substring(1, 2));
+                                        // int a = Integer.parseInt(s.substring(1, 2));
                                                 int b = Integer.parseInt(s.substring(4, 5));
                                                 int c = Integer.parseInt(s.substring(7, 8));
                                                 int d = Integer.parseInt(s.substring(10, 11));
@@ -471,7 +471,7 @@ List<MSelector> reactiveImportant = new ArrayList<MSelector>();
                 for (MSelector selector : this.selectors){
                                                 
                                                 CSSStyleDeclaration styleDeclaration = null;
-                                        //        List<MProperty> properties = new ArrayList<MProperty>();
+                                        // List<MProperty> properties = new ArrayList<MProperty>();
 
                                                 if (this.rule instanceof CSSStyleRule) {
                                                         CSSStyleRule styleRule = (CSSStyleRule) rule;
@@ -482,7 +482,7 @@ List<MSelector> reactiveImportant = new ArrayList<MSelector>();
                                                                 String value = styleDeclaration.getPropertyCSSValue(property).getCssText();
                                                                 if(property.contains("!important") || value.contains("!important")){
                                                                         
-                                                                        reactiveImportant.add(selector);        
+                                                                        reactiveImportant.add(selector);
                                                                         }
                                                                 
                                                                 
@@ -500,11 +500,11 @@ List<MSelector> reactiveImportant = new ArrayList<MSelector>();
                 }
 
 public List<MSelector> getDangerousSelectors(){
-	SpecificityCalculator sc = new SpecificityCalculator();
-	List<MSelector> dangerousSelectors = new ArrayList<MSelector>();
+SpecificityCalculator sc = new SpecificityCalculator();
+List<MSelector> dangerousSelectors = new ArrayList<MSelector>();
     
     for (MSelector selector : this.selectors){
-    	sc.reset();
+     sc.reset();
 
         String s = sc.getSpecificity(selector.getCssSelector()).toString();
         
@@ -512,66 +512,66 @@ public List<MSelector> getDangerousSelectors(){
         int c = Integer.parseInt(s.substring(7, 8));
         int d = Integer.parseInt(s.substring(10, 11));
         if(b==0 && c==0 && d == 1){
-        	if(selector.toString().contains("div") || selector.toString().contains("header") || selector.toString().contains("aside") || selector.toString().contains("ul") || selector.toString().contains("body")|| selector.toString().contains("title")){
-        		dangerousSelectors.add(selector);
-        	}
-        	
+         if(selector.toString().contains("div") || selector.toString().contains("header") || selector.toString().contains("aside") || selector.toString().contains("ul") || selector.toString().contains("body")|| selector.toString().contains("title")){
+         dangerousSelectors.add(selector);
+         }
+        
         }
         
-    	
+    
     }
 return dangerousSelectors;	
 }
 
 public List<MSelector> getSelectorsWithInvalidSyntax(){
-	
-	List<MSelector> invalidSyntaxSelectors = new ArrayList<MSelector>();
-	
-	for (MSelector selector : this.selectors){
-		
-		//String s = selector.toString();
-		 String[] parts = selector.getCssSelector().split(" ");
-		 for (String part : parts) {
-			 int numIdSign = 0;
-				int numClassSign = 0; //dot
-			 for(int i = 0; i< part.length(); i++){
-				 if(part.charAt(i) == '#'){
-					 numIdSign++;
-					
-				 }
-				 if(part.charAt(i) == '.'){
-					 numClassSign++;
-					 
-				 }
-			 }
-			 // There must be space between 2 classes, 2 IDs or one class and one ID. 
-			 if(numIdSign > 1 || numClassSign > 1 || numIdSign+numClassSign >1){
-				 invalidSyntaxSelectors.add(selector);
-				 continue;
-			 }
-			 
-		 }
-		 //There must be no space between an element and a class
-		 if(parts.length > 1){
-		 for(int i = 1; i< parts.length; i++){
-			 if(!parts[i].isEmpty()){
-			 if(parts[i].charAt(0) == '.' && !parts[i-1].isEmpty() && (!parts[i-1].contains(".") || !parts[i-1].contains("#"))){
-				 invalidSyntaxSelectors.add(selector);
-				 continue;
-			 }
-			 //There must be no space between an element and an ID
-			 if(parts[i].charAt(0) == '#' && !parts[i-1].isEmpty() && (!parts[i-1].contains(".") || !parts[i-1].contains("#"))){
-				 invalidSyntaxSelectors.add(selector);
-				 continue;
-			 }
-			 }
-		 }
-		 }
-	
-	}
-	
-	return invalidSyntaxSelectors;
-	
+
+List<MSelector> invalidSyntaxSelectors = new ArrayList<MSelector>();
+
+for (MSelector selector : this.selectors){
+
+//String s = selector.toString();
+String[] parts = selector.getCssSelector().split(" ");
+for (String part : parts) {
+int numIdSign = 0;
+int numClassSign = 0; //dot
+for(int i = 0; i< part.length(); i++){
+if(part.charAt(i) == '#'){
+numIdSign++;
+
+}
+if(part.charAt(i) == '.'){
+numClassSign++;
+
+}
+}
+// There must be space between 2 classes, 2 IDs or one class and one ID.
+if(numIdSign > 1 || numClassSign > 1 || numIdSign+numClassSign >1){
+invalidSyntaxSelectors.add(selector);
+continue;
+}
+
+}
+//There must be no space between an element and a class
+if(parts.length > 1){
+for(int i = 1; i< parts.length; i++){
+if(!parts[i].isEmpty()){
+if(parts[i].charAt(0) == '.' && !parts[i-1].isEmpty() && (!parts[i-1].contains(".") || !parts[i-1].contains("#"))){
+invalidSyntaxSelectors.add(selector);
+continue;
+}
+//There must be no space between an element and an ID
+if(parts[i].charAt(0) == '#' && !parts[i-1].isEmpty() && (!parts[i-1].contains(".") || !parts[i-1].contains("#"))){
+invalidSyntaxSelectors.add(selector);
+continue;
+}
+}
+}
+}
+
+}
+
+return invalidSyntaxSelectors;
+
 }
 
 }

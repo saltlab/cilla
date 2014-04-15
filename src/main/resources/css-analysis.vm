@@ -126,7 +126,7 @@
             <td style="background-color: $noneValueColor"><p> Selectors with "None" Value (Undoing Style) </p></td>
              <td style="background-color: $inappfontColor"><p> Inappropriate Font Size </p></td>
              <td style="background-color: $embeddedruleColor"><p> Embedded Rule </p></td>
-             
+           <td style="background-color: $universalColor"><p> Universal Selector </p></td>
              
         </tr>
         

@@ -43,6 +43,7 @@ import com.crawljax.plugins.cilla.CillaPlugin;
 import com.crawljax.plugins.cilla.analysis.CssAnalyzer;
 import com.crawljax.plugins.cilla.analysis.ElementWithClass;
 import com.crawljax.plugins.cilla.analysis.MCssRule;
+import com.crawljax.plugins.cilla.analysis.MProperty;
 import com.crawljax.plugins.cilla.analysis.MSelector;
 import com.crawljax.plugins.cilla.examples.CillaRunner;
 import com.google.common.base.Charsets;
@@ -73,7 +74,7 @@ public class VisualizerServlet extends VelocityViewServlet {
 
 
         private enum HighlightColor {
-                NONE, UNMATCHED, INEFFECTIVE, EFFECTIVE, LAZY, LONG, TOOSPECIFIC, TOOSPECIFIC2, EMPTYCAT, UNDSTY, IDPLUS, REACTIMPO, INAPPFONT, EMBEDDED, DANGEROUS, INVALIDSYNTAX, NONEVALUE
+                NONE, UNMATCHED, INEFFECTIVE, EFFECTIVE, LAZY, LONG, TOOSPECIFIC, TOOSPECIFIC2, EMPTYCAT, UNDSTY, IDPLUS, REACTIMPO, INAPPFONT, EMBEDDED, DANGEROUS, INVALIDSYNTAX, NONEVALUE, UNI
         }
 
         private Map<HighlightColor, String> highlightMap;
@@ -89,7 +90,7 @@ private final String ToospecificHighlight2 = "FF9933";
 private final String EmptycatHighlight = "CC9900";
 //private final String UndstyHighlight = "99FF00";
 private final String IdplusHighlight = "6699CC";
-//private final String ReactimpoHighlight = "#B8B8B8 ";
+private final String UniversalHighlight = "#B8B8B8 ";
 private final String InappfontHighlight = "#00FFFF";
 private final String EmbeddedHighlight = "#00FF00";
 private final String DangerousHighlight = "FF6699";
@@ -131,7 +132,7 @@ highlightMap.put(HighlightColor.TOOSPECIFIC2, ToospecificHighlight2);
 highlightMap.put(HighlightColor.EMPTYCAT, EmptycatHighlight);
 //highlightMap.put(HighlightColor.UNDSTY, UndstyHighlight);
 highlightMap.put(HighlightColor.IDPLUS, IdplusHighlight);
-//highlightMap.put(HighlightColor.REACTIMPO, ReactimpoHighlight);
+highlightMap.put(HighlightColor.UNI, UniversalHighlight);
 highlightMap.put(HighlightColor.INAPPFONT, InappfontHighlight);
 highlightMap.put(HighlightColor.EMBEDDED, EmbeddedHighlight);
 highlightMap.put(HighlightColor.DANGEROUS, DangerousHighlight);
@@ -253,17 +254,16 @@ highlightMap.put(HighlightColor.NONEVALUE, NoneValueHighlight);
                 
 StringBuffer tooSpecific;
 StringBuffer tooSpecific2;
-StringBuffer tooLazy;
 StringBuffer tooLong;
 StringBuffer emptyCatch;
-StringBuffer undoingStyle;
 StringBuffer idWithClassOrElement;
-StringBuffer reactiveImportant;
+StringBuffer universalSelector;
 StringBuffer inappFontSize;
 StringBuffer embeddedRules;
 StringBuffer dangSelectors;
 StringBuffer invalidSyntax;
 StringBuffer noneValue;
+
                 // Look through the files and format the sorted output
                 for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()) {
                        Map<String, String> analysisMap = new HashMap<String, String>();
@@ -281,12 +281,10 @@ StringBuffer noneValue;
                         
 tooSpecific = new StringBuffer();
 tooSpecific2 = new StringBuffer();
-tooLazy = new StringBuffer();
 tooLong = new StringBuffer();
 emptyCatch = new StringBuffer();
-undoingStyle = new StringBuffer();
 idWithClassOrElement = new StringBuffer();
-reactiveImportant = new StringBuffer();
+universalSelector = new StringBuffer();
 inappFontSize = new StringBuffer();
 embeddedRules = new StringBuffer();
 dangSelectors = new StringBuffer();
@@ -372,83 +370,8 @@ noneValue = new StringBuffer();
                                                                                 
                                      }
                                                                         
-                                }
-        /*
-List<MSelector> tooLazyy = rule.getLazyRules();
+                                }              
 
-                 if(tooLazyy.size()>0){
-                    for (MSelector sel : tooLazyy){
-                            
-                            
-                            
-                       tooLazy.append("CSS rule: " + rule.getRule().getCssText()
-                                  + "<br>");
-                       tooLazy.append("at line: "
-                            + rule.getLocator().getLineNumber() + "<br>");
-                       tooLazy.append(" Selector: " + sel.getCssSelector()
-                                              + "<br><br>");
-                       
-                     // tooLazy.append(String.format("<font color=green>" , rule.getRule().getCssText()));
-                      
-          // updateUnsortedMap(filename, rule.getLocator().getLineNumber(), rule
-           // .getRule().getCssText(), HighlightColor.LAZY);
-                                                                   
-                                                 }
-                                                                        
-                                          }
-                 */
-                 
-
-List<MSelector> tooLongg = rule.getTooLongRules();
-                if(tooLongg.size()>0){
-                   for (MSelector sel : tooLongg){
-                   tooLong.append("CSS rule: " + rule.getRule().getCssText()
-                        + "<br>");
-                   tooLong.append("at line: "
-                                 + rule.getLocator().getLineNumber() + "<br>");
-                   tooLong.append(" Selector: " + sel.getCssSelector()
-                                    + "<br><br>");
-                                                                                
-      //updateUnsortedMap(filename, rule.getLocator().getLineNumber(), rule
-         //.getRule().getCssText(), HighlightColor.TOOLONG);
-                                                                                
-                                                   }
-                                                                        
-                                        }
-List<MSelector> empcat = rule.getEmptyCatch();
-        if(empcat.size()>0){
-                   for (MSelector sel : empcat){
-                  emptyCatch.append("CSS rule: " + rule.getRule().getCssText()
-                                         + "<br>");
-                  emptyCatch.append("at line: "
-                       + rule.getLocator().getLineNumber() + "<br>");
-                  emptyCatch.append(" Selector: " + sel.getCssSelector()
-                                     + "<br><br>");
-                                                                                
-         // updateUnsortedMap(filename, rule.getLocator().getLineNumber(), rule
-               // .getRule().getCssText(), HighlightColor.EMPTYCATCH);
-                                                                                
-                                                       }
-                                                                        
-                                             }
-/*
-List<MSelector> undsty = rule.getEmptyCatch();
-                       if(undsty.size()>0){
-                         for (MSelector sel : undsty){
-                      emptyCatch.append("CSS rule: " + rule.getRule().getCssText()
-                                                + "<br>");
-                      emptyCatch.append("at line: "
-                                    + rule.getLocator().getLineNumber() + "<br>");
-                      emptyCatch.append(" Selector: " + sel.getCssSelector()
-                                            + "<br><br>");
-                                                                                
-          // updateUnsortedMap(filename, rule.getLocator().getLineNumber(), rule
-                    // .getRule().getCssText(), HighlightColor.OVERRIDING);
-                                                                                
-                                                                        }
-                                                                        
-                                                                }
-*/
 List<MSelector> IDWithh = rule.getIdWithClassOrElement();
               if(IDWithh.size()>0){
                         for (MSelector sel : IDWithh){
@@ -465,40 +388,27 @@ List<MSelector> IDWithh = rule.getIdWithClassOrElement();
                                                                         }
                                                                         
                                                                 }
-/*
-List<MSelector> reactive = rule.getReactiveImportant();
-                   if(reactive.size()>0){
-                       for (MSelector sel : reactive){
-                       reactiveImportant.append("CSS rule: " + rule.getRule().getCssText()
-                                                       + "<br>");
-                       
-                       reactiveImportant.append("at line: "
-                              + rule.getLocator().getLineNumber() + "<br>");
-                       reactiveImportant.append(" Selector: " + sel.getCssSelector()
-                                             + "<br><br>");
-      // updateUnsortedMap(filename, rule.getLocator().getLineNumber(), rule
-          // .getRule().getCssText(), HighlightColor.IMPORTANT);
+
+
+              List<MSelector> uniSel = rule.getUniversalSelectors();
+              if(uniSel.size()>0){
+                        for (MSelector sel : uniSel){
+              universalSelector.append("CSS rule: " + rule.getRule().getCssText()
+                                      + "<br>");
+              universalSelector.append("at line: "
+                                  + rule.getLocator().getLineNumber() + "<br>");
+              universalSelector.append(" Selector: " + sel.getCssSelector()
+                                  + "<br><br>");
+                                                                                
+           // updateUnsortedMap(filename, rule.getLocator().getLineNumber(), rule
+              // .getRule().getCssText(), HighlightColor.IDPLUS);
                                                                                 
                                                                         }
                                                                         
                                                                 }
-              */
-List<MSelector> inappfont = rule.checkFontSize();
-                     if(inappfont.size()>0){
-                                       for (MSelector sel : inappfont){
-                                     inappFontSize.append("CSS rule: " + rule.getRule().getCssText()
-                                                        + "<br>");
-                                     inappFontSize.append("at line: "
-                                          + rule.getLocator().getLineNumber() + "<br>");
-                                     inappFontSize.append(" Selector: " + sel.getCssSelector()
-                                                         + "<br><br>");
-            // updateUnsortedMap(filename, rule.getLocator().getLineNumber(), rule
-               // .getRule().getCssText(), HighlightColor.IMPORTANT);
-                                                                                
-                                                                        }
-                                                                        
-                                                               }
-                     
+
+
+                                 
                      
 if(!CillaPlugin.allEmbeddedRules.isEmpty() && CillaPlugin.allEmbeddedRules.contains(rule.getRule().toString())){
 if(rule.getLocator()!=null){
@@ -518,37 +428,7 @@ else{
 embeddedRules.append("CSS rule: " + rule.getRule().toString()
 + "<br><br>");
 }
-/*
-if(rule.getRule().toString().contains("@media")){
-embeddedRules.append("CSS rule: " + rule.getRule().toString()
-+ "<br><br>");
-if(rule.getLocator()!=null){
-embeddedRules.append("at line: "
-+ rule.getLocator().getLineNumber() + "<br><br>");
-}
-}
-else{
-if(rule.getRule().toString().contains("@import")){
-embeddedRules.append("CSS rule: " + rule.getRule().toString()
-+ "<br><br>");
-if(rule.getLocator()!=null){
-embeddedRules.append("at line: "
-+ rule.getLocator().getLineNumber() + "<br><br>");
-}
-}
-else{
-embeddedRules.append("CSS rule: " + rule.getRule().getCssText()
-+ "<br>");
-if(rule.getLocator()!=null){
-embeddedRules.append("at line: "
-+ rule.getLocator().getLineNumber() + "<br>");
-}
 
-embeddedRules.append(" Selector: " + rule.getRuleSelector().toString()
-+ "<br><br>");
-}
-}
-*/
 }
 
             
@@ -581,19 +461,131 @@ invalidSyntax.append(" Selector: " + sel.getCssSelector()
 }
 }
 
-List<MSelector> noneValueSelectors = rule.getUndoingStyleNone();
 
-if(noneValueSelectors.size()>0){
 
-for (MSelector sel : noneValueSelectors){
-noneValue.append("CSS rule: " + rule.getRule().getCssText()
-+ "<br>");
-noneValue.append("at line: "
-+ rule.getLocator().getLineNumber() + "<br>");
-noneValue.append(" Selector: " + sel.getCssSelector()
-+ "<br><br>");
+if(rule.getProperties().size()== 0 && !rule.getRule().toString().contains("@")){
+	if(rule.getLocator()!=null){
+	emptyCatch.append("CSS rule: " + rule.getRule().getCssText()
+			+ "<br>");
+			emptyCatch.append("at line: "
+			+ rule.getLocator().getLineNumber() + "<br>");
+			emptyCatch.append(" Selector: " + rule.getRuleSelector().toString()
+			+ "<br><br>");
+			}
+	else{
+		emptyCatch.append("CSS rule: " + rule.getRule().toString()
+				+ "<br><br>");
+	}
 }
+
+if(rule.getProperties().size() > 5){
+	if(rule.getLocator()!=null){
+	tooLong.append("CSS rule: " + rule.getRule().getCssText()
+			+ "<br>");
+			tooLong.append("at line: "
+			+ rule.getLocator().getLineNumber() + "<br>");
+			tooLong.append(" Selector: " + rule.getRuleSelector().toString()
+			+ "<br><br>");
+			}
+	else{
+		tooLong.append("CSS rule: " + rule.getRule().toString()
+				+ "<br><br>");
+	}
 }
+
+List<MProperty> totalProperties1 = new ArrayList<MProperty>();
+totalProperties1 = rule.getProperties();
+/*
+List<MProperty> inappropriateFontSizeProperties1 = new ArrayList<MProperty>();
+for(int i = 0; i< totalProperties1.size(); i++){
+	 if(totalProperties1.get(i).toString().equalsIgnoreCase("font-size")){
+		 if(totalProperties1.get(i).getValue().equalsIgnoreCase("inherit")){
+			 inappropriateFontSizeProperties1.add(totalProperties1.get(i));
+		 }
+		 if(totalProperties1.get(i).getValue().contains("0") || totalProperties1.get(i).getValue().contains("1") || totalProperties1.get(i).getValue().contains("2") || totalProperties1.get(i).getValue().contains("3") || totalProperties1.get(i).getValue().contains("4") || totalProperties1.get(i).getValue().contains("5") || totalProperties1.get(i).getValue().contains("6") || totalProperties1.get(i).getValue().contains("7") || totalProperties1.get(i).getValue().contains("8") || totalProperties1.get(i).getValue().contains("9")){
+			 if(totalProperties1.get(i).getValue().contains("%")==false){
+				 inappropriateFontSizeProperties1.add(totalProperties1.get(i));
+			 }
+		 }
+	 }
+}
+*/
+/*
+if(inappropriateFontSizeProperties1.size() > 0){
+	for (MProperty pro : inappropriateFontSizeProperties1){
+		inappFontSize.append("CSS rule: " + rule.getRule().getCssText()
+	                          + "<br>");
+		inappFontSize.append("at line: "
+	               + rule.getLocator().getLineNumber() + "<br>");
+		inappFontSize.append(" Property: " + pro.getName()+" "+"Value: "+pro.getValue()
+	                         + "<br><br>");
+	 }
+}
+
+*/
+List<MProperty> hardCodedValues = new ArrayList<MProperty>();
+for(int i = 0; i< totalProperties1.size(); i++){
+	 if(totalProperties1.get(i).getValue().contains("inherit")){
+		 hardCodedValues.add(totalProperties1.get(i));
+	 }
+	 if(totalProperties1.get(i).getValue().contains("0") || totalProperties1.get(i).getValue().contains("1") || totalProperties1.get(i).getValue().contains("2") || totalProperties1.get(i).getValue().contains("3") || totalProperties1.get(i).getValue().contains("4") || totalProperties1.get(i).getValue().contains("5") || totalProperties1.get(i).getValue().contains("6") || totalProperties1.get(i).getValue().contains("7") || totalProperties1.get(i).getValue().contains("8") || totalProperties1.get(i).getValue().contains("9")){
+		 if(!totalProperties1.get(i).getValue().contains("%")){
+			if(!totalProperties1.get(i).getValue().contains(".")){
+				if(!totalProperties1.get(i).getValue().contains("rgb")){
+			 hardCodedValues.add(totalProperties1.get(i));
+			}
+			}
+		 }
+		 }
+	 }
+	
+
+if(hardCodedValues.size() > 0){
+	for (MProperty pro : hardCodedValues){
+		inappFontSize.append("CSS rule: " + rule.getRule().getCssText()
+	                          + "<br>");
+		inappFontSize.append("at line: "
+	               + rule.getLocator().getLineNumber() + "<br>");
+		inappFontSize.append(" Property: " + pro.getName()+" "+"Value: "+pro.getValue()
+	                         + "<br><br>");
+	 }
+}
+
+List<MProperty> undoingStyleProperties1 = new ArrayList<MProperty>();
+for(int i = 0; i< totalProperties1.size(); i++){
+	if((totalProperties1.get(i).getValue().contains("none"))  || (totalProperties1.get(i).getValue().contains("0") && !totalProperties1.get(i).getValue().contains("1")&& !totalProperties1.get(i).getValue().contains("2")&& !totalProperties1.get(i).getValue().contains("3")&& !totalProperties1.get(i).getValue().contains("4")&& !totalProperties1.get(i).getValue().contains("5")&& !totalProperties1.get(i).getValue().contains("6")&& !totalProperties1.get(i).getValue().contains("7")&& !totalProperties1.get(i).getValue().contains("8")&& !totalProperties1.get(i).getValue().contains("9")&& !totalProperties1.get(i).getValue().contains("rgb"))){
+		 undoingStyleProperties1.add(totalProperties1.get(i));
+	 }
+}
+if(undoingStyleProperties1.size() > 0){
+	for (MProperty pro : undoingStyleProperties1){
+		noneValue.append("CSS rule: " + rule.getRule().getCssText()
+	                          + "<br>");
+		noneValue.append("at line: "
+	               + rule.getLocator().getLineNumber() + "<br>");
+		noneValue.append(" Property: " + pro.getName()+" "+"Value: "+pro.getValue()
+	                         + "<br><br>");
+	 }
+}
+
+/*
+	List<MProperty> undoingStyleProperties1 = new ArrayList<MProperty>();
+for(int i = 0; i< totalProperties1.size(); i++){
+	 if(totalProperties1.get(i).getValue().equalsIgnoreCase("none") || totalProperties1.get(i).getValue().equals("0")){
+		 undoingStyleProperties1.add(totalProperties1.get(i));
+	 }
+}
+if(undoingStyleProperties1.size() > 0){
+	for (MProperty pro : undoingStyleProperties1){
+		noneValue.append("CSS rule: " + rule.getRule().getCssText()
+	                          + "<br>");
+		noneValue.append("at line: "
+	               + rule.getLocator().getLineNumber() + "<br>");
+		noneValue.append(" Property: " + pro.getName()+" "+"Value: "+pro.getValue()
+	                         + "<br><br>");
+	 }
+}
+*/
                         } // for rules
                         
 
@@ -641,8 +633,8 @@ empCatStr = empCatStr.replaceAll("\\*", "&#42");
 //undoStr = undoStr.replaceAll("\\*", "&#42");
 String idWithStr = idWithClassOrElement.toString().replaceAll("#", "&#35");
 idWithStr = idWithStr.replaceAll("\\*", "&#42");
-//String reactiveStr = reactiveImportant.toString().replaceAll("#", "&#35");
-//reactiveStr = reactiveStr.replaceAll("\\*", "&#42");
+String univerStr = universalSelector.toString().replaceAll("#", "&#35");
+univerStr = univerStr.replaceAll("\\*", "&#42");
 String inappFontStr = inappFontSize.toString().replaceAll("#", "&#35");
 inappFontStr = inappFontStr.replaceAll("\\*", "&#42");
 String embeddedRulesStr = embeddedRules.toString().replaceAll("#", "&#35");
@@ -660,19 +652,18 @@ noneValueStr = noneValueStr.replaceAll("\\*", "&#42");
                         analysisMap.put("Undefined CSS Classes", undefinedStr);
                         
       // prints CSS smells in css analysis tab, sorted.
+
+analysisMap.put("Embedded Rules", embeddedRulesStr);
+analysisMap.put("Empty Catch Rules", empCatStr);
+analysisMap.put("Too Long Rules", tooLongStr);
 analysisMap.put("CSS Rules with Too Specific Selectors Type I", tooSpecificStr);
 analysisMap.put("CSS Rules with Too Specific Selectors Type II", tooSpecificStr2);
-//analysisMap.put("Lazy CSS Rules", tooLazyStr);
-analysisMap.put("Too Long", tooLongStr);
-analysisMap.put("Empty Catch", empCatStr);
-//analysisMap.put("CSS Rules with Overriding Properties", undoStr);
-analysisMap.put("Selectors with ID and at Least One Class or Element", idWithStr);
-//analysisMap.put("Rules with !important in their Declaration", reactiveStr);
-analysisMap.put("Selectors with Inappropriate Font-size Value", inappFontStr);
-analysisMap.put("Embedded Rules", embeddedRulesStr);
-analysisMap.put("Rules with Dangerous Selectors", dangSelectorsStr);
 analysisMap.put("Selectors with Invalid Syntax", invalidSyntaxStr);
-analysisMap.put("Undoing Style", noneValueStr);
+analysisMap.put("Rules with Dangerous Selectors", dangSelectorsStr);
+analysisMap.put("Selectors with ID and at Least One Class or Element", idWithStr);
+analysisMap.put("Universal Selectors", univerStr);
+analysisMap.put("Properties with Hard-Coded Values", inappFontStr);
+analysisMap.put("Properties Undoing Style", noneValueStr);
 
                         fileMap.put(filename, analysisMap);
 
@@ -705,7 +696,7 @@ context.put("toospecificColor2", ToospecificHighlight2);
 context.put("emptycatColor", EmptycatHighlight);
 //context.put("undstyColor", UndstyHighlight);
 context.put("idplusColor", IdplusHighlight);
-//context.put("reactimpoColor", ReactimpoHighlight);
+context.put("universalColor", UniversalHighlight);
 context.put("inappfontColor", InappfontHighlight);
 context.put("embeddedruleColor", EmbeddedHighlight);
 context.put("dangerousselectorColor", DangerousHighlight);
@@ -761,20 +752,8 @@ context.put("noneValueColor", NoneValueHighlight);
                                                 parsedRule = rule.getRule().getCssText();
                                                 colorMap.put(line, HighlightColor.NONE);
                                                 ruleMap.put(parsedRule, colorMap);
-                                               /*
-                                               if(!rule.getLazyRules().isEmpty() && null != rule.getLocator()){
-                                                     colorMap = new HashMap<Integer, HighlightColor>();
-                                                    
-                                                     i++;
-                                                     colorMap.put(line, HighlightColor.LAZY);
-                                                    
-                                                   ruleMap.put(" "+"Lazy Rule Number "+i+" "+parsedRule, colorMap);
-                                                   
-                                                   
-                                                   
-                                               }
-                                                */
-                                                   if(!rule.getTooLongRules().isEmpty() && null != rule.getLocator()){
+                                              
+                                                   if( rule.getProperties().size() > 5 && null != rule.getLocator()){
                                                          colorMap1 = new HashMap<Integer, HighlightColor>();
                                                          j++;
                                                          colorMap1.put(line, HighlightColor.LONG);
@@ -798,7 +777,7 @@ context.put("noneValueColor", NoneValueHighlight);
                                                            
                                                        }
                                                            
-                                                           if(!rule.getEmptyCatch().isEmpty() && null != rule.getLocator()){
+                                                           if(rule.getProperties().size() == 0 && !rule.getRule().toString().contains("@") && null != rule.getLocator()){
                                                                  colorMap3 = new HashMap<Integer, HighlightColor>();
                                                                  l++;
                                                                  colorMap3.put(line, HighlightColor.EMPTYCAT);
@@ -809,19 +788,7 @@ context.put("noneValueColor", NoneValueHighlight);
                                                                
                                                                
                                                            }
-                                                               /*
-                                                               if(!rule.getUndoingStyle().isEmpty() && null != rule.getLocator()){
-                                                                     colorMap4 = new HashMap<Integer, HighlightColor>();
-                                                                     m++;
-                                                                     colorMap4.put(line, HighlightColor.UNDSTY);
-                                                                    
-                                                                   ruleMap.put(" "+"Undoing Style Number "+m+" "+parsedRule, colorMap4);
-                                                                 
-                                                                   
-                                                                   
-                                                                  
-                                                               }
-                                                                 */  
+                                                              
                                                                    if(!rule.getIdWithClassOrElement().isEmpty() && null != rule.getLocator()){
                                                                          colorMap5 = new HashMap<Integer, HighlightColor>();
                                                                          n++;
@@ -833,30 +800,8 @@ context.put("noneValueColor", NoneValueHighlight);
                                                                       
                                                                        
                                                                    }
-                                                                       /*
-                                                                       if(!rule.getReactiveImportant().isEmpty() && null != rule.getLocator()){
-                                                                             colorMap6 = new HashMap<Integer, HighlightColor>();
-                                                                             o++;
-                                                                             colorMap6.put(line, HighlightColor.REACTIMPO);
-                                                                            
-                                                                           ruleMap.put(" "+"Reactive Important Number "+o+" "+parsedRule, colorMap6);
-                                                                        
+                                                                      
                                                                           
-                                                                           
-                                                                           
-                                                                       }
-                                                                          */ 
-                                                                           if(!rule.checkFontSize().isEmpty() && null != rule.getLocator()){
-                                                                                 colorMap7 = new HashMap<Integer, HighlightColor>();
-                                                                                 p++;
-                                                                                 colorMap7.put(line, HighlightColor.INAPPFONT);
-                                                                                
-                                                                               ruleMap.put(" "+"Inappropriate Font Size Number "+p+" "+parsedRule, colorMap7);
-                                                                              
-                                                                               
-                                                                              
-                                                                               
-                                                                           }
                                                                           
                                                                            if(CillaPlugin.allEmbeddedRules.contains(rule.getRule().toString()) && null != rule.getLocator()){
                                                                                colorMap8 = new HashMap<Integer, HighlightColor>();
@@ -905,13 +850,20 @@ context.put("noneValueColor", NoneValueHighlight);
                                                                              
                                                                          }
                                                                            
-                                                                           if(!rule.getUndoingStyleNone().isEmpty() && null != rule.getLocator()){
-                                                                               colorMap12 = new HashMap<Integer, HighlightColor>();
-                                                                               u++;
-                                                                               colorMap12.put(line, HighlightColor.NONEVALUE);
-                                                                              
-                                                                             ruleMap.put(" "+"Selector with None Value Number "+u+" "+parsedRule, colorMap12);
-                                               }
+                                                                           if(!rule.getUniversalSelectors().isEmpty() && null != rule.getLocator()){
+                                                                                 colorMap4 = new HashMap<Integer, HighlightColor>();
+                                                                                
+                                                                                 m++;
+                                                                                 colorMap4.put(line, HighlightColor.UNI);
+                                                                                
+                                                                               ruleMap.put(" "+"Universal Selector Number "+m+" "+parsedRule, colorMap4);
+                                                                               
+                                                                               
+                                                                               
+                                                                           }
+                                                                            
+                                                                           
+                                                 
                                         }
                                                
                                             

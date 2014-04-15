@@ -87,6 +87,7 @@ public static String[] visualFilename;
 
 public static int outputNum = 1;
 public static int outputNum1;
+public static int selectorFiles = 1;
 
 public static double Mean = 0;
 public static double Median = 0;
@@ -120,6 +121,9 @@ double totaldescendants;
 List<Double> numDescendantsDomStates = new ArrayList<Double>();
 List<Node> finalChildren;
 int count = 0;
+List<MProperty> inappropriateFontSizeProperties;
+List<MProperty> undoingStyleProperties;
+
         public void onNewState(CrawlerContext context, StateVertex newState) {
         
          count++;
@@ -367,12 +371,19 @@ selectorsinDom.addAll(rules.get(i).getSelectors());
  g = new int[selectorsinDom.size()];
  for(int i = 0; i< rules.size(); i++){
 String s = selectorsinDom.get(i).getSpecificity().toString();
-
+s = s.replaceAll("\\D+","");
+/*
 int l = Integer.parseInt(s.substring(1, 2));
 int m = Integer.parseInt(s.substring(4, 5));
 int n = Integer.parseInt(s.substring(7, 8));
 int o = Integer.parseInt(s.substring(10, 11));
+*/
+int l = Integer.parseInt(s.substring(0, 1));
+int m = Integer.parseInt(s.substring(1, 2));
+int n = Integer.parseInt(s.substring(2, 3));
+int o = Integer.parseInt(s.substring(3, 4));
 int t = l+m+n+o;
+
 g[r]= t;
 r++;
 
@@ -442,11 +453,17 @@ selectorsinDom.addAll(rules.get(i).getSelectors());
  g = new int[selectorsinDom.size()];
  for(int i = 0; i< selectorsinDom.size(); i++){
 String s = selectorsinDom.get(i).getSpecificity().toString();
-
+s = s.replaceAll("\\D+","");
+/*
 int l = Integer.parseInt(s.substring(1, 2));
 int m = Integer.parseInt(s.substring(4, 5));
 int n = Integer.parseInt(s.substring(7, 8));
 int o = Integer.parseInt(s.substring(10, 11));
+*/
+int l = Integer.parseInt(s.substring(0, 1));
+int m = Integer.parseInt(s.substring(1, 2));
+int n = Integer.parseInt(s.substring(2, 3));
+int o = Integer.parseInt(s.substring(3, 4));
 int t = l+m+n+o;
 g[r]= t;
 r++;
@@ -519,7 +536,8 @@ r++;
         public void determineThreshold(){
             
             allSelectors=new ArrayList<MSelector>();
-            int[] b = new int[totalCssSelectors];
+           // int[] b = new int[totalCssSelectors];
+            int[] b = new int[totalCssRules];
             int j = 0;
             double sum = 0;
             double sum1 = 0;
@@ -531,14 +549,36 @@ r++;
                   for (MCssRule mrule : entry.getValue()) {
                     
                             allSelectors.addAll(mrule.getSelectors());
-                            
+                         b[j] = mrule.getProperties().size();
+                         j++;
                             
                             
                     }
                     
             }
            
-            
+            for(int k=0; k<b.length;k++){
+                
+                sum+= b[k];
+        }
+        if(totalCssRules != 0){
+        Mean = sum/totalCssRules;
+        Arrays.sort(b);
+        min = b[0];
+        max = b[b.length-1];
+        if(b.length%2 == 0){
+                Median = (b[((b.length)/2)-1]+b[(b.length)/2])/2;
+        }
+        else{
+        if(b.length == 1){
+        		Median = b[0];
+        	}
+        	else{
+                Median = b[(b.length)/2+1];
+        	}
+        }
+        }
+            /*
             for(int i=0; i<allSelectors.size();i++){
                     
                     b[j]= allSelectors.get(i).getProperties().size();
@@ -562,26 +602,40 @@ r++;
                     Median = (b[(b.length)/2]+b[(b.length)/2+1])/2;
             }
             else{
+            if(b.length == 1){
+            		Median = b[0];
+            	}
+            	else{
                     Median = b[(b.length)/2+1];
+            	}
             }
-           
-            
+          */
+            if(totalCssSelectors!=0){
             int z = 0; int r= 0;
            int[] c = new int[totalCssSelectors];
            h = new int[totalCssSelectors];
             for(int p = 0;p<allSelectors.size();p++){
             String s = allSelectors.get(p).getSpecificity().toString();
- 
+            s = s.replaceAll("\\D+","");
+            /*
             int l = Integer.parseInt(s.substring(1, 2));
             int m = Integer.parseInt(s.substring(4, 5));
             int n = Integer.parseInt(s.substring(7, 8));
+            
             int o = Integer.parseInt(s.substring(10, 11));
+            */
+            int l = Integer.parseInt(s.substring(0, 1));
+            int m = Integer.parseInt(s.substring(1, 2));
+            int n = Integer.parseInt(s.substring(2, 3));
+             int o = Integer.parseInt(s.substring(3, 4));
+             
             int q = l+m+n+o;
             c[z]= q;
             h[r] = q; // I need this unsorted array for universality method
             z++;
             r++;
-            
+  
+ 
             }
             for(int y = 0; y<c.length;y++){
                     sum1+= c[y];
@@ -597,10 +651,16 @@ r++;
             maxSelector = c[c.length-1];
             
             if(c.length%2 == 0){
-                    medianSelector = (c[(c.length)/2]+c[(c.length)/2+1])/2;
+                    medianSelector = (c[((c.length)/2)-1]+c[(c.length)/2])/2;
             }
+           
             else{
+            	 if(c.length==1){
+                 	medianSelector = c[0];
+                }
+            	 else{
                     medianSelector = c[(c.length)/2+1];
+            	 }
             }
         
           
@@ -616,9 +676,16 @@ r++;
             if(totalCssSelectors !=0){
             for(int p = 0;p<allSelectors.size();p++){
             String s = allSelectors.get(p).getSpecificity().toString();
+            s = s.replaceAll("\\D+","");
+            /*
             id = id+ Integer.parseInt(s.substring(4, 5));
             clas = clas+ Integer.parseInt(s.substring(7, 8));
             element = element+ Integer.parseInt(s.substring(10, 11));
+            */
+            id = id+ Integer.parseInt(s.substring(1, 2));
+            clas = clas+ Integer.parseInt(s.substring(2, 3));
+            element = element+ Integer.parseInt(s.substring(3, 4));
+            
             }
             averageid = id / totalCssSelectors;
            averageclas = clas / totalCssSelectors;
@@ -666,6 +733,10 @@ r++;
             
             abstFactor = Math.min(uni, AS);
     }
+        
+      
+        
+        
 public void writecssintoFileCssLint(){
 
 outputNum1 = 1;
@@ -688,7 +759,7 @@ visualFilename = new String[cssRules.entrySet().size()+1];
      
               for (MCssRule mrule : entry.getValue()) {
                     
-                      
+                     
                               File file;
                              
                               try{
@@ -698,8 +769,8 @@ visualFilename = new String[cssRules.entrySet().size()+1];
                                       if (!file.exists()) {
                                                               file.createNewFile();
                                                       }
-                                       byte[] contentInBytes = mrule.getRule().getCssText().getBytes();
-
+                                      byte[] contentInBytes = mrule.getRule().getCssText().getBytes();
+                                      
                fop.write(contentInBytes);
                                       fop.flush();
                                       fop.close();
@@ -805,7 +876,51 @@ outputNum++;
       }
   */    
 }
+public void writeSelectorsintoFileOverqualified(){
+	
+	FileOutputStream fop1 =null;
+	  for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()) {
+      
 
+          for (MCssRule mrule : entry.getValue()) {	
+        	  
+        	  File file1;
+        	  if(mrule.getRuleSelector()!=null){
+              try{
+                      
+                      file1 = new File("C:/Users/Golnaz/selectorfile"+selectorFiles+".css");
+                      fop1 = new FileOutputStream(file1, true);
+                      if (!file1.exists()) {
+                                              file1.createNewFile();
+                                      }
+                      
+                      byte[] contentInBytes1 = mrule.getRuleSelector().getBytes();
+                      
+fop1.write(contentInBytes1);
+//go to next line
+fop1.write(13);
+fop1.write(10);
+                      fop1.flush();
+                      fop1.close();
+                      
+              } catch (IOException e) {
+                      e.printStackTrace();
+                      } finally {
+                      try {
+                              if (fop1 != null) {
+                                      fop1.close();
+                              }
+                      } catch (IOException e) {
+                              e.printStackTrace();
+                      }
+                      }
+      
+        	  }
+        	  
+          }
+          }
+	  selectorFiles++;
+}
 public void getCssCssReport(){
 
 //outputNum = 1;
@@ -914,7 +1029,36 @@ av.addCssCss();
                   
                 }
                 
-             
+
+inappropriateFontSizeProperties = new ArrayList<MProperty>();
+undoingStyleProperties = new ArrayList<MProperty>();
+for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()) {
+	 for (MCssRule mrule : entry.getValue()) {
+		 List<MProperty> totalProperties = new ArrayList<MProperty>();
+		 totalProperties = mrule.getProperties();
+		 for(int i = 0; i< totalProperties.size(); i++){
+			// if(totalProperties.get(i).getName().equalsIgnoreCase("font-size")){
+				 if(totalProperties.get(i).getValue().contains("inherit")){
+					 inappropriateFontSizeProperties.add(totalProperties.get(i));
+				 }
+				 if(totalProperties.get(i).getValue().contains("0") || totalProperties.get(i).getValue().contains("1") || totalProperties.get(i).getValue().contains("2") || totalProperties.get(i).getValue().contains("3") || totalProperties.get(i).getValue().contains("4") || totalProperties.get(i).getValue().contains("5") || totalProperties.get(i).getValue().contains("6") || totalProperties.get(i).getValue().contains("7") || totalProperties.get(i).getValue().contains("8") || totalProperties.get(i).getValue().contains("9")){
+					 if(!totalProperties.get(i).getValue().contains("%")){
+							if(!totalProperties.get(i).getValue().contains(".")){
+								if(!totalProperties.get(i).getValue().contains("rgb")){
+						 inappropriateFontSizeProperties.add(totalProperties.get(i));
+								}
+							}
+					 }
+				 }
+			// }
+			 if((totalProperties.get(i).getValue().contains("none"))  || (totalProperties.get(i).getValue().contains("0") && !totalProperties.get(i).getValue().contains("1")&& !totalProperties.get(i).getValue().contains("2")&& !totalProperties.get(i).getValue().contains("3")&& !totalProperties.get(i).getValue().contains("4")&& !totalProperties.get(i).getValue().contains("5")&& !totalProperties.get(i).getValue().contains("6")&& !totalProperties.get(i).getValue().contains("7")&& !totalProperties.get(i).getValue().contains("8")&& !totalProperties.get(i).getValue().contains("9")&& !totalProperties.get(i).getValue().contains("rgb"))){
+				 undoingStyleProperties.add(totalProperties.get(i));
+			 }
+		 }
+		 
+	 }
+	 }
+
 getEmbeddedRules();
 
 
@@ -930,6 +1074,7 @@ try {
 abstractnessFactor();
 
 writecssintoFileCssLint();
+writeSelectorsintoFileOverqualified();
 //getCssCssReport();
                 StringBuffer output = new StringBuffer();
                 StringBuffer bufferUnused = new StringBuffer();
@@ -948,26 +1093,24 @@ StringBuffer tooSpecific = new StringBuffer();
 int toospec = getTooSpecificSelectors(tooSpecific);
 StringBuffer tooSpecific2 = new StringBuffer();
 int toospec2 = getTooSpecificSelectors2(tooSpecific2);
-//StringBuffer tooLazy = new StringBuffer();
-//int toolaz = getLazyRules(tooLazy);
-StringBuffer tooLong = new StringBuffer();
-int toolog = getTooLongRules(tooLong);
-StringBuffer emptyCatch = new StringBuffer();
-int emptycat = getEmptyCatch(emptyCatch);
-//StringBuffer undoingStyle = new StringBuffer();
-//int undostyle = getUndoingStyle(undoingStyle);
 StringBuffer idWithClassOrElement = new StringBuffer();
 int idwith = getIdWithClassOrElement(idWithClassOrElement);
-//StringBuffer reactiveImportant = new StringBuffer();
-//int impo = getReactiveImportant(reactiveImportant);
-StringBuffer inappFontSize = new StringBuffer();
-int inappfo = getInnappFontSize(inappFontSize);
-StringBuffer embeddedRules = new StringBuffer();
-int dsf = getNumEmbeddedRules(embeddedRules);
 StringBuffer dangerousSelectors = new StringBuffer();
 int danSel = getDangerousSelectors(dangerousSelectors);
 StringBuffer invalidSelectors = new StringBuffer();
 int invalidSyn = getInvalidSelectors(invalidSelectors);
+StringBuffer universalSelectors = new StringBuffer();
+int universal = getUniversalSelectors(universalSelectors);
+
+StringBuffer embeddedRules = new StringBuffer();
+int dsf = getNumEmbeddedRules(embeddedRules);
+StringBuffer tooLongRules = new StringBuffer();
+int tlr = getNumTooLongRules(tooLongRules);
+StringBuffer emptyCatchRules = new StringBuffer();
+int ecr = getNumEmptyCatchRules(emptyCatchRules);
+
+StringBuffer inappFontSize = new StringBuffer();
+int inappfo = getInnappFontSize(inappFontSize);
 StringBuffer undoNone = new StringBuffer();
 int undoingWithNone = getUndoingStyleNone(undoNone);
 
@@ -1009,19 +1152,39 @@ int undoingWithNone = getUndoingStyleNone(undoNone);
                 
 // prints number of css smells in the summary tab
 output.append("CSS SMELLS: " + "\n");
+output.append(" -> Embedded Rules: "+ countEmbeddedRules +"\n");
+output.append(" -> Empty Catch Rules: "+ ecr+ "\n");
+output.append(" -> Too Long Rules: "+ tlr+ "\n");
+
 output.append(" -> Too Specific Selectors Type I: "+ toospec+ "\n");
 output.append(" -> Too Specific Selectors Type II: "+ toospec2+ "\n");
-//output.append(" -> Lazy Rules: "+ toolaz+ "\n");
-output.append(" -> Selectors with Too Many Properties(Too Long): "+ toolog+ "\n");
-output.append(" -> Empty Catch: "+ emptycat+ "\n");
-//output.append(" -> Overriding Properties: "+ undostyle+ "\n");
+output.append(" -> Selectors with Invalid Syntax: "+ invalidSyn +"\n");
+output.append(" -> Dangerous Selectors: "+ danSel +"\n");
 output.append(" -> Selectors with ID and at least one class or element: "+ idwith + "\n");
-//output.append(" -> Total Number of !important used in the code(Reactiveness): "+ impo + "\n");
-output.append(" -> Selectors with Inappropriate Font-size Value for their Properties: "+ inappfo + "\n");
-output.append(" -> Embedded Rules: "+ countEmbeddedRules +"\n");
-output.append(" -> Rules with Dangerous Selectors: "+ danSel +"\n");
-output.append(" -> Rules with Invalid Selectors: "+ invalidSyn +"\n");
-output.append(" -> Selectors with Value Equal to None or Zero for their Properties: "+ undoingWithNone +"\n");
+output.append(" -> Universal Selectors: "+ universal + "\n");
+
+output.append(" -> Font-size Properties with Inappropriate Value: "+ inappfo + "\n");
+output.append(" -> Properties with Value Equal to None or Zero: "+ undoingWithNone +"\n");
+
+output.append("PERCENTAGE: " + "\n");
+output.append(" -> Embedded Rules: "+ Math.ceil((double) countEmbeddedRules/ totalCssRules *100)+"%" +"\n");
+output.append(" -> Empty Catch Rules: "+ Math.ceil((double) ecr/ totalCssRules *100)+"%"+ "\n");
+output.append(" -> Too Long Rules: "+ Math.ceil((double) tlr/ totalCssRules *100)+"%"+ "\n");
+
+output.append(" -> Too Specific Selectors Type I: "+ Math.ceil((double) toospec/ totalCssSelectors *100)+"%"+ "\n");
+output.append(" -> Too Specific Selectors Type II: "+ Math.ceil((double) toospec2/ totalCssSelectors *100)+"%"+ "\n");
+output.append(" -> Selectors with Invalid Syntax: "+ Math.ceil((double) invalidSyn/ totalCssSelectors *100)+"%" +"\n");
+output.append(" -> Dangerous Selectors: "+ Math.ceil((double) danSel/ totalCssSelectors *100)+"%" +"\n");
+output.append(" -> Selectors with ID and at least one class or element: "+ Math.ceil((double) idwith/ totalCssSelectors *100)+"%" + "\n");
+output.append(" -> Universal Selectors: "+ Math.ceil((double) universal/ totalCssSelectors *100)+"%" + "\n");
+
+output.append(" -> Font-size Properties with Inappropriate Value: "+ Math.ceil((double) inappfo/ countProperties() *100)+"%" + "\n");
+output.append(" -> Properties with Value Equal to None or Zero: "+ Math.ceil((double) undoingWithNone/ countProperties() *100)+"%" +"\n");
+
+output.append(" -> Unmatched Selectors: "+ Math.ceil((double) unused/ (totalCssSelectors-ignored) *100)+"%" + "\n");
+output.append(" -> Matched but Ineffective Selectors: "+ Math.ceil((double) ineffectiveInt/ (totalCssSelectors-ignored) *100)+"%" +"\n");
+output.append(" -> Unused Properties: "+ Math.ceil((double) countUnusedProps()/ (countProperties()-countIgnoredProperties()) *100)+"%" + "\n");
+
 
 
                 /*
@@ -1042,19 +1205,19 @@ output.append(" -> Selectors with Value Equal to None or Zero for their Properti
                 output.append(undefinedClasses);
                 // output.append(duplicateSelectors);
 
-                
+  
+output.append(embeddedRules.toString()); 
+output.append(emptyCatchRules.toString());
+output.append(tooLongRules.toString());
+
 output.append(tooSpecific.toString());
 output.append(tooSpecific2.toString());
-//output.append(tooLazy.toString());
-output.append(tooLong.toString());
-output.append(emptyCatch.toString());
-//output.append(undoingStyle.toString());
-output.append(idWithClassOrElement.toString());
-//output.append(reactiveImportant.toString());
-output.append(inappFontSize.toString());
-output.append(embeddedRules.toString());
-output.append(dangerousSelectors.toString());
 output.append(invalidSelectors.toString());
+output.append(dangerousSelectors.toString());
+output.append(idWithClassOrElement.toString());
+output.append(universalSelectors.toString());
+
+output.append(inappFontSize.toString());
 output.append(undoNone.toString());
 
                try {
@@ -1405,180 +1568,20 @@ output.append(undoNone.toString());
         }
         
    
-        private int getReactiveImportant(StringBuffer buffer){
-         LOGGER.info("Reporting CSS Rules with reactive !important...");
-         buffer.append("========== CSS RULES with REACTIVE !important ==========\n");
-         //SpecificityCalculator sc = new SpecificityCalculator();
-         int counter = 0;
-         for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()){
-         List<MCssRule> rules = entry.getValue();
-         buffer.append("== RULES WITH REACTIVE !IMPORTANT IN: " + entry.getKey() + "\n");
-         for (MCssRule rule : rules){
-        
-         //sc.reset();
-         List<MSelector> selectors = rule.getReactiveImportant();
-         counter += selectors.size();
-         if (selectors.size() > 0) { //more than 3 !important is used
-         buffer.append("!important used: ");
-         buffer.append("CSS rule: " + rule.getRule().getCssText() + "\n");
-         buffer.append("at line: " + rule.getLocator().getLineNumber() + "\n");
+       
 
-         for (MSelector selector : selectors) {
-         // ineffectivePropsSize+=selector.getSize();
-         buffer.append(selector.toString() + "\n");
-         }
-         }
         
 
-         }
-         }
-         return counter;
         
-         }
-
-         private int getLazyRules(StringBuffer buffer){
-         LOGGER.info("Reporting Lazy CSS Rules...");
-         buffer.append("========== LAZY CSS RULES ==========\n");
-         int counter = 0;
-         for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()){
-         List<MCssRule> rules = entry.getValue();
-         buffer.append("== LAZY RULES IN: " + entry.getKey() + "\n");
-         for (MCssRule rule : rules){
-        
-        
-         List<MSelector> selectors = rule.getLazyRules();
-         counter += selectors.size();
-         if (selectors.size() > 0) {
-         buffer.append("Lazy: ");
-         buffer.append("CSS rule: " + rule.getRule().getCssText() + "\n");
-         buffer.append("at line: " + rule.getLocator().getLineNumber() + "\n");
-
-         for (MSelector selector : selectors) {
-         // ineffectivePropsSize+=selector.getSize();
-         buffer.append(selector.toString() + "\n");
-         }
-         }
-
-         }
-         }
-         return counter;
-        
-         }
-         private int getTooLongRules(StringBuffer buffer){
-         LOGGER.info("Reporting Too Long CSS Rules...");
-         buffer.append("========== TOO LONG CSS RULES ==========\n");
-         int counter = 0;
-         for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()){
-         List<MCssRule> rules = entry.getValue();
-         buffer.append("== TOO LONG RULES IN: " + entry.getKey() + "\n");
-         for (MCssRule rule : rules){
-        
-        
-         List<MSelector> selectors = rule.getTooLongRules();
-         counter += selectors.size();
-         if (selectors.size() > 0) {
-         buffer.append("Long: ");
-         buffer.append("CSS rule: " + rule.getRule().getCssText() + "\n");
-         buffer.append("at line: " + rule.getLocator().getLineNumber() + "\n");
-
-         for (MSelector selector : selectors) {
-         // ineffectivePropsSize+=selector.getSize();
-         buffer.append(selector.toString() + "\n");
-         }
-         }
-
-         }
-         }
-         return counter;
-        
-         }
-
-         private int getEmptyCatch(StringBuffer buffer){
-         LOGGER.info("Reporting CSS Rules with Empty Catch...");
-         buffer.append("========== CSS RULES with EMPTY CATCH ==========\n");
-         int counter = 0;
-         for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()){
-         List<MCssRule> rules = entry.getValue();
-         buffer.append("== RULES with EMPTY CATCH IN: " + entry.getKey() + "\n");
-         for (MCssRule rule : rules){
-        
-        
-         List<MSelector> selectors = rule.getEmptyCatch();
-         counter += selectors.size();
-         if (selectors.size() > 0) {
-         buffer.append("Empty Catch: ");
-         buffer.append("CSS rule: " + rule.getRule().getCssText() + "\n");
-         buffer.append("at line: " + rule.getLocator().getLineNumber() + "\n");
-
-         for (MSelector selector : selectors) {
-         // ineffectivePropsSize+=selector.getSize();
-         buffer.append(selector.toString() + "\n");
-         }
-         }
-
-         }
-         }
-         return counter;
-        
-         }
-
-         private int getUndoingStyle(StringBuffer buffer){
-         LOGGER.info("Reporting CSS Rules with Overriding Properties...");
-         buffer.append("========== CSS RULES with OVERRIDING PROPERTIES ==========\n");
-         int counter = 0;
-         for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()){
-         List<MCssRule> rules = entry.getValue();
-         buffer.append("== RULES with OVERRIDING PROPERTIES IN: " + entry.getKey() + "\n");
-         for (MCssRule rule : rules){
-        
-        
-         List<MSelector> selectors = rule.getUndoingStyle();
-         counter += selectors.size();
-         if (selectors.size() > 0) {
-         buffer.append("Overriding: ");
-         buffer.append("CSS rule: " + rule.getRule().getCssText() + "\n");
-         buffer.append("at line: " + rule.getLocator().getLineNumber() + "\n");
-
-         for (MSelector selector : selectors) {
-         // ineffectivePropsSize+=selector.getSize();
-         buffer.append(selector.toString() + "\n");
-         }
-         }
-
-         }
-         }
-         return counter;
-        
-         }
 
          private int getUndoingStyleNone(StringBuffer buffer){
-             LOGGER.info("Reporting CSS Rules with None Value...");
-             buffer.append("========== CSS RULES with NONE VALUE ==========\n");
-             int counter = 0;
-             for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()){
-             List<MCssRule> rules = entry.getValue();
-             buffer.append("== RULES with NONE VALUE IN: " + entry.getKey() + "\n");
-             for (MCssRule rule : rules){
-            
-            
-             List<MSelector> selectors = rule.getUndoingStyleNone();
-             counter += selectors.size();
-             if (selectors.size() > 0) {
-             buffer.append("None Value: ");
-             buffer.append("CSS rule: " + rule.getRule().getCssText() + "\n");
-             buffer.append("at line: " + rule.getLocator().getLineNumber() + "\n");
-
-             for (MSelector selector : selectors) {
-             // ineffectivePropsSize+=selector.getSize();
-             buffer.append(selector.toString() + "\n");
-             }
-             }
-
-             }
-             }
+             LOGGER.info("Reporting CSS Properties with None Value...");
+             buffer.append("========== CSS PROPERTIES with NONE VALUE ==========\n");
+             int counter = undoingStyleProperties.size();
              return counter;
             
              }
+         
          private int getIdWithClassOrElement(StringBuffer buffer){
          LOGGER.info("Reporting Selectors with ID and at Least One Class or Element...");
          buffer.append("========== Selectors with ID and at Least One Class or Element ==========\n");
@@ -1670,30 +1673,9 @@ output.append(undoNone.toString());
 
 
          private int getInnappFontSize(StringBuffer buffer){
-         LOGGER.info("Reporting Selectors with Inappropriate Value for Font-size...");
-         buffer.append("========== Selectors with Font-sie Property with Inappropriate Value ==========\n");
-         int counter = 0;
-         for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()){
-         List<MCssRule> rules = entry.getValue();
-         buffer.append("== Inappropriate Font-size RULES IN: " + entry.getKey() + "\n");
-         for (MCssRule rule : rules){
-        
-        
-         List<MSelector> selectors = rule.checkFontSize();
-         counter += selectors.size();
-         if (selectors.size() > 0) {
-         buffer.append("Inappropriate Font-size: ");
-         buffer.append("CSS rule: " + rule.getRule().getCssText() + "\n");
-         buffer.append("at line: " + rule.getLocator().getLineNumber() + "\n");
-
-         for (MSelector selector : selectors) {
-         // ineffectivePropsSize+=selector.getSize();
-         buffer.append(selector.toString() + "\n");
-         }
-         }
-
-         }
-         }
+         LOGGER.info("Reporting Properties with Inappropriate Value for Font-size...");
+         buffer.append("========== Font-size Properties with Inappropriate Value ==========\n");
+         int counter = inappropriateFontSizeProperties.size();
          return counter;
         
         
@@ -1710,6 +1692,39 @@ output.append(undoNone.toString());
          return counter;
         
          }
+         public int getNumTooLongRules(StringBuffer buffer){
+             
+             LOGGER.info("Reporting Too Long CSS Rules...");
+             buffer.append("========== TOO LONG CSS RULES ==========\n");
+             int counter = 0;
+             for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()) {
+            	 for (MCssRule mrule : entry.getValue()) {
+            		 if(mrule.getProperties().size()> 5){
+            			 counter++;
+            		 }
+            	 }
+             }
+           
+            return counter; 
+            
+             }
+         public int getNumEmptyCatchRules(StringBuffer buffer){
+             
+             LOGGER.info("Reporting Empty Catch CSS Rules...");
+             buffer.append("========== EMPTY CATCH CSS RULES ==========\n");
+            
+             int counter = 0;
+             for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()) {
+            	 for (MCssRule mrule : entry.getValue()) {
+            		 if(mrule.getProperties().size() == 0 && !mrule.getRule().toString().contains("@") ){
+            			 counter++;
+            		 }
+            	 }
+             }
+            
+             return counter;
+            
+             }
 
          private int getDangerousSelectors(StringBuffer buffer){
          LOGGER.info("Reporting Dangerous Selectors...");
@@ -1770,6 +1785,36 @@ output.append(undoNone.toString());
             
             
              }
+         private int getUniversalSelectors(StringBuffer buffer){
+        	 LOGGER.info("Reporting Universal Selectors...");
+             buffer.append("========== Universal Selectors ==========\n");
+             int counter = 0;
+             for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()){
+             List<MCssRule> rules = entry.getValue();
+             buffer.append("== UNIVERSAL SELECTORS IN: " + entry.getKey() + "\n");
+             for (MCssRule rule : rules){
+            
+            
+             List<MSelector> selectors = rule.getUniversalSelectors();
+             counter += selectors.size();
+             if (selectors.size() > 0) {
+             buffer.append("Universal Selectors: ");
+             buffer.append("CSS rule: " + rule.getRule().getCssText() + "\n");
+             buffer.append("at line: " + rule.getLocator().getLineNumber() + "\n");
+
+             for (MSelector selector : selectors) {
+             // ineffectivePropsSize+=selector.getSize();
+             buffer.append(selector.toString() + "\n");
+             }
+             }
+
+             }
+             }
+             return counter;
+            
+            
+        	 
+         }
 
 }
 

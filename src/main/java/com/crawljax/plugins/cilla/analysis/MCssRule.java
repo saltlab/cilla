@@ -217,6 +217,8 @@ List<MSelector> tooSpecific = new ArrayList<MSelector>();
                         sc.reset();
 
         String s = sc.getSpecificity(selector.getCssSelector()).toString();
+        s = s.replaceAll("\\D+","");
+        /*
         int a = Integer.parseInt(s.substring(1, 2));
       
         int b = Integer.parseInt(s.substring(4, 5));
@@ -224,19 +226,22 @@ List<MSelector> tooSpecific = new ArrayList<MSelector>();
         int c = Integer.parseInt(s.substring(7, 8));
         
         int d = Integer.parseInt(s.substring(10, 11));
+       */
+        int a = Integer.parseInt(s.substring(0, 1));
         
-       
+        int b = Integer.parseInt(s.substring(1, 2));
+     
+        int c = Integer.parseInt(s.substring(2, 3));
+        
+        int d = Integer.parseInt(s.substring(3, 4));
                                                 
-                                                if(b+c+d> 4 && !selector.isIgnore()){
+                                                if(b+c+d> 4){
                                                         tooSpecific.add(selector);
                                                         
                                                 }
-                                            // if( i> 122 && !selector.isIgnore()){
-                                             // tooSpecific.add(selector);
-                                                        
-                                // }
-                                
-                                        }
+                   
+        
+                                 }
                                         
                                 
                         return tooSpecific;
@@ -251,6 +256,8 @@ List<MSelector> tooSpecific2 = new ArrayList<MSelector>();
                         sc.reset();
 
         String s = sc.getSpecificity(selector.getCssSelector()).toString();
+        s = s.replaceAll("\\D+","");
+        /*
         int a = Integer.parseInt(s.substring(1, 2));
       
         int b = Integer.parseInt(s.substring(4, 5));
@@ -258,10 +265,17 @@ List<MSelector> tooSpecific2 = new ArrayList<MSelector>();
         int c = Integer.parseInt(s.substring(7, 8));
         
         int d = Integer.parseInt(s.substring(10, 11));
+        */
+        int a = Integer.parseInt(s.substring(0, 1));
         
+        int b = Integer.parseInt(s.substring(1, 2));
+     
+        int c = Integer.parseInt(s.substring(2, 3));
+        
+        int d = Integer.parseInt(s.substring(3, 4));
        
                                                 
-                                                if((b> 1 || c> 2 || d> 3) && !selector.isIgnore()){
+                                                if((b> 1 || c> 2 || d> 3)){
                                                         tooSpecific2.add(selector);
                                                 }
                                             
@@ -272,168 +286,8 @@ List<MSelector> tooSpecific2 = new ArrayList<MSelector>();
                         return tooSpecific2;
                 }
                         
-public List<MSelector> getLazyRules(){
 
-
-List<MSelector> tooLazy = new ArrayList<MSelector>();
-                        
-                        for (MSelector selector : this.selectors){
-                                                int z = selector.getProperties().size();
-                                                
-                                                if(z ==1 && !selector.isIgnore()){
-                                        
-                                                        tooLazy.add(selector);
-                                                }
-                                
-                                        }
-                                        
-                                
-                        return tooLazy;
-                }
-                        
-public List<MSelector> getTooLongRules(){
-
-
-List<MSelector> tooLong = new ArrayList<MSelector>();
-                        
-                        for (MSelector selector : this.selectors){
-                                                int z = selector.getProperties().size();
-                                                
-                                                if(z > 5 && !selector.isIgnore()){
-                                        
-                                                        tooLong.add(selector);
-                                                }
-                                
-                                        }
-                                        
-                                
-                        return tooLong;
-                }
-                        
-
-public List<MSelector> getEmptyCatch(){
-
-
-List<MSelector> empCatch = new ArrayList<MSelector>();
-                        
-                        for (MSelector selector : this.selectors){
-                                                int z = selector.getProperties().size();
-                                                
-                                                if(z == 0 && !selector.isIgnore()){
-                                        
-                                                        empCatch.add(selector);
-                                                }
-                                
-                                        }
-                                        
-                                
-                        return empCatch;
-                }
-
-public List<MSelector> getUndoingStyle(){
-
-
-List<MSelector> undoing = new ArrayList<MSelector>();
-                        
-                for (MSelector selector : this.selectors){
-                                                
-                                                CSSStyleDeclaration styleDeclaration = null;
-                                        // List<MProperty> properties = new ArrayList<MProperty>();
-
-                                                if (this.rule instanceof CSSStyleRule) {
-                                                        CSSStyleRule styleRule = (CSSStyleRule) rule;
-                                                        styleDeclaration = styleRule.getStyle();
-
-                                                        for (int j = 0; j < styleDeclaration.getLength(); j++) {
-                                                                String property1 = styleDeclaration.item(j);
-                                                                for (int i = j+1; i < styleDeclaration.getLength(); i++){
-                                                                        String property2 = styleDeclaration.item(i);
-                                                                        if(property1 == property2 && i!=j){
-                                                                                undoing.add(selector);
-                                                                                
-                                                                        }
-                                                                }
-                                                                
-                                                                
-                                                        }
-
-                                                }
-                                                
-                                                
-                                                }
-                                
-                                        
-                                        
-                                
-                        return undoing;
-                }
-
-public List<MSelector> getUndoingStyleNone(){
-    List<MSelector> undoingNone = new ArrayList<MSelector>();
-    for (MSelector selector : this.selectors){
-                            
-                            CSSStyleDeclaration styleDeclaration = null;
-                    
-
-                            if (this.rule instanceof CSSStyleRule) {
-                                    CSSStyleRule styleRule = (CSSStyleRule) rule;
-                                    styleDeclaration = styleRule.getStyle();
-                                    for (int i = 0; i < styleDeclaration.getLength(); i++) {
-                                            String property = styleDeclaration.item(i);
-                                           
-                                                    String value = styleDeclaration.getPropertyValue(property);
-                                                    if(value.equalsIgnoreCase("none") || value.equals("0")){
-                                                            undoingNone.add(selector);
-                                                            
-                                                    }
-                                                    
-                                                  
-                                                    }
-                                            }
-                                            
-                            }
-                            
-                    
-                    return undoingNone;
-                    
-            }
-
-
-
-public List<MSelector> checkFontSize(){
-        List<MSelector> inappfontsize = new ArrayList<MSelector>();
-        for (MSelector selector : this.selectors){
-                                
-                                CSSStyleDeclaration styleDeclaration = null;
-                        
-
-                                if (this.rule instanceof CSSStyleRule) {
-                                        CSSStyleRule styleRule = (CSSStyleRule) rule;
-                                        styleDeclaration = styleRule.getStyle();
-                                        for (int i = 0; i < styleDeclaration.getLength(); i++) {
-                                                String property = styleDeclaration.item(i);
-                                                if(property.equalsIgnoreCase("font-size")){
-                                                        String value = styleDeclaration.getPropertyValue(property);
-                                                        if(value.equalsIgnoreCase("inherit")){
-                                                                inappfontsize.add(selector);
-                                                                
-                                                        }
-                                                        
-                                                        if(value.contains("0")|| value.contains("1")||value.contains("2")||value.contains("3")||value.contains("4")||value.contains("5")||value.contains("6")||value.contains("7")||value.contains("8")||value.contains("9")){
-                                                                if(value.contains("%") == false){
-                                                        inappfontsize.add(selector);
-                                                                }
-                                                        }
-                                                }
-                                                
-                                }
-                                }
-                        }
-                        return inappfontsize;
-                        
-                }
-
-
+                     
 public List<MSelector> getIdWithClassOrElement(){
 SpecificityCalculator sc = new SpecificityCalculator();
 
@@ -443,12 +297,16 @@ List<MSelector> idWith = new ArrayList<MSelector>();
                                         sc.reset();
 
                                                 String s = sc.getSpecificity(selector.getCssSelector()).toString();
-                                        // int a = Integer.parseInt(s.substring(1, 2));
+                                                s = s.replaceAll("\\D+","");
+                                                /*
                                                 int b = Integer.parseInt(s.substring(4, 5));
                                                 int c = Integer.parseInt(s.substring(7, 8));
                                                 int d = Integer.parseInt(s.substring(10, 11));
-                                                
-                                                if(b!=0 && !selector.isIgnore()){
+                                                */
+                                                int b = Integer.parseInt(s.substring(1, 2));
+                                                int c = Integer.parseInt(s.substring(2, 3));
+                                                int d = Integer.parseInt(s.substring(3, 4));
+                                                if(b!=0){
                                                         if(c!=0 || d!=0){
                                                                 
                                                                 idWith.add(selector);
@@ -463,41 +321,6 @@ List<MSelector> idWith = new ArrayList<MSelector>();
                         return idWith;
                 }
                         
-public List<MSelector> getReactiveImportant(){
-
-        
-List<MSelector> reactiveImportant = new ArrayList<MSelector>();
-                        
-                for (MSelector selector : this.selectors){
-                                                
-                                                CSSStyleDeclaration styleDeclaration = null;
-                                        // List<MProperty> properties = new ArrayList<MProperty>();
-
-                                                if (this.rule instanceof CSSStyleRule) {
-                                                        CSSStyleRule styleRule = (CSSStyleRule) rule;
-                                                        styleDeclaration = styleRule.getStyle();
-
-                                                        for (int j = 0; j < styleDeclaration.getLength(); j++) {
-                                                                String property = styleDeclaration.item(j);
-                                                                String value = styleDeclaration.getPropertyCSSValue(property).getCssText();
-                                                                if(property.contains("!important") || value.contains("!important")){
-                                                                        
-                                                                        reactiveImportant.add(selector);
-                                                                        }
-                                                                
-                                                                
-                                                                
-                                                        }
-
-                                                }
-                                                
-                                                
-                                                }
-                                
-                                        
-                                
-                        return reactiveImportant;
-                }
 
 public List<MSelector> getDangerousSelectors(){
 SpecificityCalculator sc = new SpecificityCalculator();
@@ -507,12 +330,18 @@ List<MSelector> dangerousSelectors = new ArrayList<MSelector>();
      sc.reset();
 
         String s = sc.getSpecificity(selector.getCssSelector()).toString();
-        
+        s = s.replaceAll("\\D+","");
+        /*
         int b = Integer.parseInt(s.substring(4, 5));
         int c = Integer.parseInt(s.substring(7, 8));
         int d = Integer.parseInt(s.substring(10, 11));
+        */
+        int b = Integer.parseInt(s.substring(1, 2));
+        int c = Integer.parseInt(s.substring(2, 3));
+        int d = Integer.parseInt(s.substring(3, 4));
         if(b==0 && c==0 && d == 1){
-         if(selector.toString().contains("div") || selector.toString().contains("header") || selector.toString().contains("aside") || selector.toString().contains("ul") || selector.toString().contains("body")|| selector.toString().contains("title")){
+       //  if(selector.toString().contains("div") || selector.toString().contains("header") || selector.toString().contains("aside") || selector.toString().contains("ul") || selector.toString().contains("body")|| selector.toString().contains("title")){
+        	if(selector.getCssSelector().contains("div") || selector.getCssSelector().contains("header") || selector.getCssSelector().contains("aside") || selector.getCssSelector().contains("ul") || selector.getCssSelector().contains("body")|| selector.getCssSelector().contains("title")){
          dangerousSelectors.add(selector);
          }
         
@@ -573,5 +402,18 @@ continue;
 return invalidSyntaxSelectors;
 
 }
+
+public List<MSelector> getUniversalSelectors(){
+
+List<MSelector> universalSelectors = new ArrayList<MSelector>();
+for (MSelector selector : this.selectors){
+	if(selector.getCssSelector().contains("*")){
+		universalSelectors.add(selector);
+	}
+}
+
+return universalSelectors;
+}
+
 
 }

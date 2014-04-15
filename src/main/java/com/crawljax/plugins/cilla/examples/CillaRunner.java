@@ -23,11 +23,10 @@ public class CillaRunner {
         private static final int waitAfterReload = 400;
 
 //private static final String INDEX = "http://www.ece.ubc.ca/~amesbah/exp";
-//private static final String INDEX = "http://www.google.com";
+//private static final String INDEX = "http://www.facebook.com";
         
      
-        
-public static String name;        
+      static String name;        
 public static long startTime;
 public static String b;
 
@@ -35,20 +34,20 @@ public static String b;
     	
     	
     	
-     
+   
                 String[] urlArray = new String[100];
                         urlArray = GetUrls.getArray("src//main//resources//WebsitesUnderStudy.txt", 10);
-                        for (int i = 0 ; i < 26; i++) {
+                        for (int i = 0 ; i < 50; i++) {
                                 getName(urlArray[i]);
                                 startTime = System.currentTimeMillis();
                                
                 
                                 b = urlArray[i].replaceAll("http://", "");
-  
-  //  b = INDEX.replaceAll("http://", "");
+
+ //  b = INDEX.replaceAll("http://", "");
            
 
-   //CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(INDEX);
+ // CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(INDEX);
 CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(urlArray[i]);
 
                 builder.crawlRules().insertRandomDataInInputForms(false);
@@ -68,10 +67,10 @@ builder.crawlRules().click("input");
 
 builder.setMaximumStates(50);
 
-               // builder.setMaximumRunTime(60, TimeUnit.SECONDS);
+             builder.setMaximumRunTime(60, TimeUnit.SECONDS);
 
 
-                builder.setBrowserConfig(new BrowserConfiguration(BrowserType.firefox, 1));
+               builder.setBrowserConfig(new BrowserConfiguration(BrowserType.firefox, 1));
 
                 builder.addPlugin(new CillaPlugin());
                 
@@ -92,20 +91,32 @@ builder.setMaximumStates(50);
                             second = URLstring.indexOf(".ru");
             else if (initialization.contains(".ca"))
                     second = URLstring.indexOf(".ca");
-            else if (initialization.contains(".co"))
-                    second = URLstring.indexOf(".co");
+            else if (initialization.contains(".it"))
+                          second = URLstring.indexOf(".it");
+           else if (initialization.contains(".co"))
+                   second = URLstring.indexOf(".co");
             else if (initialization.contains(".ly"))
                     second = URLstring.indexOf(".ly");
-            else if (initialization.contains(".to"))
-                second = URLstring.indexOf(".to");
-            else if (initialization.contains(".net"))
-                second = URLstring.indexOf(".net");
+          //  else if (initialization.contains(".to"))
+            //    second = URLstring.indexOf(".to");
+          //  else if (initialization.contains(".net"))
+        //        second = URLstring.indexOf(".net");
             else if (initialization.contains(".cn"))
                 second = URLstring.indexOf(".cn");
             else if (initialization.contains(".nu"))
                 second = URLstring.indexOf(".nu");
+            else if (initialization.contains(".de"))
+                second = URLstring.indexOf(".de");
+         //   else if (initialization.contains(".jp"))
+         //       second = URLstring.indexOf(".jp");
+            else if (initialization.contains(".info"))
+                second = URLstring.indexOf(".info");
             else if (initialization.contains(".se"))
                     second = URLstring.indexOf(".se");
+            else if (initialization.contains(".br"))
+                second = URLstring.indexOf(".br");
+            else if (initialization.contains(".eu"))
+                second = URLstring.indexOf(".eu");
             else
                     second = URLstring.indexOf(".com");
             resticting = initialization.substring(first + 1, second);

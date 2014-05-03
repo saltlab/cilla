@@ -341,7 +341,7 @@ List<MSelector> dangerousSelectors = new ArrayList<MSelector>();
         int d = Integer.parseInt(s.substring(3, 4));
         if(b==0 && c==0 && d == 1){
        //  if(selector.toString().contains("div") || selector.toString().contains("header") || selector.toString().contains("aside") || selector.toString().contains("ul") || selector.toString().contains("body")|| selector.toString().contains("title")){
-        	if(selector.getCssSelector().contains("div") || selector.getCssSelector().contains("header") || selector.getCssSelector().contains("aside") || selector.getCssSelector().contains("ul") || selector.getCssSelector().contains("body")|| selector.getCssSelector().contains("title")){
+        	if(selector.getCssSelector().contains("div") || selector.getCssSelector().contains("header") || selector.getCssSelector().contains("aside") || selector.getCssSelector().contains("ul") || selector.getCssSelector().contains("body")|| selector.getCssSelector().contains("title") || selector.getCssSelector().contains("head") || selector.getCssSelector().contains("html") || selector.getCssSelector().contains("DIV") || selector.getCssSelector().contains("HEADER") || selector.getCssSelector().contains("ASIDE") || selector.getCssSelector().contains("UL") || selector.getCssSelector().contains("BODY")|| selector.getCssSelector().contains("TITLE") || selector.getCssSelector().contains("HEAD") || selector.getCssSelector().contains("HTML")){
          dangerousSelectors.add(selector);
          }
         
@@ -408,7 +408,9 @@ public List<MSelector> getUniversalSelectors(){
 List<MSelector> universalSelectors = new ArrayList<MSelector>();
 for (MSelector selector : this.selectors){
 	if(selector.getCssSelector().contains("*")){
+	
 		universalSelectors.add(selector);
+	
 	}
 }
 

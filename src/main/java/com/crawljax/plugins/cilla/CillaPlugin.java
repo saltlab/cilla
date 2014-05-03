@@ -120,7 +120,7 @@ double uni1 = 0;
 double totaldescendants;
 List<Double> numDescendantsDomStates = new ArrayList<Double>();
 List<Node> finalChildren;
-int count = 0;
+public static int count = 0;
 List<MProperty> inappropriateFontSizeProperties;
 List<MProperty> undoingStyleProperties;
 
@@ -764,7 +764,7 @@ visualFilename = new String[cssRules.entrySet().size()+1];
                              
                               try{
                                       
-                                      file = new File("C:/Users/Golnaz/cssfile"+outputNum+outputNum1+".css");
+                                      file = new File("C:/Users/Golnaz/cssfile"+outputNum+"."+outputNum1+".css");
                                       fop = new FileOutputStream(file, true);
                                       if (!file.exists()) {
                                                               file.createNewFile();
@@ -1015,7 +1015,7 @@ av.addCssCss();
         public void postCrawling(CrawlSession session, ExitStatus exitReason) {
         
         
-        
+       
                 totalCssRules = 0;
                 totalCssSelectors = 0;
              
@@ -1045,7 +1045,9 @@ for (Map.Entry<String, List<MCssRule>> entry : cssRules.entrySet()) {
 					 if(!totalProperties.get(i).getValue().contains("%")){
 							if(!totalProperties.get(i).getValue().contains(".")){
 								if(!totalProperties.get(i).getValue().contains("rgb")){
+									if(!totalProperties.get(i).getValue().contains("em")){
 						 inappropriateFontSizeProperties.add(totalProperties.get(i));
+									}
 								}
 							}
 					 }
@@ -1163,7 +1165,7 @@ output.append(" -> Dangerous Selectors: "+ danSel +"\n");
 output.append(" -> Selectors with ID and at least one class or element: "+ idwith + "\n");
 output.append(" -> Universal Selectors: "+ universal + "\n");
 
-output.append(" -> Font-size Properties with Inappropriate Value: "+ inappfo + "\n");
+output.append(" -> Properties with Hard-Coded Values: "+ inappfo + "\n");
 output.append(" -> Properties with Value Equal to None or Zero: "+ undoingWithNone +"\n");
 
 output.append("PERCENTAGE: " + "\n");
@@ -1178,7 +1180,7 @@ output.append(" -> Dangerous Selectors: "+ Math.ceil((double) danSel/ totalCssSe
 output.append(" -> Selectors with ID and at least one class or element: "+ Math.ceil((double) idwith/ totalCssSelectors *100)+"%" + "\n");
 output.append(" -> Universal Selectors: "+ Math.ceil((double) universal/ totalCssSelectors *100)+"%" + "\n");
 
-output.append(" -> Font-size Properties with Inappropriate Value: "+ Math.ceil((double) inappfo/ countProperties() *100)+"%" + "\n");
+output.append(" -> Properties with Hard-Coded Values: "+ Math.ceil((double) inappfo/ countProperties() *100)+"%" + "\n");
 output.append(" -> Properties with Value Equal to None or Zero: "+ Math.ceil((double) undoingWithNone/ countProperties() *100)+"%" +"\n");
 
 output.append(" -> Unmatched Selectors: "+ Math.ceil((double) unused/ (totalCssSelectors-ignored) *100)+"%" + "\n");

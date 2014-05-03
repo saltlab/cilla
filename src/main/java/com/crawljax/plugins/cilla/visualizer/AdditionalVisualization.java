@@ -55,9 +55,9 @@ try {
 template = getTemplateAsString(cssValidationTemplate.getName());
 
 
-Document doc = Jsoup.connect("http://jigsaw.w3.org/css-validator/validator?uri=http%3A%2F%2F"+CillaRunner.b+"%2F&warning=2&profile=css2").get();
+//Document doc = Jsoup.connect("http://jigsaw.w3.org/css-validator/validator?uri=http%3A%2F%2F"+CillaRunner.b+"%2F&warning=2&profile=css2").get();
 
-
+Document doc = Jsoup.connect("http://jigsaw.w3.org/css-validator/validator?uri="+CillaRunner.b+"&profile=css3&usermedium=all&warning=2&vextwarning=&lang=en").get();
 Elements table = doc.select("tr");
 
 
@@ -212,7 +212,7 @@ String table = "table"+"tr"+"td"+"Measuring Number of Properties of One CSS Sele
 "\n"+"\td"+"\tr"+"tr"+"td"+"\b"+"Number of Classes"+"\n"+"\td"+"td"+""+"\td"+"\tr"+"td"+"Total"+"\n"+"\td"+"td"+CillaPlugin.clas+
 "\n"+"\td"+"\tr"+"tr"+"td"+"Average (Total/NumOfSelectors)"+"\n"+"\td"+"td"+(double)Math.round((CillaPlugin.averageclas) * 100) / 100+
 "\n"+"\td"+"\tr"+"tr"+"td"+"\b"+"Number of Elements"+"\n"+"\td"+"td"+""+"\td"+"tr"+"td"+"Total"+"\n"+"\td"+"td"+CillaPlugin.element+
-"\n"+"\td"+"\tr"+"tr"+"td"+"Average (Total/NumOfSelectors)"+"\n"+"\td"+"td"+(double)Math.round((CillaPlugin.averageelement) * 100) / 100+"\n"+"\td"+"\tr"+"\table"+"\n"+"*Abs = Abstractness Factor";
+"\n"+"\td"+"\tr"+"tr"+"td"+"Average (Total/NumOfSelectors)"+"\n"+"\td"+"td"+(double)Math.round((CillaPlugin.averageelement) * 100) / 100+"\n"+"\td"+"\tr"+"\table"+"\n"+"*Abs = Abstractness Factor"+"\n"+"Number of Crawled DOM States: "+CillaPlugin.count;
 statisticsMsg = table;
 statisticsMsg = statisticsMsg.replace("table", "<table>");
 statisticsMsg = statisticsMsg.replace("\table", "</table> ");
